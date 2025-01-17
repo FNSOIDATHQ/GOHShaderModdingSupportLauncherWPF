@@ -1,0 +1,102 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
+	<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+	  <PublishSingleFile>true</PublishSingleFile>
+	  <SelfContained>false</SelfContained>
+	  <_SuppressWpfTrimError>true</_SuppressWpfTrimError>
+	  <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+	  <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
+	  <IncludeAllContentForSelfExtract>false</IncludeAllContentForSelfExtract>
+	  <PlatformTarget>AnyCPU</PlatformTarget>
+
+
+	  <PublishTrimmed>false</PublishTrimmed>
+	  <TrimMode>partial</TrimMode>
+	  <DebuggerSupport>false</DebuggerSupport>
+	  <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+	  <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+	  <EventSourceSupport>false</EventSourceSupport>
+	  <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+	  <UseSystemResourceKeys>true</UseSystemResourceKeys>
+	  <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+	  <ApplicationIcon>gemIcon.ico</ApplicationIcon>
+
+	  <AnalysisLevel>preview</AnalysisLevel>
+
+	  <Platforms>AnyCPU;x64</Platforms>
+
+	  <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+
+	  <FileVersion>1.1</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IsPublishable>True</IsPublishable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="gemIconTransparent.png" />
+    <None Remove="library_hero.jpg" />
+    <None Remove="shader.pak" />
+    <None Remove="shader.pak.bak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="gemIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="shader.pak" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WPF-UI" Version="3.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="gemIconTransparent.png" />
+    <Resource Include="library_hero.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\i18n.zh-cn.Designer.cs">
+      <DependentUpon>i18n.zh-cn.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Properties\i18n.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>i18n.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\i18n.zh-cn.resx">
+      <LastGenOutput>i18n.zh-cn.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\i18n.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>i18n.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
