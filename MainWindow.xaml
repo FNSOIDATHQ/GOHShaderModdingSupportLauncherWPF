@@ -12,7 +12,7 @@
     <Grid>
         <Image Grid.Column="1" Source="/library_hero.jpg" Stretch="UniformToFill" Opacity="0.7"/>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
-            <Image Height="75" Width="75" Source="/gemIconTransparent.png" Opacity="0.65" Margin="0,0,20,0"/>
+            <Image Height="70" Width="70" Source="/gemLogo.png" Opacity="0.65" Margin="0,0,20,0"/>
 
             <TextBlock TextWrapping="Wrap" Text="{x:Static loc:i18n.Title}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
         </StackPanel>
@@ -31,10 +31,12 @@
                 <StackPanel Margin="30,11,30,0">
                     <CheckBox x:Name="restore" Content="{x:Static loc:i18n.S_Restore}" IsChecked="True" Click="OnRestoreStateChanged"/>
                     <CheckBox x:Name="clearCache" Content="{x:Static loc:i18n.S_Clear}" IsChecked="True" Click="OnClearCacheStateChanged"/>
+                    <CheckBox x:Name="gameExit" Content="{x:Static loc:i18n.S_GameExit}" IsChecked="False" Click="OnGameExitStateChanged"/>
+                    <CheckBox x:Name="pathConfirm" Content="{x:Static loc:i18n.S_PathConfirm}" IsChecked="False" Click="OnPathConfirmStateChanged"/>
                 </StackPanel>
             </TabItem>
         </TabControl>
-        <TextBlock TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Bottom" HorizontalAlignment="Right"><Run Text="v1."/><Run Text="2"/><Run Text="    "/><Run Text="by Federation Studio 2025"/></TextBlock>
+        <TextBlock TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Bottom" HorizontalAlignment="Right"><Run Text="v1.3    "/><Run Text="by Federation Studio 2025"/></TextBlock>
 
     </Grid>
 </Window>

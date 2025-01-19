@@ -115,6 +115,24 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Redisplay launcher after game exit 的本地化字符串。
+        /// </summary>
+        public static string S_GameExit {
+            get {
+                return ResourceManager.GetString("S_GameExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Always ask if the game path is correct 的本地化字符串。
+        /// </summary>
+        public static string S_PathConfirm {
+            get {
+                return ResourceManager.GetString("S_PathConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Restore vanilla Shader File after game exit 的本地化字符串。
         /// </summary>
         public static string S_Restore {

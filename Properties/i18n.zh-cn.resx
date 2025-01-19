@@ -138,6 +138,12 @@
   <data name="S_Clear" xml:space="preserve">
     <value>在游戏结束后清理着色器缓存</value>
   </data>
+  <data name="S_GameExit" xml:space="preserve">
+    <value>在游戏结束后重新显示启动器</value>
+  </data>
+  <data name="S_PathConfirm" xml:space="preserve">
+    <value>总是询问游戏路径是否正确</value>
+  </data>
   <data name="S_Restore" xml:space="preserve">
     <value>在游戏结束后复原默认着色器文件</value>
   </data>

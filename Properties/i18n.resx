@@ -138,6 +138,12 @@
   <data name="S_Clear" xml:space="preserve">
     <value>Clear Shader Cache after game exit</value>
   </data>
+  <data name="S_GameExit" xml:space="preserve">
+    <value>Redisplay launcher after game exit</value>
+  </data>
+  <data name="S_PathConfirm" xml:space="preserve">
+    <value>Always ask if the game path is correct</value>
+  </data>
   <data name="S_Restore" xml:space="preserve">
     <value>Restore vanilla Shader File after game exit</value>
   </data>

@@ -14,11 +14,14 @@ namespace GOHShaderModdingSupportLauncherWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool NeedRestore, NeedClearCache;
+        private bool HasGetGameRoot;
+        private DirectoryInfo gameDir, resourceDir;
+
+        private bool NeedRestore, NeedClearCache,NeedRedisplay,AlwaysConfirm;
         private string configLoc;
         private string cacheLoc;
 
-        private CheckBox C_restore, C_clearCache;
+        private CheckBox C_restore, C_clearCache, C_gameExit,C_pathConfirm;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,6 +30,11 @@ namespace GOHShaderModdingSupportLauncherWPF
             gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             HasGetGameRoot = false;
+
+            C_restore = this.FindName("restore") as CheckBox;
+            C_clearCache = this.FindName("clearCache") as CheckBox;
+            C_gameExit = this.FindName("gameExit") as CheckBox;
+            C_pathConfirm = this.FindName("pathConfirm") as CheckBox;
 
             configLoc = Path.GetTempPath() + @"GOHSMSLauncher\settings.conf";
             if (File.Exists(configLoc) == true)
@@ -37,14 +45,48 @@ namespace GOHShaderModdingSupportLauncherWPF
                     if (index == 0)
                     {
                         NeedRestore = bool.Parse(line);
-                        C_restore = this.FindName("restore") as CheckBox;
+                        
                         C_restore.IsChecked = NeedRestore;
                     }
                     else if (index == 1)
                     {
                         NeedClearCache = bool.Parse(line);
-                        C_clearCache = this.FindName("clearCache") as CheckBox;
+                        
                         C_clearCache.IsChecked = NeedClearCache;
+                    }
+                    else if (index == 2)
+                    {
+                        NeedRedisplay = bool.Parse(line);
+                        
+                        C_gameExit.IsChecked = NeedRedisplay;
+                    }
+                    else if (index == 3)
+                    {
+                        AlwaysConfirm = bool.Parse(line);
+                        
+                        C_pathConfirm.IsChecked = AlwaysConfirm;
+                    }
+                    else if (index == 4)
+                    {
+                        //get cached game location
+                        //if AlwaysConfirm=true this cache won't be use in later functions
+                        if (Directory.Exists(line) == true&&AlwaysConfirm!=true)
+                        {
+                            gameDir = new DirectoryInfo(line);
+                            HasGetGameRoot = true;
+
+                            //avoid catch by steam
+                            Environment.CurrentDirectory = gameDir.FullName;
+                        }
+                    }
+                    else if (index == 5)
+                    {
+                        //get cached resource location
+                        //if AlwaysConfirm=true this cache won't be use in later functions
+                        if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                        {
+                            resourceDir = new DirectoryInfo(line);
+                        }
                     }
                     else
                     {
@@ -54,13 +96,31 @@ namespace GOHShaderModdingSupportLauncherWPF
 
 #if DEBUG
                     Trace.WriteLine(line);
+                    Trace.WriteLine(index);
 #endif
+                }
+
+                //the config file is not complete or break,fall back to default value
+                //no cache is not important
+                if (index!=4&&index != 6)
+                {
+                    NeedRestore = true;
+                    C_restore.IsChecked = NeedRestore;
+                    NeedClearCache = true;
+                    C_clearCache.IsChecked = NeedClearCache;
+                    NeedRedisplay = false;
+                    C_gameExit.IsChecked = NeedRedisplay;
+                    AlwaysConfirm = false;
+                    C_pathConfirm.IsChecked = AlwaysConfirm;
+                    HasGetGameRoot = false;
                 }
             }
             else
             {
                 NeedRestore = true;
                 NeedClearCache = true;
+                NeedRedisplay = false;
+                AlwaysConfirm = false;
             }
 
             cacheLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell\\shader_cache";
@@ -85,8 +145,6 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         //we assume the program is running in somewhere in SteamLibrary\steamapps
         //if not we will get game from registry
-        private bool HasGetGameRoot;
-        private DirectoryInfo gameDir,resourceDir;
         private void GetGameRoot()
         {
 
@@ -259,6 +317,27 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 sw.WriteLine(NeedRestore);
                 sw.WriteLine(NeedClearCache);
+                sw.WriteLine(NeedRedisplay);
+                sw.WriteLine(AlwaysConfirm);
+                if (HasGetGameRoot == true)
+                {
+                    sw.WriteLine(gameDir.FullName);
+                    sw.WriteLine(resourceDir.FullName);
+                }
+                
+            }
+        }
+
+        private void OnGameExit()
+        {
+            if (NeedRedisplay == true)
+            {
+                this.Show();
+            }
+            else
+            {
+                SaveSettings();
+                Environment.Exit(0);
             }
         }
 
@@ -279,8 +358,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             RestoreFile();
             ClearCache();
 
-            SaveSettings();
-            Environment.Exit(0);
+            OnGameExit();
+            
         }
 
         private void EditorFR_Click(object sender, RoutedEventArgs e)
@@ -300,8 +379,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             RestoreFile();
             ClearCache();
 
-            SaveSettings();
-            Environment.Exit(0);
+            OnGameExit();
         }
 
         private void GameDX101_Click(object sender, RoutedEventArgs e)
@@ -318,8 +396,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             ClearCache();
 
-            SaveSettings();
-            Environment.Exit(0);
+            OnGameExit();
         }
 
         private void EditorDX101_Click(object sender, RoutedEventArgs e)
@@ -336,8 +413,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             ClearCache();
 
-            SaveSettings();
-            Environment.Exit(0);
+            OnGameExit();
         }
 
         //this will make a auto fix
@@ -358,8 +434,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             this.Hide();
             game.WaitForExit();
 
-            SaveSettings();
-            Environment.Exit(0);
+            OnGameExit();
+        }
+
+        private void OnGameExitStateChanged(object sender, RoutedEventArgs e)
+        {
+            CheckBox c = (CheckBox)sender;
+            NeedRedisplay = c.IsChecked.Value;
+        }
+
+        private void OnPathConfirmStateChanged(object sender, RoutedEventArgs e)
+        {
+            CheckBox c = (CheckBox)sender;
+            AlwaysConfirm = c.IsChecked.Value;
         }
 
         private void OnClearCacheStateChanged(object sender, RoutedEventArgs e)
