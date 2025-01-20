@@ -19,7 +19,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private bool NeedRestore, NeedClearCache,NeedRedisplay,AlwaysConfirm;
         private string configLoc;
-        private string cacheLoc;
+        private string profileLoc,cacheLoc,optionLoc;
 
         private CheckBox C_restore, C_clearCache, C_gameExit,C_pathConfirm;
         public MainWindow()
@@ -123,7 +123,29 @@ namespace GOHShaderModdingSupportLauncherWPF
                 AlwaysConfirm = false;
             }
 
-            cacheLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell\\shader_cache";
+            profileLoc= Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
+            cacheLoc = profileLoc + "\\shader_cache";
+            
+
+            if (Directory.Exists(profileLoc) == false)
+            {
+                MessageBox.Show("Can not find goh user profile on your computer!", "WARNING");
+                throw new InvalidOperationException("Can not find goh user profile on your computer!");
+            }
+            else
+            {
+                optionLoc = profileLoc + "\\profiles";
+                optionLoc=Directory.GetDirectories(optionLoc)[0]+ @"\options.set";
+#if DEBUG
+                Trace.WriteLine(optionLoc);
+#endif
+
+                if (File.Exists(optionLoc) == false)
+                {
+                    MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
+                    throw new InvalidOperationException("Run goh game at least once before using this program!");
+                }
+            }
         }
 
         //reference https://juejin.cn/post/6989143365862293534
@@ -220,7 +242,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             else
             {
-                // do nothing
+                // preprocess
+                //GetGameRoot() always happen when first find goh game, we clear cache to delete any shader that compile from different files
+                ClearCache();
             }
 
 #if DEBUG
@@ -308,6 +332,41 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        //open bump options, a fix for my own shader mod
+        private void ForceChangeSettings()
+        {
+            string opt;
+            using(StreamReader sr = File.OpenText(optionLoc))
+            {
+                opt = sr.ReadToEnd();
+
+                sr.Close();
+            }
+
+            int presetLoc = opt.IndexOf("{preset");
+            int presetEndLoc = opt.IndexOf("}\r\n\t\t{hdr");
+            int bumpLoc = opt.IndexOf("{bumpType");
+            int bumpEndLoc = opt.IndexOf("}\r\n\t\t{specular");
+
+
+            opt =opt.Remove(bumpLoc, bumpEndLoc - bumpLoc+1);
+            opt=opt.Insert(bumpLoc, "{bumpType parallax}");
+            opt=opt.Remove(presetLoc, presetEndLoc - presetLoc+1);
+            opt=opt.Insert(presetLoc, "{preset custom}");
+
+#if DEBUG
+            Trace.WriteLine(presetEndLoc);
+            Trace.Write(opt);
+#endif
+
+            using (StreamWriter sw = File.CreateText(optionLoc))
+            {
+
+                sw.Write(opt);
+                sw.Close();
+            }
+        }
+
         private void SaveSettings()
         {
             Directory.CreateDirectory(Path.GetTempPath() + @"GOHSMSLauncher");
@@ -349,8 +408,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
 
             ReplaceFile();
+            ForceChangeSettings();
 
-            Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString());
+            Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-showmodinfo");
 
             this.Hide();
             game.WaitForExit();
@@ -370,8 +430,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
 
             ReplaceFile();
+            ForceChangeSettings();
 
-            Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString());
+            Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString(), "-showmodinfo");
 
             this.Hide();
             editor.WaitForExit();
@@ -389,6 +450,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                 GetGameRoot();
             }
 
+            ForceChangeSettings();
+
             Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-dx 10.1 -showmodinfo");
 
             this.Hide();
@@ -405,6 +468,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 GetGameRoot();
             }
+
+            ForceChangeSettings();
 
             Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString(), "-dx 10.1 -showmodinfo");
 
