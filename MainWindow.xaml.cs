@@ -14,14 +14,23 @@ namespace GOHShaderModdingSupportLauncherWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool HasGetGameRoot;
+        private bool HasGetGameRoot, HasConfigFile;
         private DirectoryInfo gameDir, resourceDir;
 
         private bool NeedRestore, NeedClearCache,NeedRedisplay,AlwaysConfirm;
         private string configLoc;
         private string profileLoc,cacheLoc,optionLoc;
+        private enum LaunchMethod
+        {
+            FileReplace,
+            DX101
+        }
+        private LaunchMethod lm;
 
         private CheckBox C_restore, C_clearCache, C_gameExit,C_pathConfirm;
+        private ComboBox CB_launchMethod;
+        private Button B_openConfig;
+        private TextBox T_gamePath,T_gameConfigPath;
         public MainWindow()
         {
             InitializeComponent();
@@ -29,103 +38,138 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            HasGetGameRoot = false;
 
             C_restore = this.FindName("restore") as CheckBox;
             C_clearCache = this.FindName("clearCache") as CheckBox;
             C_gameExit = this.FindName("gameExit") as CheckBox;
             C_pathConfirm = this.FindName("pathConfirm") as CheckBox;
+            CB_launchMethod = this.FindName("launchMethod") as ComboBox;
+            B_openConfig = this.FindName("openConfig") as Button;
+            T_gamePath = this.FindName("gamePath") as TextBox;
+            T_gameConfigPath = this.FindName("gameConfigPath") as TextBox;
 
-            configLoc = Path.GetTempPath() + @"GOHSMSLauncher\settings.conf";
+            HasGetGameRoot = false;
+            HasConfigFile = false;
+            B_openConfig.IsEnabled = false;
+
+            configLoc = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + @"settings.conf";
             if (File.Exists(configLoc) == true)
             {
                 int index = 0;
-                foreach (string line in File.ReadAllLines(configLoc))
+                try
                 {
-                    if (index == 0)
+                    foreach (string line in File.ReadAllLines(configLoc))
                     {
-                        NeedRestore = bool.Parse(line);
-                        
-                        C_restore.IsChecked = NeedRestore;
-                    }
-                    else if (index == 1)
-                    {
-                        NeedClearCache = bool.Parse(line);
-                        
-                        C_clearCache.IsChecked = NeedClearCache;
-                    }
-                    else if (index == 2)
-                    {
-                        NeedRedisplay = bool.Parse(line);
-                        
-                        C_gameExit.IsChecked = NeedRedisplay;
-                    }
-                    else if (index == 3)
-                    {
-                        AlwaysConfirm = bool.Parse(line);
-                        
-                        C_pathConfirm.IsChecked = AlwaysConfirm;
-                    }
-                    else if (index == 4)
-                    {
-                        //get cached game location
-                        //if AlwaysConfirm=true this cache won't be use in later functions
-                        if (Directory.Exists(line) == true&&AlwaysConfirm!=true)
+                        if (index == 0)
                         {
-                            gameDir = new DirectoryInfo(line);
-                            HasGetGameRoot = true;
+                            lm = (LaunchMethod)Enum.Parse(typeof(LaunchMethod), line);
+                            CB_launchMethod.SelectedIndex = (int)lm;
+                        }
+                        else if (index == 1)
+                        {
+                            NeedRestore = bool.Parse(line);
 
-                            //avoid catch by steam
-                            Environment.CurrentDirectory = gameDir.FullName;
+                            C_restore.IsChecked = NeedRestore;
                         }
-                    }
-                    else if (index == 5)
-                    {
-                        //get cached resource location
-                        //if AlwaysConfirm=true this cache won't be use in later functions
-                        if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                        else if (index == 2)
                         {
-                            resourceDir = new DirectoryInfo(line);
+                            NeedClearCache = bool.Parse(line);
+
+                            C_clearCache.IsChecked = NeedClearCache;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                    index++;
+                        else if (index == 3)
+                        {
+                            NeedRedisplay = bool.Parse(line);
+
+                            C_gameExit.IsChecked = NeedRedisplay;
+                        }
+                        else if (index == 4)
+                        {
+                            AlwaysConfirm = bool.Parse(line);
+
+                            C_pathConfirm.IsChecked = AlwaysConfirm;
+                        }
+                        else if (index == 5)
+                        {
+                            //get cached game location
+                            //if AlwaysConfirm=true this cache won't be use in later functions
+                            if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                            {
+                                gameDir = new DirectoryInfo(line);
+                                T_gamePath.Text = gameDir.FullName;
+                                HasGetGameRoot = true;
+
+                                //avoid catch by steam
+                                Environment.CurrentDirectory = gameDir.FullName;
+                            }
+                        }
+                        else if (index == 6)
+                        {
+                            //get cached resource location
+                            //if AlwaysConfirm=true this cache won't be use in later functions
+                            if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                            {
+                                resourceDir = new DirectoryInfo(line);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        index++;
 
 #if DEBUG
-                    Trace.WriteLine(line);
-                    Trace.WriteLine(index);
+                        Trace.WriteLine(line);
+                        Trace.WriteLine(index);
 #endif
+                    }
                 }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Get error when reading config file! Will delete config file", "ERROR");
+                    File.Delete(configLoc);
+                }
+
 
                 //the config file is not complete or break,fall back to default value
                 //no cache is not important
-                if (index!=4&&index != 6)
+                if (index!=5&&index != 7)
                 {
-                    NeedRestore = true;
+                    lm = LaunchMethod.FileReplace;
+                    CB_launchMethod.SelectedIndex = (int)lm;
+                    NeedRestore = false;
                     C_restore.IsChecked = NeedRestore;
                     NeedClearCache = true;
                     C_clearCache.IsChecked = NeedClearCache;
-                    NeedRedisplay = false;
+                    NeedRedisplay = true;
                     C_gameExit.IsChecked = NeedRedisplay;
                     AlwaysConfirm = false;
                     C_pathConfirm.IsChecked = AlwaysConfirm;
                     HasGetGameRoot = false;
                 }
+                else
+                {
+                    HasConfigFile = true;
+                    B_openConfig.IsEnabled = true;
+                }
             }
             else
             {
-                NeedRestore = true;
+                lm = LaunchMethod.FileReplace;
+                NeedRestore = false;
                 NeedClearCache = true;
-                NeedRedisplay = false;
+                NeedRedisplay = true;
                 AlwaysConfirm = false;
             }
 
-            profileLoc= Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
-            cacheLoc = profileLoc + "\\shader_cache";
-            
+            profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
+            //fall back to backup path
+            if (Directory.Exists(profileLoc) == false)
+            {
+                profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
+            }
+
+
 
             if (Directory.Exists(profileLoc) == false)
             {
@@ -134,8 +178,11 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             else
             {
+                cacheLoc = profileLoc + "\\shader_cache";
                 optionLoc = profileLoc + "\\profiles";
                 optionLoc=Directory.GetDirectories(optionLoc)[0]+ @"\options.set";
+                T_gameConfigPath.Text = profileLoc;
+
 #if DEBUG
                 Trace.WriteLine(optionLoc);
 #endif
@@ -145,6 +192,11 @@ namespace GOHShaderModdingSupportLauncherWPF
                     MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
                     throw new InvalidOperationException("Run goh game at least once before using this program!");
                 }
+            }
+
+            if (HasGetGameRoot == false)
+            {
+                GetGameRoot();
             }
         }
 
@@ -225,7 +277,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 HasGetGameRoot = true;
             }
 
-
+            T_gamePath.Text = gameDir.FullName;
             //avoid catch by steam
             Environment.CurrentDirectory = gameDir.FullName;
 
@@ -244,12 +296,12 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 // preprocess
                 //GetGameRoot() always happen when first find goh game, we clear cache to delete any shader that compile from different files
-                ClearCache();
+                ClearCacheWork();
             }
 
 #if DEBUG
             Trace.WriteLine(gameDir);
-            MessageBox.Show(gameDir.FullName);
+            //MessageBox.Show(gameDir.FullName);
 #endif
         }
 
@@ -321,15 +373,22 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             if (NeedClearCache == true || force == true)
             {
-                if (Directory.Exists(cacheLoc) == true)
-                {
-                    Directory.Delete(cacheLoc, true);
-                }
+                ClearCacheWork();
             }
             else
             {
 
             }
+        }
+
+        private void ClearCacheWork()
+        {
+
+                if (Directory.Exists(cacheLoc) == true)
+                {
+                    Directory.Delete(cacheLoc, true);
+                }
+
         }
 
         //open bump options, a fix for my own shader mod
@@ -369,11 +428,11 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void SaveSettings()
         {
-            Directory.CreateDirectory(Path.GetTempPath() + @"GOHSMSLauncher");
+            //Directory.CreateDirectory(Path.GetTempPath() + @"GOHSMSLauncher");
 
             using (StreamWriter sw = File.CreateText(configLoc))
             {
-
+                sw.WriteLine(lm.ToString());
                 sw.WriteLine(NeedRestore);
                 sw.WriteLine(NeedClearCache);
                 sw.WriteLine(NeedRedisplay);
@@ -400,82 +459,109 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        private void GameFR_Click(object sender, RoutedEventArgs e)
+        private void gamePath_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (HasGetGameRoot == false)
+            TextBox s = sender as TextBox;
+            gameDir = new DirectoryInfo(s.Text);
+            DirectoryInfo[] searchResult = gameDir.GetDirectories("../../resource");
+            if (searchResult.Length > 0)
             {
-                GetGameRoot();
+                resourceDir = searchResult[0];
+                //MessageBox.Show(resourceDir.FullName);
             }
-
-            ReplaceFile();
-            ForceChangeSettings();
-
-            Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-showmodinfo");
-
-            this.Hide();
-            game.WaitForExit();
-
-            RestoreFile();
-            ClearCache();
-
-            OnGameExit();
             
         }
 
-        private void EditorFR_Click(object sender, RoutedEventArgs e)
+        private void gameConfigPath_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (HasGetGameRoot == false)
+            TextBox s = sender as TextBox;
+            profileLoc = s.Text;
+            cacheLoc = profileLoc + "\\shader_cache";
+            optionLoc = profileLoc + "\\profiles";
+
+            if (Directory.Exists(optionLoc) == true)
             {
-                GetGameRoot();
+                string[] searchResult = Directory.GetDirectories(optionLoc);
+                if (searchResult.Length > 0)
+                {
+                    optionLoc = searchResult[0] + @"\options.set";
+                    //MessageBox.Show(optionLoc);
+                }
             }
 
-            ReplaceFile();
-            ForceChangeSettings();
-
-            Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString(), "-showmodinfo");
-
-            this.Hide();
-            editor.WaitForExit();
-
-            RestoreFile();
-            ClearCache();
-
-            OnGameExit();
+            
         }
 
-        private void GameDX101_Click(object sender, RoutedEventArgs e)
+        private void clearShaderCache_Click(object sender, RoutedEventArgs e)
         {
-            if (HasGetGameRoot == false)
-            {
-                GetGameRoot();
-            }
+            ClearCacheWork();
+            MessageBox.Show("Shader cache cleanup complete!", "Notice");
 
+        }
+
+        private void openConfig_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", configLoc);
+        }
+
+        private void Game_Click(object sender, RoutedEventArgs e)
+        {
+            if (lm == LaunchMethod.FileReplace)
+            {
+                ReplaceFile();
+            }
             ForceChangeSettings();
 
-            Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-dx 10.1 -showmodinfo");
+            string args="";
+            if(lm == LaunchMethod.FileReplace)
+            {
+                args = "-showmodinfo";
+            }
+            else if (lm == LaunchMethod.DX101)
+            {
+                args = "-dx 10.1 -showmodinfo";
+            }
+            Process game = Process.Start(gameDir.GetFiles("call_to_arms.exe")[0].ToString(), args);
 
             this.Hide();
             game.WaitForExit();
 
+            if (lm == LaunchMethod.FileReplace)
+            {
+                RestoreFile();
+            }
             ClearCache();
 
             OnGameExit();
+
         }
 
-        private void EditorDX101_Click(object sender, RoutedEventArgs e)
+        private void Editor_Click(object sender, RoutedEventArgs e)
         {
-            if (HasGetGameRoot == false)
+            if (lm == LaunchMethod.FileReplace)
             {
-                GetGameRoot();
+                ReplaceFile();
             }
-
             ForceChangeSettings();
 
-            Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString(), "-dx 10.1 -showmodinfo");
+            string args = "";
+            if (lm == LaunchMethod.FileReplace)
+            {
+                args = "-showmodinfo";
+            }
+            else if (lm == LaunchMethod.DX101)
+            {
+                args = "-dx 10.1 -showmodinfo";
+            }
+            Process editor = Process.Start(gameDir.GetFiles("call_to_arms_ed.exe")[0].ToString(), args);
 
             this.Hide();
             editor.WaitForExit();
 
+            if (lm == LaunchMethod.FileReplace)
+            {
+                RestoreFile();
+            }
             ClearCache();
 
             OnGameExit();
@@ -500,6 +586,12 @@ namespace GOHShaderModdingSupportLauncherWPF
             game.WaitForExit();
 
             OnGameExit();
+        }
+
+        private void LaunchMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+            lm = (LaunchMethod)comboBox.SelectedIndex;
         }
 
         private void OnGameExitStateChanged(object sender, RoutedEventArgs e)
