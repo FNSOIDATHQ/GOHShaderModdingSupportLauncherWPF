@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="L_DGDX" xml:space="preserve">
-    <value>默认游戏 (DX 10.1)</value>
+  <data name="L_Main" xml:space="preserve">
+    <value>主游戏</value>
   </data>
-  <data name="L_DGFR" xml:space="preserve">
-    <value>默认游戏 (文件替换)</value>
+  <data name="L_FileReplace" xml:space="preserve">
+    <value>文件替换</value>
   </data>
-  <data name="L_EDX" xml:space="preserve">
-    <value>编辑器 (DX 10.1)</value>
+  <data name="L_DX101" xml:space="preserve">
+    <value>DX 10.1</value>
   </data>
-  <data name="L_EFR" xml:space="preserve">
-    <value>编辑器 (文件替换)</value>
+  <data name="L_Editor" xml:space="preserve">
+    <value>编辑器</value>
+  </data>
+  <data name="L_Method" xml:space="preserve">
+    <value>启动方式</value>
   </data>
   <data name="L_Safe" xml:space="preserve">
     <value>安全模式 (自动修复)</value>
@@ -147,16 +150,28 @@
   <data name="S_Restore" xml:space="preserve">
     <value>在游戏结束后复原默认着色器文件</value>
   </data>
+  <data name="Tab_About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Tab_Converter" xml:space="preserve">
+    <value>贴图和材质转换器</value>
+  </data>
   <data name="Tab_Launcher" xml:space="preserve">
     <value>启动器</value>
+  </data>
+  <data name="Tab_ModManager" xml:space="preserve">
+    <value>Mod管理器</value>
   </data>
   <data name="Tab_Settings" xml:space="preserve">
     <value>设置</value>
   </data>
   <data name="Tab_Tools" xml:space="preserve">
-    <value>工具</value>
+    <value>实用工具</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>地狱之门 着色器模组支持 启动器</value>
+  </data>
+  <data name="L_ModInfo" xml:space="preserve">
+    <value>显示额外mod信息</value>
   </data>
 </root>

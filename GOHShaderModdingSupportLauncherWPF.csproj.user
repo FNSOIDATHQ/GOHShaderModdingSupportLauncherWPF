@@ -9,6 +9,27 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="converter.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="about.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="settings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="tools.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="modManager.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainWindowBak.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="launcher.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

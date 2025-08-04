@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="L_DGDX" xml:space="preserve">
-    <value>Default Game (DX 10.1)</value>
+  <data name="L_Main" xml:space="preserve">
+    <value>Main Game</value>
   </data>
-  <data name="L_DGFR" xml:space="preserve">
-    <value>Default Game (File Replace)</value>
+  <data name="L_FileReplace" xml:space="preserve">
+    <value>File Replace</value>
   </data>
-  <data name="L_EDX" xml:space="preserve">
-    <value>Editor (DX 10.1)</value>
+  <data name="L_DX101" xml:space="preserve">
+    <value>DX 10.1</value>
   </data>
-  <data name="L_EFR" xml:space="preserve">
-    <value>Editor (File Replace)</value>
+  <data name="L_Editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="L_Method" xml:space="preserve">
+    <value>Launch Method</value>
   </data>
   <data name="L_Safe" xml:space="preserve">
     <value>Safe Mode (Auto Fix)</value>
@@ -147,16 +150,28 @@
   <data name="S_Restore" xml:space="preserve">
     <value>Restore vanilla Shader File after game exit</value>
   </data>
+  <data name="Tab_About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Tab_Converter" xml:space="preserve">
+    <value>Texture and Material Converter</value>
+  </data>
   <data name="Tab_Launcher" xml:space="preserve">
     <value>Launcher</value>
+  </data>
+  <data name="Tab_ModManager" xml:space="preserve">
+    <value>Mod Manager</value>
   </data>
   <data name="Tab_Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
   <data name="Tab_Tools" xml:space="preserve">
-    <value>Tools</value>
+    <value>Utilities</value>
   </data>
   <data name="Title" xml:space="preserve">
     <value>Gate of Hell Shader Modding Support Launcher</value>
+  </data>
+  <data name="L_ModInfo" xml:space="preserve">
+    <value>Show additional mod infomation</value>
   </data>
 </root>

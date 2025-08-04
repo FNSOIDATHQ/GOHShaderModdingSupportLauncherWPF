@@ -61,38 +61,56 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Default Game (DX 10.1) 的本地化字符串。
+        ///   查找类似 DX 10.1 的本地化字符串。
         /// </summary>
-        public static string L_DGDX {
+        public static string L_DX101 {
             get {
-                return ResourceManager.GetString("L_DGDX", resourceCulture);
+                return ResourceManager.GetString("L_DX101", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 Default Game (File Replace) 的本地化字符串。
+        ///   查找类似 Editor 的本地化字符串。
         /// </summary>
-        public static string L_DGFR {
+        public static string L_Editor {
             get {
-                return ResourceManager.GetString("L_DGFR", resourceCulture);
+                return ResourceManager.GetString("L_Editor", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 Editor (DX 10.1) 的本地化字符串。
+        ///   查找类似 File Replace 的本地化字符串。
         /// </summary>
-        public static string L_EDX {
+        public static string L_FileReplace {
             get {
-                return ResourceManager.GetString("L_EDX", resourceCulture);
+                return ResourceManager.GetString("L_FileReplace", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   查找类似 Editor (File Replace) 的本地化字符串。
+        ///   查找类似 Main Game 的本地化字符串。
         /// </summary>
-        public static string L_EFR {
+        public static string L_Main {
             get {
-                return ResourceManager.GetString("L_EFR", resourceCulture);
+                return ResourceManager.GetString("L_Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Launch Method 的本地化字符串。
+        /// </summary>
+        public static string L_Method {
+            get {
+                return ResourceManager.GetString("L_Method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show additional mod infomation 的本地化字符串。
+        /// </summary>
+        public static string L_ModInfo {
+            get {
+                return ResourceManager.GetString("L_ModInfo", resourceCulture);
             }
         }
         
@@ -151,11 +169,38 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 About 的本地化字符串。
+        /// </summary>
+        public static string Tab_About {
+            get {
+                return ResourceManager.GetString("Tab_About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Texture and Material Converter 的本地化字符串。
+        /// </summary>
+        public static string Tab_Converter {
+            get {
+                return ResourceManager.GetString("Tab_Converter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Launcher 的本地化字符串。
         /// </summary>
         public static string Tab_Launcher {
             get {
                 return ResourceManager.GetString("Tab_Launcher", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Mod Manager 的本地化字符串。
+        /// </summary>
+        public static string Tab_ModManager {
+            get {
+                return ResourceManager.GetString("Tab_ModManager", resourceCulture);
             }
         }
         
@@ -169,7 +214,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Tools 的本地化字符串。
+        ///   查找类似 Utilities 的本地化字符串。
         /// </summary>
         public static string Tab_Tools {
             get {

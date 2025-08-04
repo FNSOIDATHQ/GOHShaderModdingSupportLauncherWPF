@@ -1,0 +1,29 @@
+﻿<Page x:Class="GOHShaderModdingSupportLauncherWPF.Converter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GOHShaderModdingSupportLauncherWPF"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:loc="clr-namespace:GOHShaderModdingSupportLauncherWPF.Properties"
+        mc:Ignorable="d"
+        Title="{x:Static loc:i18n.StatusBar_Title}">
+    <StackPanel Margin="30,11,30,0">
+        <StackPanel Orientation="Horizontal">
+            <ui:TextBlock TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#E4FFFFFF" Margin="0,0,5,0" Width="90">
+                <Run Language="zh-cn" Text="目标路径："/>
+            </ui:TextBlock>
+            <ui:TextBox x:Name="gamePath1" TextWrapping="Wrap" Text="未成功获取，请手动输入" Panel.ZIndex="-8"  AcceptsReturn="True" AutoWordSelection="True" Width="650" HorizontalContentAlignment="Stretch"/>
+            <ui:Button x:Name="clearShaderCache1" Content="浏览..."/>
+        </StackPanel>
+        <TabControl Height="100">
+            <TabItem Header="贴图通道批量重映射"/>
+            <TabItem Header="贴图通道提取和注入"/>
+            <TabItem Header="批量转换材质（mtl）">
+                <StackPanel Margin="0,11,0,0" Width="840">
+                    <ui:Button x:Name="openConfig1" Content="为所有非PBR材质启用环境贴图支持"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </StackPanel>
+</Page>
