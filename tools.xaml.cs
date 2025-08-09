@@ -18,25 +18,22 @@ namespace GOHShaderModdingSupportLauncherWPF
 
 
         }
-
-        private void Game_Click(object sender, RoutedEventArgs e)
-        {
-
-
-        }
-
-        private void Editor_Click(object sender, RoutedEventArgs e)
+        private void clearShaderCache_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        //this will make a auto fix
-        private void Safe_Click(object sender, RoutedEventArgs e)
+        private void restore_Click(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void LaunchMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void openConfig_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void precompile_Click(object sender, RoutedEventArgs e)
         {
 
         }

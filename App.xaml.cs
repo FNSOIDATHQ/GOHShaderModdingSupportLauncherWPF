@@ -13,7 +13,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            //Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
             base.OnStartup(e);
         }
     }

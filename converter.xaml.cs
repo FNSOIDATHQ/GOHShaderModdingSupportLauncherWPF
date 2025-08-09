@@ -6,37 +6,39 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 
-
 namespace GOHShaderModdingSupportLauncherWPF
 {
     public partial class Converter : Page
     {
+        private string targetPath;
+
+        private Wpf.Ui.Controls.TextBox TB_ConvertPath;
         public Converter()
         {
             InitializeComponent();
 
-
+            TB_ConvertPath = this.FindName("convertPath") as Wpf.Ui.Controls.TextBox;
 
         }
 
-        private void Game_Click(object sender, RoutedEventArgs e)
+        private void convertPath_TextChanged(object sender, TextChangedEventArgs e)
         {
-
-
+            targetPath = TB_ConvertPath.Text;
         }
 
-        private void Editor_Click(object sender, RoutedEventArgs e)
+        private void viewPath_Click(object sender, RoutedEventArgs e)
         {
+            OpenFolderDialog dialog = new OpenFolderDialog();
+            bool? result=dialog.ShowDialog();
 
+            if (result == true)
+            {
+                targetPath = dialog.FolderName;
+                TB_ConvertPath.Text = targetPath;
+            }
         }
 
-        //this will make a auto fix
-        private void Safe_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void LaunchMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void enableEnvMaps_Click(object sender, RoutedEventArgs e)
         {
 
         }

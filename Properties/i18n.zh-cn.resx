@@ -133,22 +133,22 @@
     <value>启动方式</value>
   </data>
   <data name="L_Safe" xml:space="preserve">
-    <value>安全模式 (自动修复)</value>
+    <value>自动修复（安全模式）</value>
   </data>
   <data name="StatusBar_Title" xml:space="preserve">
     <value>GOH SMS 启动器</value>
   </data>
   <data name="S_Clear" xml:space="preserve">
-    <value>在游戏结束后清理着色器缓存</value>
+    <value>清理着色器缓存</value>
   </data>
   <data name="S_GameExit" xml:space="preserve">
-    <value>在游戏结束后重新显示启动器</value>
+    <value>重新显示启动器</value>
   </data>
   <data name="S_PathConfirm" xml:space="preserve">
     <value>总是询问游戏路径是否正确</value>
   </data>
   <data name="S_Restore" xml:space="preserve">
-    <value>在游戏结束后复原默认着色器文件</value>
+    <value>后复原默认着色器文件</value>
   </data>
   <data name="Tab_About" xml:space="preserve">
     <value>关于</value>
@@ -173,5 +173,107 @@
   </data>
   <data name="L_ModInfo" xml:space="preserve">
     <value>显示额外mod信息</value>
+  </data>
+  <data name="A_Version" xml:space="preserve">
+    <value>v1.9    by Federation Studio 2025</value>
+  </data>
+  <data name="U_ClearAllCache" xml:space="preserve">
+    <value>清除所有着色器缓存</value>
+  </data>
+  <data name="U_Restore" xml:space="preserve">
+    <value>恢复默认着色器文件（仅用于文件替换模式）</value>
+  </data>
+  <data name="U_OpenLauncherConfig" xml:space="preserve">
+    <value>打开启动器配置文件</value>
+  </data>
+  <data name="U_Precompile" xml:space="preserve">
+    <value>预编译所有着色器到缓存</value>
+  </data>
+  <data name="L_AutoFix" xml:space="preserve">
+    <value>自动修复（仅文件）</value>
+  </data>
+  <data name="C_Path" xml:space="preserve">
+    <value>目标路径：</value>
+  </data>
+  <data name="C_ViewPath" xml:space="preserve">
+    <value>浏览...</value>
+  </data>
+  <data name="C_Tab_TextureRemap" xml:space="preserve">
+    <value>贴图通道批量重映射</value>
+  </data>
+  <data name="C_Tab_TextureExtInj" xml:space="preserve">
+    <value>贴图通道提取和注入</value>
+  </data>
+  <data name="C_Console" xml:space="preserve">
+    <value>控制台</value>
+  </data>
+  <data name="C_Tab_MtlConvert" xml:space="preserve">
+    <value>批量转换材质（mtl）</value>
+  </data>
+  <data name="C_EnableEnvMaps" xml:space="preserve">
+    <value>为所有非PBR材质启用环境贴图支持</value>
+  </data>
+  <data name="A_BugReport" xml:space="preserve">
+    <value>发现了故障或者有趣的点子？在Github或者创意工坊联系我们！</value>
+  </data>
+  <data name="A_LinkGithub" xml:space="preserve">
+    <value>Github</value>
+  </data>
+  <data name="A_LinkWorkshop" xml:space="preserve">
+    <value>创意工坊</value>
+  </data>
+  <data name="M_GridName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="M_GridType" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="M_GridShader" xml:space="preserve">
+    <value>包含着色器</value>
+  </data>
+  <data name="M_Load" xml:space="preserve">
+    <value>加载</value>
+  </data>
+  <data name="M_Unload" xml:space="preserve">
+    <value>卸载</value>
+  </data>
+  <data name="M_SelectedMod" xml:space="preserve">
+    <value>对选中mod执行操作：</value>
+  </data>
+  <data name="M_LoadCache" xml:space="preserve">
+    <value>加载着色器缓存</value>
+  </data>
+  <data name="M_OpenFolder" xml:space="preserve">
+    <value>打开mod文件夹</value>
+  </data>
+  <data name="S_General" xml:space="preserve">
+    <value>一般设置</value>
+  </data>
+  <data name="S_GamePath" xml:space="preserve">
+    <value>游戏路径：</value>
+  </data>
+  <data name="S_GamePathTemplate" xml:space="preserve">
+    <value>未成功获取，请手动输入</value>
+  </data>
+  <data name="S_GameConfigPath" xml:space="preserve">
+    <value>游戏配置文件路径：</value>
+  </data>
+  <data name="S_GameConfigPathTemplate" xml:space="preserve">
+    <value>未成功获取（常见格式C:\Users\你的用户名\Documents\my games\gates of hell），请手动输入</value>
+  </data>
+  <data name="S_BeforeLaunch" xml:space="preserve">
+    <value>游戏启动前</value>
+  </data>
+  <data name="S_AutoLoadCache" xml:space="preserve">
+    <value>自动加载着色器缓存</value>
+  </data>
+  <data name="S_RefreshCache" xml:space="preserve">
+    <value>已加载mod的着色器文件修改时刷新着色器缓存</value>
+  </data>
+  <data name="S_AfterGame" xml:space="preserve">
+    <value>游戏结束后</value>
+  </data>
+  <data name="S_CompileWarning" xml:space="preserve">
+    <value>提示日志中的着色器编译错误</value>
   </data>
 </root>

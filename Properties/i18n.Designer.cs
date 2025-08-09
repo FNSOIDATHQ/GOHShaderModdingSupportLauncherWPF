@@ -61,6 +61,114 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Find a bug or get some interesting ideas? Tell our team about them on Github or Steam Workshop! 的本地化字符串。
+        /// </summary>
+        public static string A_BugReport {
+            get {
+                return ResourceManager.GetString("A_BugReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Github 的本地化字符串。
+        /// </summary>
+        public static string A_LinkGithub {
+            get {
+                return ResourceManager.GetString("A_LinkGithub", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Steam Workshop 的本地化字符串。
+        /// </summary>
+        public static string A_LinkWorkshop {
+            get {
+                return ResourceManager.GetString("A_LinkWorkshop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 v1.9    by Federation Studio 2025 的本地化字符串。
+        /// </summary>
+        public static string A_Version {
+            get {
+                return ResourceManager.GetString("A_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Console 的本地化字符串。
+        /// </summary>
+        public static string C_Console {
+            get {
+                return ResourceManager.GetString("C_Console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enable environment map support for all non-PBR materials 的本地化字符串。
+        /// </summary>
+        public static string C_EnableEnvMaps {
+            get {
+                return ResourceManager.GetString("C_EnableEnvMaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Target Path: 的本地化字符串。
+        /// </summary>
+        public static string C_Path {
+            get {
+                return ResourceManager.GetString("C_Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Batch Convert Materials (mtl) 的本地化字符串。
+        /// </summary>
+        public static string C_Tab_MtlConvert {
+            get {
+                return ResourceManager.GetString("C_Tab_MtlConvert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Texture Channel Extraction/Injection 的本地化字符串。
+        /// </summary>
+        public static string C_Tab_TextureExtInj {
+            get {
+                return ResourceManager.GetString("C_Tab_TextureExtInj", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Batch Remapping Texture Channels 的本地化字符串。
+        /// </summary>
+        public static string C_Tab_TextureRemap {
+            get {
+                return ResourceManager.GetString("C_Tab_TextureRemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 View... 的本地化字符串。
+        /// </summary>
+        public static string C_ViewPath {
+            get {
+                return ResourceManager.GetString("C_ViewPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Auto Fix (File Only) 的本地化字符串。
+        /// </summary>
+        public static string L_AutoFix {
+            get {
+                return ResourceManager.GetString("L_AutoFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 DX 10.1 的本地化字符串。
         /// </summary>
         public static string L_DX101 {
@@ -97,7 +205,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Launch Method 的本地化字符串。
+        ///   查找类似 Launch Mode 的本地化字符串。
         /// </summary>
         public static string L_Method {
             get {
@@ -115,7 +223,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Safe Mode (Auto Fix) 的本地化字符串。
+        ///   查找类似 Auto Fix (Safe Mode) 的本地化字符串。
         /// </summary>
         public static string L_Safe {
             get {
@@ -124,7 +232,106 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Clear Shader Cache after game exit 的本地化字符串。
+        ///   查找类似 Name 的本地化字符串。
+        /// </summary>
+        public static string M_GridName {
+            get {
+                return ResourceManager.GetString("M_GridName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Shader Included 的本地化字符串。
+        /// </summary>
+        public static string M_GridShader {
+            get {
+                return ResourceManager.GetString("M_GridShader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Type 的本地化字符串。
+        /// </summary>
+        public static string M_GridType {
+            get {
+                return ResourceManager.GetString("M_GridType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Load 的本地化字符串。
+        /// </summary>
+        public static string M_Load {
+            get {
+                return ResourceManager.GetString("M_Load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Load Shader Cache 的本地化字符串。
+        /// </summary>
+        public static string M_LoadCache {
+            get {
+                return ResourceManager.GetString("M_LoadCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Mod Folder 的本地化字符串。
+        /// </summary>
+        public static string M_OpenFolder {
+            get {
+                return ResourceManager.GetString("M_OpenFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Perform operations on selected mod: 的本地化字符串。
+        /// </summary>
+        public static string M_SelectedMod {
+            get {
+                return ResourceManager.GetString("M_SelectedMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unload 的本地化字符串。
+        /// </summary>
+        public static string M_Unload {
+            get {
+                return ResourceManager.GetString("M_Unload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 After Game Exits 的本地化字符串。
+        /// </summary>
+        public static string S_AfterGame {
+            get {
+                return ResourceManager.GetString("S_AfterGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Automatically load shader cache 的本地化字符串。
+        /// </summary>
+        public static string S_AutoLoadCache {
+            get {
+                return ResourceManager.GetString("S_AutoLoadCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Before Game Launches 的本地化字符串。
+        /// </summary>
+        public static string S_BeforeLaunch {
+            get {
+                return ResourceManager.GetString("S_BeforeLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Clear Shader Cache 的本地化字符串。
         /// </summary>
         public static string S_Clear {
             get {
@@ -133,11 +340,65 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Redisplay launcher after game exit 的本地化字符串。
+        ///   查找类似 Prompt shader compilation errors in game log 的本地化字符串。
+        /// </summary>
+        public static string S_CompileWarning {
+            get {
+                return ResourceManager.GetString("S_CompileWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Game Configuration File Path:  的本地化字符串。
+        /// </summary>
+        public static string S_GameConfigPath {
+            get {
+                return ResourceManager.GetString("S_GameConfigPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to retrieve (common format: C:\Users\YOUR  USERNAME\Documents\my games\gates of hell), please enter manually. 的本地化字符串。
+        /// </summary>
+        public static string S_GameConfigPathTemplate {
+            get {
+                return ResourceManager.GetString("S_GameConfigPathTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Redisplay launcher 的本地化字符串。
         /// </summary>
         public static string S_GameExit {
             get {
                 return ResourceManager.GetString("S_GameExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Game Path:  的本地化字符串。
+        /// </summary>
+        public static string S_GamePath {
+            get {
+                return ResourceManager.GetString("S_GamePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Unable to retrieve, please enter manually 的本地化字符串。
+        /// </summary>
+        public static string S_GamePathTemplate {
+            get {
+                return ResourceManager.GetString("S_GamePathTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 General 的本地化字符串。
+        /// </summary>
+        public static string S_General {
+            get {
+                return ResourceManager.GetString("S_General", resourceCulture);
             }
         }
         
@@ -151,7 +412,16 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Restore vanilla Shader File after game exit 的本地化字符串。
+        ///   查找类似 Refresh shader cache when shader files in loaded mods are modified 的本地化字符串。
+        /// </summary>
+        public static string S_RefreshCache {
+            get {
+                return ResourceManager.GetString("S_RefreshCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Restore vanilla Shader File 的本地化字符串。
         /// </summary>
         public static string S_Restore {
             get {
@@ -228,6 +498,42 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Clear All Shader Cache 的本地化字符串。
+        /// </summary>
+        public static string U_ClearAllCache {
+            get {
+                return ResourceManager.GetString("U_ClearAllCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Configuration File of Launcher 的本地化字符串。
+        /// </summary>
+        public static string U_OpenLauncherConfig {
+            get {
+                return ResourceManager.GetString("U_OpenLauncherConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Precompile All Shader to Cache 的本地化字符串。
+        /// </summary>
+        public static string U_Precompile {
+            get {
+                return ResourceManager.GetString("U_Precompile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Restore Default Shader File (For File Replace Mode Only) 的本地化字符串。
+        /// </summary>
+        public static string U_Restore {
+            get {
+                return ResourceManager.GetString("U_Restore", resourceCulture);
             }
         }
     }

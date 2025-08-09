@@ -73,22 +73,18 @@
 
   <ItemGroup>
     <Resource Include="bg.jpg" />
-    <Resource Include="bg.png" />
-    <Resource Include="BK2.webp" />
-    <Resource Include="gemLogo.png" />
-    <Resource Include="library_hero.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Properties\i18n.zh-cn.Designer.cs">
-      <DependentUpon>i18n.zh-cn.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="Properties\i18n.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>i18n.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\i18n.zh-cn.Designer.cs">
+      <DependentUpon>i18n.zh-cn.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
 
@@ -96,9 +92,11 @@
     <EmbeddedResource Update="Properties\i18n.zh-cn.resx">
       <LastGenOutput>i18n.zh-cn.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\i18n.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <LastGenOutput>i18n.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

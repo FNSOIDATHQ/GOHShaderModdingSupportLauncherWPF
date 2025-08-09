@@ -19,24 +19,46 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         }
 
-        private void Game_Click(object sender, RoutedEventArgs e)
+        private void gamePath_LostFocus(object sender, RoutedEventArgs e)
         {
-
-
         }
 
-        private void Editor_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        //this will make a auto fix
-        private void Safe_Click(object sender, RoutedEventArgs e)
+        private void gameConfigPath_LostFocus(object sender, RoutedEventArgs e)
         {
 
         }
 
-        private void LaunchMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void pathConfirm_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void autoLoadCache_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void refreshCacheWhenModified_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void restore_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void clearCache_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void gameExit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void compileWarning_Click(object sender, RoutedEventArgs e)
         {
 
         }

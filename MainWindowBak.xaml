@@ -7,118 +7,293 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:loc="clr-namespace:GOHShaderModdingSupportLauncherWPF.Properties"
         mc:Ignorable="d"
-        Title="{x:Static loc:i18n.StatusBar_Title}" Height="600" Width="900"
+        Title="{x:Static loc:i18n.StatusBar_Title}"
+        Height="600"
+        Width="900"
         Closed="OnClosed">
     <Grid>
-        <Image Grid.Column="1" Source="/library_hero.jpg" Stretch="UniformToFill" Opacity="0.7"/>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Orientation="Horizontal">
-            <Image Height="70" Width="70" Source="/gemLogo.png" Opacity="0.65" Margin="0,0,20,0"/>
+        <Image Grid.Column="1"
+               Source="/library_hero.jpg"
+               Stretch="UniformToFill"
+               Opacity="0.7"/>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Orientation="Horizontal">
+            <Image Height="70"
+                   Width="70"
+                   Source="/gemLogo.png"
+                   Opacity="0.65"
+                   Margin="0,0,20,0"/>
 
-            <TextBlock TextWrapping="Wrap" Text="{x:Static loc:i18n.Title}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+            <TextBlock TextWrapping="Wrap"
+                       Text="{x:Static loc:i18n.Title}"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
         </StackPanel>
         <TabControl Margin="0,80,0,0">
             <TabItem Header="{x:Static loc:i18n.Tab_Launcher}">
                 <StackPanel Margin="30,11,30,0">
                     <StackPanel Orientation="Horizontal">
-                        <ui:TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Margin="0,0,5,0" Foreground="#E4FFFFFF">
-                            <Run Language="zh-cn" Text="启动方式"/>
+                        <ui:TextBlock TextWrapping="Wrap"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      FontSize="16"
+                                      Margin="0,0,5,0"
+                                      Foreground="#E4FFFFFF">
+                            <Run Language="zh-cn"
+                                 Text="启动方式"/>
                         </ui:TextBlock>
-                        <ComboBox x:Name="launchMethod" SelectedIndex="0" Width="107" SelectionChanged="LaunchMethod_SelectionChanged" Margin="0,0,10,0">
+                        <ComboBox x:Name="launchMethod"
+                                  SelectedIndex="0"
+                                  Width="107"
+                                  SelectionChanged="LaunchMethod_SelectionChanged"
+                                  Margin="0,0,10,0">
                             <ui:TextBlock Text="文件替换"/>
                             <ui:TextBlock Text="DX10.1"/>
                         </ComboBox>
                         <CheckBox Content="显示额外mod信息"/>
                     </StackPanel>
-                    <Button x:Name="game" Content="主游戏" FontSize="16" Height="40" Margin="0,0,0,5" Click="Game_Click"/>
-                    <Button x:Name="editor" Content="编辑器" FontSize="16" Height="40" Margin="0,0,0,5" Click="Editor_Click"/>
-                    <Button x:Name="safe" Content="{x:Static loc:i18n.L_Safe}" FontSize="16" Height="40" Margin="0,0,0,5" Click="Safe_Click"/>
+                    <Button x:Name="game"
+                            Content="主游戏"
+                            FontSize="16"
+                            Height="40"
+                            Margin="0,0,0,5"
+                            Click="Game_Click"/>
+                    <Button x:Name="editor"
+                            Content="编辑器"
+                            FontSize="16"
+                            Height="40"
+                            Margin="0,0,0,5"
+                            Click="Editor_Click"/>
+                    <Button x:Name="safe"
+                            Content="{x:Static loc:i18n.L_Safe}"
+                            FontSize="16"
+                            Height="40"
+                            Margin="0,0,0,5"
+                            Click="Safe_Click"/>
                 </StackPanel>
             </TabItem>
-            <TabItem HorizontalAlignment="Center" Header="Mod管理器" VerticalAlignment="Center">
-                <StackPanel Margin="10,11,10,0" Height="320">
+            <TabItem HorizontalAlignment="Center"
+                     Header="Mod管理器"
+                     VerticalAlignment="Center">
+                <StackPanel Margin="10,11,10,0"
+                            Height="320">
                     <StackPanel Orientation="Horizontal">
-                        <ui:DataGrid Width="380"  d:ItemsSource="{d:SampleData ItemCount=5}">
+                        <ui:DataGrid Width="380"
+                                     d:ItemsSource="{d:SampleData ItemCount=5}">
                             <ui:DataGrid.Columns>
-                                <DataGridTextColumn Header="名称" MaxWidth="250" MinWidth="250"/>
-                                <DataGridTextColumn Header="类型" MaxWidth="40" MinWidth="40"/>
-                                <DataGridCheckBoxColumn Header="包含着色器" MaxWidth="90" MinWidth="90"/>
+                                <DataGridTextColumn Header="名称"
+                                                    MaxWidth="250"
+                                                    MinWidth="250"/>
+                                <DataGridTextColumn Header="类型"
+                                                    MaxWidth="40"
+                                                    MinWidth="40"/>
+                                <DataGridCheckBoxColumn Header="包含着色器"
+                                                        MaxWidth="90"
+                                                        MinWidth="90"/>
                             </ui:DataGrid.Columns>
                         </ui:DataGrid>
-                        <StackPanel Width="80" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Button Content="→加载" HorizontalAlignment="Center"/>
-                            <Button Content="⬅卸载" HorizontalAlignment="Center"/>
+                        <StackPanel Width="80"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <Button Content="→加载"
+                                    HorizontalAlignment="Center"/>
+                            <Button Content="⬅卸载"
+                                    HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <ui:DataGrid Width="380" d:ItemsSource="{d:SampleData ItemCount=5}">
+                        <ui:DataGrid Width="380"
+                                     d:ItemsSource="{d:SampleData ItemCount=5}">
                             <ui:DataGrid.Columns>
-                                <DataGridTextColumn Header="名称" MaxWidth="250" MinWidth="250"/>
-                                <DataGridTextColumn Header="类型" MaxWidth="40" MinWidth="40"/>
-                                <DataGridCheckBoxColumn Header="包含着色器" MaxWidth="90" MinWidth="90"/>
+                                <DataGridTextColumn Header="名称"
+                                                    MaxWidth="250"
+                                                    MinWidth="250"/>
+                                <DataGridTextColumn Header="类型"
+                                                    MaxWidth="40"
+                                                    MinWidth="40"/>
+                                <DataGridCheckBoxColumn Header="包含着色器"
+                                                        MaxWidth="90"
+                                                        MinWidth="90"/>
                             </ui:DataGrid.Columns>
                         </ui:DataGrid>
                     </StackPanel>
-                    <Label Content="对选中mod执行操作：" Background="#FF252729" Foreground="#9EFFFFFF" FontWeight="Bold"/>
+                    <Label Content="对选中mod执行操作："
+                           Background="#FF252729"
+                           Foreground="#9EFFFFFF"
+                           FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="打开mod文件夹"/>
                         <Button Content="加载着色器缓存"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem HorizontalAlignment="Center" Header="{x:Static loc:i18n.Tab_Tools}" VerticalAlignment="Center">
+            <TabItem HorizontalAlignment="Center"
+                     Header="{x:Static loc:i18n.Tab_Tools}"
+                     VerticalAlignment="Center">
                 <StackPanel Margin="30,11,30,0">
-                    <ui:Button x:Name="clearShaderCache" Content="清除所有着色器缓存" Margin="0,0,0,5" Click="clearShaderCache_Click"/>
-                    <ui:Button x:Name="clearShaderCache复制__C_" Content="恢复默认着色器文件" Click="clearShaderCache_Click" Margin="0,0,0,5"/>
-                    <ui:Button x:Name="openConfig" Content="打开启动器配置文件" Click="openConfig_Click" Margin="0,0,0,5"/>
-                    <ui:Button x:Name="clearShaderCache复制__C_复制__C_" Content="预编译所有着色器到缓存" Click="clearShaderCache_Click"/>
+                    <ui:Button x:Name="clearShaderCache"
+                               Content="清除所有着色器缓存"
+                               Margin="0,0,0,5"
+                               Click="clearShaderCache_Click"/>
+                    <ui:Button x:Name="clearShaderCache复制__C_"
+                               Content="恢复默认着色器文件"
+                               Click="clearShaderCache_Click"
+                               Margin="0,0,0,5"/>
+                    <ui:Button x:Name="openConfig"
+                               Content="打开启动器配置文件"
+                               Click="openConfig_Click"
+                               Margin="0,0,0,5"/>
+                    <ui:Button x:Name="clearShaderCache复制__C_复制__C_"
+                               Content="预编译所有着色器到缓存"
+                               Click="clearShaderCache_Click"/>
                 </StackPanel>
             </TabItem>
-            <TabItem HorizontalAlignment="Center" Header="{x:Static loc:i18n.Tab_Settings}" VerticalAlignment="Center" Cursor="Arrow">
+            <TabItem HorizontalAlignment="Center"
+                     Header="{x:Static loc:i18n.Tab_Settings}"
+                     VerticalAlignment="Center"
+                     Cursor="Arrow">
                 <StackPanel Margin="10,11,10,0">
-                    <Label Content="一般设置" Background="#FF252729" Foreground="#9EFFFFFF" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+                    <Label Content="一般设置"
+                           Background="#FF252729"
+                           Foreground="#9EFFFFFF"
+                           HorizontalContentAlignment="Center"
+                           FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
-                        <ui:TextBlock TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#E4FFFFFF" Margin="0,0,5,0" Width="130">
-                            <Run Language="zh-cn" Text="游戏路径："/>
+                        <ui:TextBlock TextWrapping="Wrap"
+                                      FontSize="14"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Foreground="#E4FFFFFF"
+                                      Margin="0,0,5,0"
+                                      Width="130">
+                            <Run Language="zh-cn"
+                                 Text="游戏路径："/>
                         </ui:TextBlock>
-                        <ui:TextBox x:Name="gamePath" TextWrapping="Wrap" Text="未成功获取，请手动输入" Panel.ZIndex="-8" TextChanged="gamePath_TextChanged" AcceptsReturn="True" AutoWordSelection="True" Width="650" HorizontalContentAlignment="Stretch"/>
+                        <ui:TextBox x:Name="gamePath"
+                                    TextWrapping="Wrap"
+                                    Text="未成功获取，请手动输入"
+                                    Panel.ZIndex="-8"
+                                    TextChanged="gamePath_TextChanged"
+                                    AcceptsReturn="True"
+                                    AutoWordSelection="True"
+                                    Width="650"
+                                    HorizontalContentAlignment="Stretch"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <ui:TextBlock TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#E4FFFFFF" Margin="0,0,5,0" Width="130">
-                            <Run Language="zh-cn" Text="游戏配置文件路径："/>
+                        <ui:TextBlock TextWrapping="Wrap"
+                                      FontSize="14"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Foreground="#E4FFFFFF"
+                                      Margin="0,0,5,0"
+                                      Width="130">
+                            <Run Language="zh-cn"
+                                 Text="游戏配置文件路径："/>
                         </ui:TextBlock>
-                        <ui:TextBox x:Name="gameConfigPath" TextWrapping="Wrap" Text="未成功获取（常见格式C:\Users\你的用户名\Documents\my games\gates of hell），请手动输入"  Panel.ZIndex="-8" TextChanged="gameConfigPath_TextChanged" AcceptsReturn="True" AutoWordSelection="True" Width="650" HorizontalContentAlignment="Stretch"/>
+                        <ui:TextBox x:Name="gameConfigPath"
+                                    TextWrapping="Wrap"
+                                    Text="未成功获取（常见格式C:\Users\你的用户名\Documents\my games\gates of hell），请手动输入"
+                                    Panel.ZIndex="-8"
+                                    TextChanged="gameConfigPath_TextChanged"
+                                    AcceptsReturn="True"
+                                    AutoWordSelection="True"
+                                    Width="650"
+                                    HorizontalContentAlignment="Stretch"/>
                     </StackPanel>
-                    <CheckBox x:Name="pathConfirm" Content="{x:Static loc:i18n.S_PathConfirm}" IsChecked="False" Click="OnPathConfirmStateChanged" Foreground="#E4FFFFFF"/>
-                    <Label Content="游戏启动前" Background="#FF252729" Foreground="#9EFFFFFF" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-                    <CheckBox x:Name="pathConfirm复制__C_" Content="自动合并并加载着色器缓存" IsChecked="False" Click="OnPathConfirmStateChanged" Foreground="#E4FFFFFF"/>
-                    <CheckBox x:Name="clearCache复制__C_" Content="已加载mod的着色器文件修改时刷新着色器缓存" IsChecked="True" Click="OnClearCacheStateChanged" Foreground="#E4FFFFFF"/>
-                    <Label Content="游戏结束后" Background="#FF252729" Foreground="#9EFFFFFF" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-                    <CheckBox x:Name="restore" Content="复原默认着色器文件" IsChecked="False" Click="OnRestoreStateChanged" Foreground="#E4FFFFFF"/>
-                    <CheckBox x:Name="clearCache" Content="清理着色器缓存" IsChecked="True" Click="OnClearCacheStateChanged" Foreground="#E4FFFFFF"/>
-                    <CheckBox x:Name="gameExit" Content="重新显示启动器" IsChecked="True" Click="OnGameExitStateChanged" Foreground="#E4FFFFFF"/>
-                    <CheckBox x:Name="gameExit复制__C_" Content="提示日志中的着色器编译错误" IsChecked="True" Click="OnGameExitStateChanged" Foreground="#E4FFFFFF"/>
+                    <CheckBox x:Name="pathConfirm"
+                              Content="{x:Static loc:i18n.S_PathConfirm}"
+                              IsChecked="False"
+                              Click="OnPathConfirmStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <Label Content="游戏启动前"
+                           Background="#FF252729"
+                           Foreground="#9EFFFFFF"
+                           HorizontalContentAlignment="Center"
+                           FontWeight="Bold"/>
+                    <CheckBox x:Name="pathConfirm复制__C_"
+                              Content="自动合并并加载着色器缓存"
+                              IsChecked="False"
+                              Click="OnPathConfirmStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <CheckBox x:Name="clearCache复制__C_"
+                              Content="已加载mod的着色器文件修改时刷新着色器缓存"
+                              IsChecked="True"
+                              Click="OnClearCacheStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <Label Content="游戏结束后"
+                           Background="#FF252729"
+                           Foreground="#9EFFFFFF"
+                           HorizontalContentAlignment="Center"
+                           FontWeight="Bold"/>
+                    <CheckBox x:Name="restore"
+                              Content="复原默认着色器文件"
+                              IsChecked="False"
+                              Click="OnRestoreStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <CheckBox x:Name="clearCache"
+                              Content="清理着色器缓存"
+                              IsChecked="True"
+                              Click="OnClearCacheStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <CheckBox x:Name="gameExit"
+                              Content="重新显示启动器"
+                              IsChecked="True"
+                              Click="OnGameExitStateChanged"
+                              Foreground="#E4FFFFFF"/>
+                    <CheckBox x:Name="gameExit复制__C_"
+                              Content="提示日志中的着色器编译错误"
+                              IsChecked="True"
+                              Click="OnGameExitStateChanged"
+                              Foreground="#E4FFFFFF"/>
                 </StackPanel>
             </TabItem>
-            <TabItem HorizontalAlignment="Left" Header="贴图和材质转换器" VerticalAlignment="Center">
+            <TabItem HorizontalAlignment="Left"
+                     Header="贴图和材质转换器"
+                     VerticalAlignment="Center">
                 <StackPanel Margin="30,11,30,0">
                     <StackPanel Orientation="Horizontal">
-                        <ui:TextBlock TextWrapping="Wrap" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#E4FFFFFF" Margin="0,0,5,0" Width="90">
-                            <Run Language="zh-cn" Text="目标路径："/>
+                        <ui:TextBlock TextWrapping="Wrap"
+                                      FontSize="14"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Foreground="#E4FFFFFF"
+                                      Margin="0,0,5,0"
+                                      Width="90">
+                            <Run Language="zh-cn"
+                                 Text="目标路径："/>
                         </ui:TextBlock>
-                        <ui:TextBox x:Name="gamePath1" TextWrapping="Wrap" Text="未成功获取，请手动输入" Panel.ZIndex="-8" TextChanged="gamePath_TextChanged" AcceptsReturn="True" AutoWordSelection="True" Width="650" HorizontalContentAlignment="Stretch"/>
-                        <ui:Button x:Name="clearShaderCache1" Content="浏览..." Click="clearShaderCache_Click"/>
+                        <ui:TextBox x:Name="gamePath1"
+                                    TextWrapping="Wrap"
+                                    Text="未成功获取，请手动输入"
+                                    Panel.ZIndex="-8"
+                                    TextChanged="gamePath_TextChanged"
+                                    AcceptsReturn="True"
+                                    AutoWordSelection="True"
+                                    Width="650"
+                                    HorizontalContentAlignment="Stretch"/>
+                        <ui:Button x:Name="clearShaderCache1"
+                                   Content="浏览..."
+                                   Click="clearShaderCache_Click"/>
                     </StackPanel>
                     <TabControl Height="100">
                         <TabItem Header="贴图通道批量重映射"/>
                         <TabItem Header="贴图通道提取和注入"/>
                         <TabItem Header="批量转换材质（mtl）">
-                            <StackPanel Margin="0,11,0,0" Width="840">
-                                <ui:Button x:Name="openConfig1" Content="为所有非PBR材质启用环境贴图支持" Click="openConfig_Click"/>
+                            <StackPanel Margin="0,11,0,0"
+                                        Width="840">
+                                <ui:Button x:Name="openConfig1"
+                                           Content="为所有非PBR材质启用环境贴图支持"
+                                           Click="openConfig_Click"/>
                             </StackPanel>
                         </TabItem>
                     </TabControl>
                 </StackPanel>
             </TabItem>
         </TabControl>
-        <TextBlock TextWrapping="Wrap" Margin="0,0,20,0" VerticalAlignment="Bottom" HorizontalAlignment="Right"><Run Text="v1.6    "/><Run Text="by Federation Studio 2025"/></TextBlock>
+        <TextBlock TextWrapping="Wrap"
+                   Margin="0,0,20,0"
+                   VerticalAlignment="Bottom"
+                   HorizontalAlignment="Right"><Run Text="v1.6    by Federation Studio 2025"/></TextBlock>
 
     </Grid>
 </Window>
