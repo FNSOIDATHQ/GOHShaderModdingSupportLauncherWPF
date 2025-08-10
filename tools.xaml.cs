@@ -32,7 +32,10 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void restore_Click(object sender, RoutedEventArgs e)
         {
-            main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
+            main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
+            main.DecompressFileLZMA(main.universalVars.resourceDir + @"\shader.lzma", main.universalVars.resourceDir + @"\shader.pak");
+            File.Delete(main.universalVars.resourceDir + @"\shader.lzma");
+            //main.CompressFileLZMA(main.universalVars.resourceDir + @"\shader.pak", main.universalVars.resourceDir + @"\shader.lzma");
         }
 
         private void openConfig_Click(object sender, RoutedEventArgs e)

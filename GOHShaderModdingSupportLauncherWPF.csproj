@@ -69,7 +69,7 @@
     <EmbeddedResource Include="pak\noCache\shader.pak">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="pak\Ori\shader.pak" />
+    <EmbeddedResource Include="pak\Ori\shader.lzma" />
   </ItemGroup>
 
   <ItemGroup>
