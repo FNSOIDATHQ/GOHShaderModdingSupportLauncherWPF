@@ -4,8 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 
 
 namespace GOHShaderModdingSupportLauncherWPF
@@ -30,37 +28,6 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         }
 
-        private void ReplaceFile()
-        {
-            var dstShaderPak = vars.resourceDir + @"\shader.pak.bak";
-            var modifiedPak = vars.resourceDir + @"\shader.pak.modified";
-            if (File.Exists(dstShaderPak) == false)
-            {
-                File.Move(vars.resourceDir + @"\shader.pak", dstShaderPak);
-                //rename shader folder to avoid load cache
-                Directory.Move(vars.resourceDir + @"\shader", vars.resourceDir + @"\shaderBak");
-
-                if (File.Exists(modifiedPak) == true)
-                {
-                    File.Move(modifiedPak, vars.resourceDir + @"\shader.pak");
-                }
-                else
-                {
-                    //extract pak from exe
-                    //file is 326kb, so we use 350kb as a batch to extract everything once
-                    ExtractFile("GOHShaderModdingSupportLauncherWPF.shader.pak", vars.resourceDir + @"\shader.pak", 358400);
-
-
-                }
-
-            }
-            //if bak file exists, means the patch has been added
-            else
-            {
-                //do nothing
-            }
-        }
-
         //reference https://juejin.cn/post/6989143365862293534
         private void ExtractFile(String resource, String path, int batch)
         {
@@ -76,6 +43,23 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             output.Flush();
             output.Close();
+        }
+
+        private void ReplaceFile()
+        {
+            FileInfo targetPak = new FileInfo(vars.resourceDir + @"\shader.pak");
+            if (targetPak.Length>7*1048576)
+            {
+                    //extract pak from exe
+                    //file is 326kb, so we use 350kb as a batch to extract everything once
+                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", vars.resourceDir + @"\shader.pak", 358400);
+
+            }
+            //if shader.pak <7mb, means the patch has been added
+            else
+            {
+                //do nothing
+            }
         }
 
         //open bump options, a fix for my own shader mod
@@ -117,27 +101,8 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             if (vars.NeedRestore == true || force == true)
             {
-                var dstShaderPak = vars.resourceDir + @"\shader.pak.bak";
-
-                //if bak file not exists,we have nothing to do
-                if (File.Exists(dstShaderPak) == false)
-                {
-                    //do nothing
-                }
-                else
-                {
-                    //backup modified pak for optimization
-                    if (force == false)
-                    {
-                        File.Move(vars.resourceDir + @"\shader.pak", vars.resourceDir + @"\shader.pak.modified");
-                    }
-
-
                     //retore
-                    File.Move(dstShaderPak, vars.resourceDir + @"\shader.pak", force);
-                    Directory.Move(vars.resourceDir + @"\shaderBak", vars.resourceDir + @"\shader");
-
-                }
+                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", vars.resourceDir + @"\shader.pak", 358400);
             }
             else
             {
@@ -171,7 +136,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        private void Game_Click(object sender, RoutedEventArgs e)
+        private void RunGame(string processName)
         {
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
             {
@@ -189,7 +154,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 args += " -showmodinfo";
             }
 
-            Process game = Process.Start(vars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), args);
+            Process game = Process.Start(vars.gameDir.GetFiles(processName)[0].ToString(), args);
 
             main.Hide();
             game.WaitForExit();
@@ -201,33 +166,51 @@ namespace GOHShaderModdingSupportLauncherWPF
             ClearCache();
 
             OnGameExit();
+        }
 
+        private void Game_Click(object sender, RoutedEventArgs e)
+        {
+            RunGame("call_to_arms.exe");
         }
 
         private void Editor_Click(object sender, RoutedEventArgs e)
         {
-
+            RunGame("call_to_arms_ed.exe");
         }
 
         private void AutoFix_Click(object sender, RoutedEventArgs e)
         {
+            //force fix
+            ClearCache(true);
+            RestoreFile(true);
 
+            RunGame("call_to_arms.exe");
         }
 
         //this will make a auto fix
         private void Safe_Click(object sender, RoutedEventArgs e)
         {
+            //force fix
+            ClearCache(true);
+            RestoreFile(true);
 
+            //start game with no mods
+            Process game = Process.Start(vars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-no_mods");
+
+            main.Hide();
+            game.WaitForExit();
+
+            OnGameExit();
         }
 
         private void LaunchMethod_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            vars.lm = (MainWindow.LauncherVars.LaunchMethod)launchMethod.SelectedIndex;
         }
 
         private void AddModInfo_Click(object sender, RoutedEventArgs e)
         {
-
+            vars.showAddModInfo = addModInfo.IsChecked.Value;
         }
     }
 }
