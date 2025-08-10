@@ -39,7 +39,7 @@
                    Height="50"
                    HorizontalAlignment="Left"
                    Click="precompile_Click"
-                   Margin="0,0,0,20">
+                   Margin="0,0,0,20" Visibility="Hidden">
             <TextBlock Text="{x:Static loc:i18n.U_Precompile}"
                        FontSize="24"/>
         </ui:Button>

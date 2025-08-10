@@ -30,14 +30,14 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         }
 
-        private void ReplaceFile()
+        public static void ReplaceFile(DirectoryInfo resourceDir)
         {
-            FileInfo targetPak = new FileInfo(main.universalVars.resourceDir + @"\shader.pak");
+            FileInfo targetPak = new FileInfo(resourceDir + @"\shader.pak");
             if (targetPak.Length>7*1048576)
             {
                     //extract pak from exe
                     //file is 326kb, so we use 350kb as a batch to extract everything once
-                    main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
+                    MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", resourceDir + @"\shader.pak", 358400);
 
             }
             //if shader.pak <7mb, means the patch has been added
@@ -48,10 +48,10 @@ namespace GOHShaderModdingSupportLauncherWPF
         }
 
         //open bump options, a fix for my own shader mod
-        private void ForceChangeSettings()
+        public static void ForceChangeSettings(string optionLoc)
         {
             string opt;
-            using (StreamReader sr = File.OpenText(main.universalVars.optionLoc))
+            using (StreamReader sr = File.OpenText(optionLoc))
             {
                 opt = sr.ReadToEnd();
 
@@ -74,7 +74,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             Trace.Write(opt);
 #endif
 
-            using (StreamWriter sw = File.CreateText(main.universalVars.optionLoc))
+            using (StreamWriter sw = File.CreateText(optionLoc))
             {
 
                 sw.Write(opt);
@@ -87,7 +87,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             if (main.universalVars.NeedRestore == true || force == true)
             {
                 //retore
-                main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
+                MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
                 main.DecompressFileLZMA(main.universalVars.resourceDir + @"\shader.lzma", main.universalVars.resourceDir + @"\shader.pak");
                 File.Delete(main.universalVars.resourceDir + @"\shader.lzma");
             }
@@ -131,9 +131,9 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
             {
-                ReplaceFile();
+                ReplaceFile(main.universalVars.resourceDir);
             }
-            ForceChangeSettings();
+            ForceChangeSettings(main.universalVars.optionLoc);
 
             string args = "";
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.DX101)

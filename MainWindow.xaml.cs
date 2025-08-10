@@ -393,7 +393,7 @@ namespace GOHShaderModdingSupportLauncherWPF
         }
 
         //reference https://juejin.cn/post/6989143365862293534
-        public void ExtractFile(String resource, String path, int batch)
+        public static void ExtractFile(String resource, String path, int batch)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             BufferedStream input = new BufferedStream(assembly.GetManifestResourceStream(resource));

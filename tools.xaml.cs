@@ -25,19 +25,23 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             
         }
-        private void PreCompileAllShader()
-        {
-            main.ClearCacheWork();
-            //start game with shader cache build
-            Process game = Process.Start(main.universalVars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-rebuildshadercache");
+        //private void PreCompileAllShader()
+        //{
+        //    main.ClearCacheWork();
 
-            main.Hide();
-            game.WaitForExit();
+        //    Launcher.ReplaceFile(main.universalVars.resourceDir);
+        //    Launcher.ForceChangeSettings(main.universalVars.optionLoc);
 
-            main.CheckCompileWarning();
+        //    //start game with shader cache build
+        //    Process game = Process.Start(main.universalVars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-rebuildshadercache");
 
-            main.Show();
-        }
+        //    main.Hide();
+        //    game.WaitForExit();
+
+        //    main.CheckCompileWarning();
+
+        //    main.Show();
+        //}
         private void clearShaderCache_Click(object sender, RoutedEventArgs e)
         {
             main.ClearCacheWork();
@@ -46,7 +50,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void restore_Click(object sender, RoutedEventArgs e)
         {
-            main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
+            MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
             main.DecompressFileLZMA(main.universalVars.resourceDir + @"\shader.lzma", main.universalVars.resourceDir + @"\shader.pak");
             File.Delete(main.universalVars.resourceDir + @"\shader.lzma");
             //main.CompressFileLZMA(main.universalVars.resourceDir + @"\shader.pak", main.universalVars.resourceDir + @"\shader.lzma");
@@ -57,21 +61,23 @@ namespace GOHShaderModdingSupportLauncherWPF
             Process.Start("explorer.exe", main.universalVars.configLoc);
         }
 
+        //gate of hell will only recompile files existed in resource/shader.pak/shader_cache
+        //which means this mehod is completely useless for now
         private void precompile_Click(object sender, RoutedEventArgs e)
         {
             //manual check
-            string message = "Compile all Shader Cache is EXTREMELY slow. If you do not know what you are doing please press No.";
-            string title = "Manual Check";
-            MessageBoxButton buttons = MessageBoxButton.YesNo;
-            MessageBoxResult result = MessageBox.Show(message, title, buttons);
-            if (result == MessageBoxResult.No)
-            {
+            //string message = "Compile all Shader Cache is EXTREMELY slow. If you do not know what you are doing please press No.";
+            //string title = "Manual Check";
+            //MessageBoxButton buttons = MessageBoxButton.YesNo;
+            //MessageBoxResult result = MessageBox.Show(message, title, buttons);
+            //if (result == MessageBoxResult.No)
+            //{
                 
-            }
-            else
-            {
-                PreCompileAllShader();
-            }
+            //}
+            //else
+            //{
+            //    PreCompileAllShader();
+            //}
         }
 
         private void openCacheFolder_Click(object sender, RoutedEventArgs e)
