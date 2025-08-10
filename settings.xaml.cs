@@ -17,18 +17,18 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         public Settings()
         {
-            InitializeComponent();
-
             main = Application.Current.MainWindow as MainWindow;
 
             vars = main.settingsVars;
 
-            if (main.universalVars.gameDir.FullName != "")
+            InitializeComponent();
+
+            if (main.universalVars.gameDir.FullName != null)
             {
                 gamePath.Text = main.universalVars.gameDir.FullName;
             }
 
-            if (main.universalVars.profileLoc != "")
+            if (main.universalVars.profileLoc != null)
             {
                 gameConfigPath.Text = main.universalVars.profileLoc;
             }
@@ -37,6 +37,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             clearCache.IsChecked = main.universalVars.NeedClearCache;
             restore.IsChecked = main.universalVars.NeedRestore;
             gameExit.IsChecked = main.universalVars.NeedRedisplay;
+            compileWarning.IsChecked= main.universalVars.NeedCompileWarning;
         }
 
         private void gamePath_LostFocus(object sender, RoutedEventArgs e)
@@ -105,7 +106,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void compileWarning_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.NeedCompileWarning = compileWarning.IsChecked.Value;
         }
     }
 }

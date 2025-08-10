@@ -18,23 +18,21 @@ namespace GOHShaderModdingSupportLauncherWPF
     {
         Wpf.Ui.Controls.NavigationView mv;
 
-        private bool HasGetGameRoot, HasConfigFile;
-
-        private string configLoc;
+        private bool HasGetGameRoot;
 
         //universal vars
         public class UniversalVars
         {
-            public DirectoryInfo gameDir, resourceDir;
+            public DirectoryInfo? gameDir, resourceDir;
             public string profileLoc, cacheLoc, optionLoc;
-            public bool NeedRestore,NeedClearCache, NeedRedisplay, AlwaysConfirm;
+            public string configLoc;
+            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning, AlwaysConfirm;
             public UniversalVars()
             {
-                gameDir = new DirectoryInfo("");
-                resourceDir = new DirectoryInfo("");
                 profileLoc = "";
                 cacheLoc = "";
                 optionLoc = "";
+                configLoc = "";
             }
         }
         public UniversalVars universalVars;
@@ -62,6 +60,13 @@ namespace GOHShaderModdingSupportLauncherWPF
         }
         public SettingsVars settingsVars;
 
+        //settings vars
+        public class ToolsVars
+        {
+
+        }
+        public ToolsVars toolsVars;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -85,16 +90,16 @@ namespace GOHShaderModdingSupportLauncherWPF
         private void InitBasicData()
         {
 
-            universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            universalVars.resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-
             universalVars = new UniversalVars();
             launcherVars = new LauncherVars();
             settingsVars = new SettingsVars();
+            toolsVars = new ToolsVars();
+
+
+            universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            universalVars.resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
             HasGetGameRoot = false;
-            HasConfigFile = false;
-            B_openConfig.IsEnabled = false;
 
             LoadConfigFromFile();
 
@@ -104,17 +109,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 GetGameRoot();
             }
+
+            SaveSettings();
         }
 
         private void LoadConfigFromFile()
         {
-            configLoc = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + @"settings.conf";
-            if (File.Exists(configLoc) == true)
+            universalVars.configLoc = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + @"settings.conf";
+            if (File.Exists(universalVars.configLoc) == true)
             {
                 int index = 0;
                 try
                 {
-                    foreach (string line in File.ReadAllLines(configLoc))
+                    foreach (string line in File.ReadAllLines(universalVars.configLoc))
                     {
                         switch (index)
                         {
@@ -134,9 +141,12 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 universalVars.NeedRedisplay = bool.Parse(line);
                                 break;
                             case 5:
-                                universalVars.AlwaysConfirm = bool.Parse(line);
+                                universalVars.NeedCompileWarning = bool.Parse(line);
                                 break;
                             case 6:
+                                universalVars.AlwaysConfirm = bool.Parse(line);
+                                break;
+                            case 7:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -148,7 +158,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                                     Environment.CurrentDirectory = universalVars.gameDir.FullName;
                                 }
                                 break;
-                            case 7:
+                            case 8:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -170,26 +180,22 @@ namespace GOHShaderModdingSupportLauncherWPF
                 catch (Exception e)
                 {
                     MessageBox.Show("Get error when reading config file! Will delete config file", "ERROR");
-                    File.Delete(configLoc);
+                    File.Delete(universalVars.configLoc);
                 }
 
 
                 //the config file is not complete or break,fall back to default value
                 //no cache is not important
-                if (index != 6 && index != 8)
+                if (index != 7 && index != 9)
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
                     universalVars.NeedRestore = false;
-                    universalVars.NeedClearCache = true;
+                    universalVars.NeedClearCache = false;
                     universalVars.NeedRedisplay = true;
+                    universalVars.NeedCompileWarning = true;
                     universalVars.AlwaysConfirm = false;
                     HasGetGameRoot = false;
-                }
-                else
-                {
-                    HasConfigFile = true;
-                    B_openConfig.IsEnabled = true;
                 }
             }
             else
@@ -197,8 +203,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                 launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                 launcherVars.showAddModInfo = true;
                 universalVars.NeedRestore = false;
-                universalVars.NeedClearCache = true;
+                universalVars.NeedClearCache = false;
                 universalVars.NeedRedisplay = true;
+                universalVars.NeedCompileWarning = true;
                 universalVars.AlwaysConfirm = false;
             }
         }
@@ -334,17 +341,35 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         }
 
+        //reference https://juejin.cn/post/6989143365862293534
+        public void ExtractFile(String resource, String path, int batch)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            BufferedStream input = new BufferedStream(assembly.GetManifestResourceStream(resource));
+            FileStream output = new FileStream(path, FileMode.Create);
+
+            byte[] data = new byte[batch];
+            int lengthEachRead;
+            while ((lengthEachRead = input.Read(data, 0, data.Length)) > 0)
+            {
+                output.Write(data, 0, lengthEachRead);
+            }
+            output.Flush();
+            output.Close();
+        }
+
         public void SaveSettings()
         {
             //Directory.CreateDirectory(Path.GetTempPath() + @"GOHSMSLauncher");
 
-            using (StreamWriter sw = File.CreateText(configLoc))
+            using (StreamWriter sw = File.CreateText(universalVars.configLoc))
             {
                 sw.WriteLine(launcherVars.lm.ToString());
                 sw.WriteLine(launcherVars.showAddModInfo.ToString());
                 sw.WriteLine(universalVars.NeedRestore);
                 sw.WriteLine(universalVars.NeedClearCache);
                 sw.WriteLine(universalVars.NeedRedisplay);
+                sw.WriteLine(universalVars.NeedCompileWarning);
                 sw.WriteLine(universalVars.AlwaysConfirm);
                 if (HasGetGameRoot == true)
                 {
@@ -364,7 +389,6 @@ namespace GOHShaderModdingSupportLauncherWPF
         //when manually close by user, only store the settings
         private void OnClosed(object sender, EventArgs e)
         {
-            
             SaveSettings();
         }
 

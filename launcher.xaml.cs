@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using static GOHShaderModdingSupportLauncherWPF.MainWindow;
 
 
 namespace GOHShaderModdingSupportLauncherWPF
@@ -17,33 +16,18 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         public Launcher()
         {
-            InitializeComponent();
-
             main = Application.Current.MainWindow as MainWindow;
 
             vars = main.launcherVars;
+
+            InitializeComponent();
+
+            
             
             launchMethod.SelectedIndex = (int)vars.lm;
 
             addModInfo.IsChecked = vars.showAddModInfo;
 
-        }
-
-        //reference https://juejin.cn/post/6989143365862293534
-        private void ExtractFile(String resource, String path, int batch)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            BufferedStream input = new BufferedStream(assembly.GetManifestResourceStream(resource));
-            FileStream output = new FileStream(path, FileMode.Create);
-
-            byte[] data = new byte[batch];
-            int lengthEachRead;
-            while ((lengthEachRead = input.Read(data, 0, data.Length)) > 0)
-            {
-                output.Write(data, 0, lengthEachRead);
-            }
-            output.Flush();
-            output.Close();
         }
 
         private void ReplaceFile()
@@ -53,7 +37,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                     //extract pak from exe
                     //file is 326kb, so we use 350kb as a batch to extract everything once
-                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
+                    main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
 
             }
             //if shader.pak <7mb, means the patch has been added
@@ -102,8 +86,8 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             if (main.universalVars.NeedRestore == true || force == true)
             {
-                    //retore
-                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
+                //retore
+                main.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
             }
             else
             {
@@ -124,8 +108,35 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        private void CheckCompileWarning()
+        {
+            using (StreamReader log = File.OpenText(main.universalVars.profileLoc + @"\log\game.log"))
+            {
+                while (log.EndOfStream != true)
+                {
+                    string line=log.ReadLine();
+
+                    if(line.IndexOf("compile error:") != -1)
+                    {
+                        string errorMessage = "Get at least one shader compile error in last gaming! \nTry contact creator(s) of your shader mod to slove this problem.\n\n";
+                        errorMessage += "First error message:\n\n";
+                        errorMessage += line+'\n';
+                        errorMessage+= log.ReadLine();
+                        MessageBox.Show(errorMessage, "Shader Compile Error");
+                        break;
+                    }
+                }
+
+                log.Close();
+            }
+        }
+
         private void OnGameExit()
         {
+            if (main.universalVars.NeedCompileWarning == true)
+            {
+                CheckCompileWarning();
+            }
             if (main.universalVars.NeedRedisplay == true)
             {
                 main.Show();

@@ -148,7 +148,7 @@
     <value>总是询问游戏路径是否正确</value>
   </data>
   <data name="S_Restore" xml:space="preserve">
-    <value>后复原默认着色器文件</value>
+    <value>复原默认着色器文件</value>
   </data>
   <data name="Tab_About" xml:space="preserve">
     <value>关于</value>
