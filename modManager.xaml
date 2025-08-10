@@ -15,21 +15,27 @@
                 <ColumnDefinition Width="41*"/>
                 <ColumnDefinition Width="213*"/>
             </Grid.ColumnDefinitions>
-            <ui:DataGrid>
+            <ui:DataGrid x:Name="unloadedMods" SelectionChanged="unloadedMods_SelectionChanged" Height="650" VerticalAlignment="Top">
                 <ui:DataGrid.Columns>
-                    <DataGridTextColumn MinWidth="250">
+                    <DataGridTextColumn MinWidth="250" Binding="{Binding name}" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridName}"
                                           FontSize="18"/>
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <DataGridTextColumn CanUserResize="False">
+                    <DataGridTextColumn CanUserResize="False" Binding="{Binding type}" IsReadOnly="True" SortDirection="Descending">
                         <DataGridTextColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridType}"
                                           FontSize="18"/>
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <DataGridCheckBoxColumn CanUserResize="False">
+                    <DataGridCheckBoxColumn CanUserResize="False" Binding="{Binding hasShader}">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
                         <DataGridCheckBoxColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridShader}"
                                           FontSize="18"/>
@@ -37,11 +43,24 @@
                     </DataGridCheckBoxColumn>
                 </ui:DataGrid.Columns>
             </ui:DataGrid>
-            <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
+            <Grid HorizontalAlignment="Center"
                         Margin="5,0,5,0"
                         Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="refresh"
+                        Grid.Row="0"
+                    Click="refresh_Click"  Margin="0,0,0,10" VerticalAlignment="Top"
+                        >
+                    <TextBlock Text="{x:Static loc:i18n.M_Refresh}"
+                        FontSize="24"/>
+                </Button>
                 <Button x:Name="loadMod"
+                        Grid.Row="1"
                         HorizontalAlignment="Stretch"
                         Click="loadMod_Click"
                         Margin="0,0,0,10">
@@ -49,27 +68,34 @@
                                FontSize="24"/>
                 </Button>
                 <Button x:Name="unloadMod"
+                        Grid.Row="2"
                         HorizontalAlignment="Center"
                         Click="unloadMod_Click">
                     <TextBlock Text="{x:Static loc:i18n.M_Unload}"
                                FontSize="24"/>
                 </Button>
-            </StackPanel>
-            <ui:DataGrid Grid.Column="2">
+            </Grid>
+            <ui:DataGrid x:Name="loadedMods" Grid.Column="2" SelectionChanged="loadedMods_SelectionChanged" Height="650" VerticalAlignment="Top" CanUserSortColumns="False" AllowDrop="True" PreviewMouseLeftButtonDown="loadedMods_PreviewMouseLeftButtonDown" Drop="loadedMods_Drop" MouseMove="loadedMods_MouseMove">
                 <ui:DataGrid.Columns>
-                    <DataGridTextColumn MinWidth="250">
+                    <DataGridTextColumn MinWidth="250" Binding="{Binding name}" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridName}"
                                           FontSize="18"/>
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <DataGridTextColumn CanUserResize="False">
+                    <DataGridTextColumn CanUserResize="False" Binding="{Binding type}" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridType}"
                                           FontSize="18"/>
                         </DataGridTextColumn.Header>
                     </DataGridTextColumn>
-                    <DataGridCheckBoxColumn CanUserResize="False">
+                    <DataGridCheckBoxColumn CanUserResize="False" Binding="{Binding hasShader}">
+                        <DataGridCheckBoxColumn.ElementStyle>
+                            <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="IsHitTestVisible" Value="False"/>
+                            </Style>
+                        </DataGridCheckBoxColumn.ElementStyle>
                         <DataGridCheckBoxColumn.Header>
                             <ui:TextBlock Text="{x:Static loc:i18n.M_GridShader}"
                                           FontSize="18"/>

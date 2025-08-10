@@ -43,5 +43,11 @@
             <TextBlock Text="{x:Static loc:i18n.U_Precompile}"
                        FontSize="24"/>
         </ui:Button>
+        <ui:Button x:Name="openCacheFolder"
+            Height="50"
+            Click="openCacheFolder_Click">
+            <TextBlock Text="{x:Static loc:i18n.U_OpenCacheFolder}"
+                FontSize="24"/>
+        </ui:Button>
     </StackPanel>
 </Page>

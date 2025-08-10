@@ -5,15 +5,16 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
+using static GOHShaderModdingSupportLauncherWPF.MainWindow;
 
 
 namespace GOHShaderModdingSupportLauncherWPF
 {
     public partial class Tools : Page
     {
-        MainWindow main;
+        private MainWindow main;
 
-        MainWindow.ToolsVars vars;
+        private MainWindow.ToolsVars vars;
         public Tools()
         {
             main = Application.Current.MainWindow as MainWindow;
@@ -23,6 +24,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             InitializeComponent();
 
             
+        }
+        private void PreCompileAllShader()
+        {
+            main.ClearCacheWork();
+            //start game with shader cache build
+            Process game = Process.Start(main.universalVars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-rebuildshadercache");
+
+            main.Hide();
+            game.WaitForExit();
+
+            main.CheckCompileWarning();
+
+            main.Show();
         }
         private void clearShaderCache_Click(object sender, RoutedEventArgs e)
         {
@@ -45,7 +59,24 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void precompile_Click(object sender, RoutedEventArgs e)
         {
+            //manual check
+            string message = "Compile all Shader Cache is EXTREMELY slow. If you do not know what you are doing please press No.";
+            string title = "Manual Check";
+            MessageBoxButton buttons = MessageBoxButton.YesNo;
+            MessageBoxResult result = MessageBox.Show(message, title, buttons);
+            if (result == MessageBoxResult.No)
+            {
+                
+            }
+            else
+            {
+                PreCompileAllShader();
+            }
+        }
 
+        private void openCacheFolder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", main.universalVars.cacheLoc);
         }
     }
 }

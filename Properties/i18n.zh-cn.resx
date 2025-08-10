@@ -121,7 +121,7 @@
     <value>主游戏</value>
   </data>
   <data name="L_FileReplace" xml:space="preserve">
-    <value>文件替换</value>
+    <value>文件替换（DX 11）</value>
   </data>
   <data name="L_DX101" xml:space="preserve">
     <value>DX 10.1</value>
@@ -187,7 +187,7 @@
     <value>打开启动器配置文件</value>
   </data>
   <data name="U_Precompile" xml:space="preserve">
-    <value>预编译所有着色器到缓存</value>
+    <value>预编译所有着色器到缓存（仅DX 11）</value>
   </data>
   <data name="L_AutoFix" xml:space="preserve">
     <value>自动修复（仅文件）</value>
@@ -275,5 +275,11 @@
   </data>
   <data name="S_CompileWarning" xml:space="preserve">
     <value>提示日志中的着色器编译错误</value>
+  </data>
+  <data name="M_Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="U_OpenCacheFolder" xml:space="preserve">
+    <value>打开着色器缓存文件夹</value>
   </data>
 </root>

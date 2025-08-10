@@ -18,7 +18,7 @@ namespace GOHShaderModdingSupportLauncherWPF
     {
         Wpf.Ui.Controls.NavigationView mv;
 
-        private bool HasGetGameRoot;
+        private bool HasGetGameRoot, HasGetProfileLoc;
 
         //universal vars
         public class UniversalVars
@@ -46,10 +46,6 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             public LaunchMethod lm;
             public bool showAddModInfo;
-
-            public LauncherVars()
-            {
-            }
         }
         public LauncherVars launcherVars;
 
@@ -66,6 +62,13 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         }
         public ToolsVars toolsVars;
+
+        //mod manager vars
+        public class ModManagerVars
+        {
+            public DirectoryInfo? workshopDir,localDir;
+        }
+        public ModManagerVars modManagerVars;
 
         public MainWindow()
         {
@@ -94,16 +97,21 @@ namespace GOHShaderModdingSupportLauncherWPF
             launcherVars = new LauncherVars();
             settingsVars = new SettingsVars();
             toolsVars = new ToolsVars();
+            modManagerVars = new ModManagerVars();
 
 
             universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             universalVars.resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
             HasGetGameRoot = false;
+            HasGetProfileLoc = false;
 
             LoadConfigFromFile();
 
-            GetProfileLoc();
+            if (HasGetProfileLoc == false)
+            {
+                GetProfileLoc();
+            }
 
             if (HasGetGameRoot == false)
             {
@@ -152,10 +160,18 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
                                 {
                                     universalVars.gameDir = new DirectoryInfo(line);
-                                    HasGetGameRoot = true;
-
                                     //avoid catch by steam
                                     Environment.CurrentDirectory = universalVars.gameDir.FullName;
+
+                                    DirectoryInfo root = universalVars.gameDir.Parent.Parent;
+                                    universalVars.resourceDir = root.GetDirectories("resource")[0];
+                                    modManagerVars.localDir= root.GetDirectories("mods")[0];
+                                    modManagerVars.workshopDir = root.GetDirectories("..\\..\\workshop\\content\\400750")[0];
+#if DEBUG
+                                    Trace.WriteLine("workshop dir= "+modManagerVars.workshopDir.FullName);
+#endif
+
+                                    HasGetGameRoot = true;
                                 }
                                 break;
                             case 8:
@@ -163,7 +179,12 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
                                 {
-                                    universalVars.resourceDir = new DirectoryInfo(line);
+                                    universalVars.profileLoc = line;
+                                    universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
+                                    universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
+                                    universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
+
+                                    HasGetProfileLoc = true;
                                 }
                                 break;
                             default:
@@ -196,6 +217,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                     universalVars.NeedCompileWarning = true;
                     universalVars.AlwaysConfirm = false;
                     HasGetGameRoot = false;
+                    HasGetProfileLoc = false;
                 }
             }
             else
@@ -207,40 +229,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 universalVars.NeedRedisplay = true;
                 universalVars.NeedCompileWarning = true;
                 universalVars.AlwaysConfirm = false;
-            }
-        }
-
-        private void GetProfileLoc()
-        {
-            universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
-            //fall back to backup path
-            if (Directory.Exists(universalVars.profileLoc) == false)
-            {
-                universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
-            }
-
-
-
-            if (Directory.Exists(universalVars.profileLoc) == false)
-            {
-                MessageBox.Show("Can not find goh user profile on your computer!", "WARNING");
-                throw new InvalidOperationException("Can not find goh user profile on your computer!");
-            }
-            else
-            {
-                universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
-                universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
-                universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
-
-#if DEBUG
-                Trace.WriteLine(universalVars.optionLoc);
-#endif
-
-                if (File.Exists(universalVars.optionLoc) == false)
-                {
-                    MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
-                    throw new InvalidOperationException("Run goh game at least once before using this program!");
-                }
+                HasGetProfileLoc = false;
             }
         }
 
@@ -280,6 +269,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                         {
                             universalVars.gameDir = new DirectoryInfo(gameLoc);
                             universalVars.resourceDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\resource");
+                            modManagerVars.localDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\mods");
+                            modManagerVars.workshopDir = new DirectoryInfo(gameLib += @"\steamapps\workshop\content\400750");
+
                             HasGetGameRoot = true;
                             break;
                         }
@@ -299,6 +291,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                 string gameLoc = appLoc.Substring(0, index);
                 universalVars.gameDir = new DirectoryInfo(gameLoc);
                 universalVars.resourceDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/resource")[0];
+                modManagerVars.localDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/mods")[0];
+                modManagerVars.workshopDir = universalVars.gameDir.GetDirectories(@"workshop\content\400750")[0];
                 universalVars.gameDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/binaries/x64")[0];
 
                 HasGetGameRoot = true;
@@ -331,6 +325,40 @@ namespace GOHShaderModdingSupportLauncherWPF
 #endif
         }
 
+        private void GetProfileLoc()
+        {
+            universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
+            //fall back to backup path
+            if (Directory.Exists(universalVars.profileLoc) == false)
+            {
+                universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
+            }
+
+
+
+            if (Directory.Exists(universalVars.profileLoc) == false)
+            {
+                MessageBox.Show("Can not find goh user profile on your computer!", "WARNING");
+                throw new InvalidOperationException("Can not find goh user profile on your computer!");
+            }
+            else
+            {
+                universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
+                universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
+                universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
+
+#if DEBUG
+                Trace.WriteLine(universalVars.optionLoc);
+#endif
+
+                if (File.Exists(universalVars.optionLoc) == false)
+                {
+                    MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
+                    throw new InvalidOperationException("Run goh game at least once before using this program!");
+                }
+            }
+        }
+
         public void ClearCacheWork()
         {
 
@@ -339,6 +367,29 @@ namespace GOHShaderModdingSupportLauncherWPF
                 Directory.Delete(universalVars.cacheLoc, true);
             }
 
+        }
+
+        public void CheckCompileWarning()
+        {
+            using (StreamReader log = File.OpenText(universalVars.profileLoc + @"\log\game.log"))
+            {
+                while (log.EndOfStream != true)
+                {
+                    string line = log.ReadLine();
+
+                    if (line.IndexOf("compile error:") != -1)
+                    {
+                        string errorMessage = "Get at least one shader compile error in last gaming! \nTry contact creator(s) of your shader mod to slove this problem.\n\n";
+                        errorMessage += "First error message:\n\n";
+                        errorMessage += line + '\n';
+                        errorMessage += log.ReadLine();
+                        MessageBox.Show(errorMessage, "Shader Compile Error");
+                        break;
+                    }
+                }
+
+                log.Close();
+            }
         }
 
         //reference https://juejin.cn/post/6989143365862293534
@@ -416,7 +467,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 if (HasGetGameRoot == true)
                 {
                     sw.WriteLine(universalVars.gameDir.FullName);
-                    sw.WriteLine(universalVars.resourceDir.FullName);
+                    sw.WriteLine(universalVars.profileLoc);
                 }
 
             }

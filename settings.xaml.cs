@@ -11,9 +11,9 @@ namespace GOHShaderModdingSupportLauncherWPF
 {
     public partial class Settings : Page
     {
-        MainWindow main;
+        private MainWindow main;
 
-        MainWindow.SettingsVars vars;
+        private MainWindow.SettingsVars vars;
 
         public Settings()
         {

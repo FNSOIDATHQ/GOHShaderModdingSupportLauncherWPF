@@ -10,9 +10,9 @@ namespace GOHShaderModdingSupportLauncherWPF
 {
     public partial class Launcher : Page
     {
-        MainWindow main;
+        private MainWindow main;
 
-        MainWindow.LauncherVars vars;
+        private MainWindow.LauncherVars vars;
 
         public Launcher()
         {
@@ -110,34 +110,11 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        private void CheckCompileWarning()
-        {
-            using (StreamReader log = File.OpenText(main.universalVars.profileLoc + @"\log\game.log"))
-            {
-                while (log.EndOfStream != true)
-                {
-                    string line=log.ReadLine();
-
-                    if(line.IndexOf("compile error:") != -1)
-                    {
-                        string errorMessage = "Get at least one shader compile error in last gaming! \nTry contact creator(s) of your shader mod to slove this problem.\n\n";
-                        errorMessage += "First error message:\n\n";
-                        errorMessage += line+'\n';
-                        errorMessage+= log.ReadLine();
-                        MessageBox.Show(errorMessage, "Shader Compile Error");
-                        break;
-                    }
-                }
-
-                log.Close();
-            }
-        }
-
         private void OnGameExit()
         {
             if (main.universalVars.NeedCompileWarning == true)
             {
-                CheckCompileWarning();
+                main.CheckCompileWarning();
             }
             if (main.universalVars.NeedRedisplay == true)
             {

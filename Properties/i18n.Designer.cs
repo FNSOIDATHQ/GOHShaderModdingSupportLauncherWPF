@@ -187,7 +187,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 File Replace 的本地化字符串。
+        ///   查找类似 File Replace (DX 11) 的本地化字符串。
         /// </summary>
         public static string L_FileReplace {
             get {
@@ -282,6 +282,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string M_OpenFolder {
             get {
                 return ResourceManager.GetString("M_OpenFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Refresh 的本地化字符串。
+        /// </summary>
+        public static string M_Refresh {
+            get {
+                return ResourceManager.GetString("M_Refresh", resourceCulture);
             }
         }
         
@@ -511,6 +520,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Open Shader Cache Folder 的本地化字符串。
+        /// </summary>
+        public static string U_OpenCacheFolder {
+            get {
+                return ResourceManager.GetString("U_OpenCacheFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Open Configuration File of Launcher 的本地化字符串。
         /// </summary>
         public static string U_OpenLauncherConfig {
@@ -520,7 +538,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Precompile All Shader to Cache 的本地化字符串。
+        ///   查找类似 Precompile All Shader to Cache (DX 11 Only) 的本地化字符串。
         /// </summary>
         public static string U_Precompile {
             get {

@@ -121,7 +121,7 @@
     <value>Main Game</value>
   </data>
   <data name="L_FileReplace" xml:space="preserve">
-    <value>File Replace</value>
+    <value>File Replace (DX 11)</value>
   </data>
   <data name="L_DX101" xml:space="preserve">
     <value>DX 10.1</value>
@@ -187,7 +187,7 @@
     <value>Open Configuration File of Launcher</value>
   </data>
   <data name="U_Precompile" xml:space="preserve">
-    <value>Precompile All Shader to Cache</value>
+    <value>Precompile All Shader to Cache (DX 11 Only)</value>
   </data>
   <data name="L_AutoFix" xml:space="preserve">
     <value>Auto Fix (File Only)</value>
@@ -275,5 +275,11 @@
   </data>
   <data name="S_CompileWarning" xml:space="preserve">
     <value>Prompt shader compilation errors in game log</value>
+  </data>
+  <data name="M_Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="U_OpenCacheFolder" xml:space="preserve">
+    <value>Open Shader Cache Folder</value>
   </data>
 </root>

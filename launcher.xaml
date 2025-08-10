@@ -21,7 +21,7 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           FontSize="24"
-                          Margin="0,0,5,0"
+                          Margin="0,0,10,0"
                           Foreground="#E4FFFFFF">
                 <Run Language="zh-cn"
                      Text="{x:Static loc:i18n.L_Method}"/>
@@ -33,10 +33,9 @@
                       FontSize="20"
                       MinHeight="28"
                       VerticalAlignment="Stretch"
-                      Width="180"
                       Height="60"
                       HorizontalContentAlignment="Stretch"
-                      VerticalContentAlignment="Stretch">
+                      VerticalContentAlignment="Stretch" Width="230">
                 <ui:TextBlock Text="{x:Static loc:i18n.L_FileReplace}"
                               FontSize="20"
                               HorizontalAlignment="Left"/>
