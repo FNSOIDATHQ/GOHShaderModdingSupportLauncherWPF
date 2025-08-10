@@ -19,14 +19,27 @@ namespace GOHShaderModdingSupportLauncherWPF
         Wpf.Ui.Controls.NavigationView mv;
 
         private bool HasGetGameRoot, HasConfigFile;
-        private DirectoryInfo gameDir, resourceDir;
 
-        private bool NeedRestore, NeedClearCache, NeedRedisplay, AlwaysConfirm;
         private string configLoc;
-        private string profileLoc, cacheLoc, optionLoc;
 
+        //universal vars
+        public class UniversalVars
+        {
+            public DirectoryInfo gameDir, resourceDir;
+            public string profileLoc, cacheLoc, optionLoc;
+            public bool NeedRestore,NeedClearCache, NeedRedisplay, AlwaysConfirm;
+            public UniversalVars()
+            {
+                gameDir = new DirectoryInfo("");
+                resourceDir = new DirectoryInfo("");
+                profileLoc = "";
+                cacheLoc = "";
+                optionLoc = "";
+            }
+        }
+        public UniversalVars universalVars;
         //launcher vars
-        public struct LauncherVars
+        public class LauncherVars
         {
             public enum LaunchMethod
             {
@@ -35,12 +48,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             public LaunchMethod lm;
             public bool showAddModInfo;
-            public DirectoryInfo gameDir, resourceDir;
-            public string optionLoc;
-            public bool NeedRestore, NeedClearCache, NeedRedisplay;
+
+            public LauncherVars()
+            {
+            }
         }
         public LauncherVars launcherVars;
 
+        //settings vars
+        public class SettingsVars
+        {
+
+        }
+        public SettingsVars settingsVars;
 
         public MainWindow()
         {
@@ -59,29 +79,18 @@ namespace GOHShaderModdingSupportLauncherWPF
         
         private void TransferData()
         {
-            //init universal launcher vars
-            launcherVars.gameDir = gameDir;
-            launcherVars.resourceDir = resourceDir;
-            launcherVars.optionLoc = optionLoc;
-            launcherVars.NeedClearCache = NeedClearCache;
-            launcherVars.NeedRedisplay = NeedRedisplay;
-            launcherVars.NeedRestore = NeedRestore;
+            //init launcher vars
+            
         }
         private void InitBasicData()
         {
 
-            gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            universalVars.resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
+            universalVars = new UniversalVars();
             launcherVars = new LauncherVars();
-            C_restore = this.FindName("restore") as CheckBox;
-            C_clearCache = this.FindName("clearCache") as CheckBox;
-            C_gameExit = this.FindName("gameExit") as CheckBox;
-            C_pathConfirm = this.FindName("pathConfirm") as CheckBox;
-            
-            B_openConfig = this.FindName("openConfig") as Button;
-            T_gamePath = this.FindName("gamePath") as TextBox;
-            T_gameConfigPath = this.FindName("gameConfigPath") as TextBox;
+            settingsVars = new SettingsVars();
 
             HasGetGameRoot = false;
             HasConfigFile = false;
@@ -116,44 +125,35 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 launcherVars.showAddModInfo = bool.Parse(line);
                                 break;
                             case 2:
-                                NeedRestore = bool.Parse(line);
-
-                                C_restore.IsChecked = NeedRestore;
+                                universalVars.NeedRestore = bool.Parse(line);
                                 break;
                             case 3:
-                                NeedClearCache = bool.Parse(line);
-
-                                C_clearCache.IsChecked = NeedClearCache;
+                                universalVars.NeedClearCache = bool.Parse(line);
                                 break;
                             case 4:
-                                NeedRedisplay = bool.Parse(line);
-
-                                C_gameExit.IsChecked = NeedRedisplay;
+                                universalVars.NeedRedisplay = bool.Parse(line);
                                 break;
                             case 5:
-                                AlwaysConfirm = bool.Parse(line);
-
-                                C_pathConfirm.IsChecked = AlwaysConfirm;
+                                universalVars.AlwaysConfirm = bool.Parse(line);
                                 break;
                             case 6:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
-                                if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                                if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
                                 {
-                                    gameDir = new DirectoryInfo(line);
-                                    T_gamePath.Text = gameDir.FullName;
+                                    universalVars.gameDir = new DirectoryInfo(line);
                                     HasGetGameRoot = true;
 
                                     //avoid catch by steam
-                                    Environment.CurrentDirectory = gameDir.FullName;
+                                    Environment.CurrentDirectory = universalVars.gameDir.FullName;
                                 }
                                 break;
                             case 7:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
-                                if (Directory.Exists(line) == true && AlwaysConfirm != true)
+                                if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
                                 {
-                                    resourceDir = new DirectoryInfo(line);
+                                    universalVars.resourceDir = new DirectoryInfo(line);
                                 }
                                 break;
                             default:
@@ -180,14 +180,10 @@ namespace GOHShaderModdingSupportLauncherWPF
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
-                    NeedRestore = false;
-                    C_restore.IsChecked = NeedRestore;
-                    NeedClearCache = true;
-                    C_clearCache.IsChecked = NeedClearCache;
-                    NeedRedisplay = true;
-                    C_gameExit.IsChecked = NeedRedisplay;
-                    AlwaysConfirm = false;
-                    C_pathConfirm.IsChecked = AlwaysConfirm;
+                    universalVars.NeedRestore = false;
+                    universalVars.NeedClearCache = true;
+                    universalVars.NeedRedisplay = true;
+                    universalVars.AlwaysConfirm = false;
                     HasGetGameRoot = false;
                 }
                 else
@@ -200,41 +196,40 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                 launcherVars.showAddModInfo = true;
-                NeedRestore = false;
-                NeedClearCache = true;
-                NeedRedisplay = true;
-                AlwaysConfirm = false;
+                universalVars.NeedRestore = false;
+                universalVars.NeedClearCache = true;
+                universalVars.NeedRedisplay = true;
+                universalVars.AlwaysConfirm = false;
             }
         }
 
         private void GetProfileLoc()
         {
-            profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
+            universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
             //fall back to backup path
-            if (Directory.Exists(profileLoc) == false)
+            if (Directory.Exists(universalVars.profileLoc) == false)
             {
-                profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
+                universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
             }
 
 
 
-            if (Directory.Exists(profileLoc) == false)
+            if (Directory.Exists(universalVars.profileLoc) == false)
             {
                 MessageBox.Show("Can not find goh user profile on your computer!", "WARNING");
                 throw new InvalidOperationException("Can not find goh user profile on your computer!");
             }
             else
             {
-                cacheLoc = profileLoc + "\\shader_cache";
-                optionLoc = profileLoc + "\\profiles";
-                optionLoc = Directory.GetDirectories(optionLoc)[0] + @"\options.set";
-                T_gameConfigPath.Text = profileLoc;
+                universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
+                universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
+                universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
 
 #if DEBUG
-                Trace.WriteLine(optionLoc);
+                Trace.WriteLine(universalVars.optionLoc);
 #endif
 
-                if (File.Exists(optionLoc) == false)
+                if (File.Exists(universalVars.optionLoc) == false)
                 {
                     MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
                     throw new InvalidOperationException("Run goh game at least once before using this program!");
@@ -276,8 +271,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                         string gameLoc = gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\binaries\x64";
                         if (Directory.Exists(gameLoc) == true)
                         {
-                            gameDir = new DirectoryInfo(gameLoc);
-                            resourceDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\resource");
+                            universalVars.gameDir = new DirectoryInfo(gameLoc);
+                            universalVars.resourceDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\resource");
                             HasGetGameRoot = true;
                             break;
                         }
@@ -295,20 +290,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 index += 9;
                 string gameLoc = appLoc.Substring(0, index);
-                gameDir = new DirectoryInfo(gameLoc);
-                resourceDir = gameDir.GetDirectories("common/Call to Arms - Gates of Hell/resource")[0];
-                gameDir = gameDir.GetDirectories("common/Call to Arms - Gates of Hell/binaries/x64")[0];
+                universalVars.gameDir = new DirectoryInfo(gameLoc);
+                universalVars.resourceDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/resource")[0];
+                universalVars.gameDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/binaries/x64")[0];
 
                 HasGetGameRoot = true;
             }
 
-            T_gamePath.Text = gameDir.FullName;
             //avoid catch by steam
-            Environment.CurrentDirectory = gameDir.FullName;
+            Environment.CurrentDirectory = universalVars.gameDir.FullName;
 
             //manual check
             //reference https://www.c-sharpcorner.com/UploadFile/mahesh/understanding-message-box-in-windows-forms-using-C-Sharp/
-            string message = "A GOH game has been found in \n" + gameDir + "\n\nIf this is NOT the correct location, Please click NO and report detailed information to developers.";
+            string message = "A GOH game has been found in \n" + universalVars.gameDir + "\n\nIf this is NOT the correct location, Please click NO and report detailed information to developers.";
             string title = "Manual Check";
             MessageBoxButton buttons = MessageBoxButton.YesNo;
             MessageBoxResult result = MessageBox.Show(message, title, buttons);
@@ -325,7 +319,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
 
 #if DEBUG
-            Trace.WriteLine(gameDir);
+            Trace.WriteLine(universalVars.gameDir);
             //MessageBox.Show(gameDir.FullName);
 #endif
         }
@@ -333,9 +327,9 @@ namespace GOHShaderModdingSupportLauncherWPF
         public void ClearCacheWork()
         {
 
-            if (Directory.Exists(cacheLoc) == true)
+            if (Directory.Exists(universalVars.cacheLoc) == true)
             {
-                Directory.Delete(cacheLoc, true);
+                Directory.Delete(universalVars.cacheLoc, true);
             }
 
         }
@@ -348,14 +342,14 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 sw.WriteLine(launcherVars.lm.ToString());
                 sw.WriteLine(launcherVars.showAddModInfo.ToString());
-                sw.WriteLine(NeedRestore);
-                sw.WriteLine(NeedClearCache);
-                sw.WriteLine(NeedRedisplay);
-                sw.WriteLine(AlwaysConfirm);
+                sw.WriteLine(universalVars.NeedRestore);
+                sw.WriteLine(universalVars.NeedClearCache);
+                sw.WriteLine(universalVars.NeedRedisplay);
+                sw.WriteLine(universalVars.AlwaysConfirm);
                 if (HasGetGameRoot == true)
                 {
-                    sw.WriteLine(gameDir.FullName);
-                    sw.WriteLine(resourceDir.FullName);
+                    sw.WriteLine(universalVars.gameDir.FullName);
+                    sw.WriteLine(universalVars.resourceDir.FullName);
                 }
 
             }

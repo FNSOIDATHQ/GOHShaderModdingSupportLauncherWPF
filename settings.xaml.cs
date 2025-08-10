@@ -11,26 +11,65 @@ namespace GOHShaderModdingSupportLauncherWPF
 {
     public partial class Settings : Page
     {
+        MainWindow main;
+
+        MainWindow.SettingsVars vars;
+
         public Settings()
         {
             InitializeComponent();
 
+            main = Application.Current.MainWindow as MainWindow;
 
+            vars = main.settingsVars;
 
+            if (main.universalVars.gameDir.FullName != "")
+            {
+                gamePath.Text = main.universalVars.gameDir.FullName;
+            }
+
+            if (main.universalVars.profileLoc != "")
+            {
+                gameConfigPath.Text = main.universalVars.profileLoc;
+            }
+
+            pathConfirm.IsChecked = main.universalVars.AlwaysConfirm;
+            clearCache.IsChecked = main.universalVars.NeedClearCache;
+            restore.IsChecked = main.universalVars.NeedRestore;
+            gameExit.IsChecked = main.universalVars.NeedRedisplay;
         }
 
         private void gamePath_LostFocus(object sender, RoutedEventArgs e)
         {
+            main.universalVars.gameDir = new DirectoryInfo(gamePath.Text);
+            DirectoryInfo[] searchResult = main.universalVars.gameDir.GetDirectories("../../resource");
+            if (searchResult.Length > 0)
+            {
+                main.universalVars.resourceDir = searchResult[0];
+                //MessageBox.Show(resourceDir.FullName);
+            }
         }
 
         private void gameConfigPath_LostFocus(object sender, RoutedEventArgs e)
         {
+            main.universalVars.profileLoc = gameConfigPath.Text;
+            main.universalVars.cacheLoc = main.universalVars.profileLoc + "\\shader_cache";
+            main.universalVars.optionLoc = main.universalVars.profileLoc + "\\profiles";
 
+            if (Directory.Exists(main.universalVars.optionLoc) == true)
+            {
+                string[] searchResult = Directory.GetDirectories(main.universalVars.optionLoc);
+                if (searchResult.Length > 0)
+                {
+                    main.universalVars.optionLoc = searchResult[0] + @"\options.set";
+                    //MessageBox.Show(optionLoc);
+                }
+            }
         }
 
         private void pathConfirm_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.AlwaysConfirm = pathConfirm.IsChecked.Value;
         }
 
         private void autoLoadCache_Click(object sender, RoutedEventArgs e)
@@ -45,17 +84,23 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void restore_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.NeedRestore = restore.IsChecked.Value;
+#if DEBUG
+            Trace.WriteLine(restore.IsChecked.Value + "  " + main.universalVars.NeedRestore);
+#endif
         }
 
         private void clearCache_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.NeedClearCache = clearCache.IsChecked.Value;
+#if DEBUG
+            Trace.WriteLine(clearCache.IsChecked.Value + "  " + main.universalVars.NeedClearCache);
+#endif
         }
 
         private void gameExit_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.NeedRedisplay = gameExit.IsChecked.Value;
         }
 
         private void compileWarning_Click(object sender, RoutedEventArgs e)

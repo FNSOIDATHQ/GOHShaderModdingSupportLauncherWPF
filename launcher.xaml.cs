@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using static GOHShaderModdingSupportLauncherWPF.MainWindow;
 
 
 namespace GOHShaderModdingSupportLauncherWPF
@@ -47,12 +48,12 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void ReplaceFile()
         {
-            FileInfo targetPak = new FileInfo(vars.resourceDir + @"\shader.pak");
+            FileInfo targetPak = new FileInfo(main.universalVars.resourceDir + @"\shader.pak");
             if (targetPak.Length>7*1048576)
             {
                     //extract pak from exe
                     //file is 326kb, so we use 350kb as a batch to extract everything once
-                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", vars.resourceDir + @"\shader.pak", 358400);
+                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
 
             }
             //if shader.pak <7mb, means the patch has been added
@@ -66,7 +67,7 @@ namespace GOHShaderModdingSupportLauncherWPF
         private void ForceChangeSettings()
         {
             string opt;
-            using (StreamReader sr = File.OpenText(vars.optionLoc))
+            using (StreamReader sr = File.OpenText(main.universalVars.optionLoc))
             {
                 opt = sr.ReadToEnd();
 
@@ -89,7 +90,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             Trace.Write(opt);
 #endif
 
-            using (StreamWriter sw = File.CreateText(vars.optionLoc))
+            using (StreamWriter sw = File.CreateText(main.universalVars.optionLoc))
             {
 
                 sw.Write(opt);
@@ -99,10 +100,10 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void RestoreFile(bool force = false)
         {
-            if (vars.NeedRestore == true || force == true)
+            if (main.universalVars.NeedRestore == true || force == true)
             {
                     //retore
-                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", vars.resourceDir + @"\shader.pak", 358400);
+                    ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.pak", main.universalVars.resourceDir + @"\shader.pak", 358400);
             }
             else
             {
@@ -113,7 +114,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void ClearCache(bool force = false)
         {
-            if (vars.NeedClearCache == true || force == true)
+            if (main.universalVars.NeedClearCache == true || force == true)
             {
                 main.ClearCacheWork();
             }
@@ -125,7 +126,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void OnGameExit()
         {
-            if (vars.NeedRedisplay == true)
+            if (main.universalVars.NeedRedisplay == true)
             {
                 main.Show();
             }
@@ -154,7 +155,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 args += " -showmodinfo";
             }
 
-            Process game = Process.Start(vars.gameDir.GetFiles(processName)[0].ToString(), args);
+            Process game = Process.Start(main.universalVars.gameDir.GetFiles(processName)[0].ToString(), args);
 
             main.Hide();
             game.WaitForExit();
@@ -195,7 +196,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             RestoreFile(true);
 
             //start game with no mods
-            Process game = Process.Start(vars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-no_mods");
+            Process game = Process.Start(main.universalVars.gameDir.GetFiles("call_to_arms.exe")[0].ToString(), "-no_mods");
 
             main.Hide();
             game.WaitForExit();
