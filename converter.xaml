@@ -26,7 +26,7 @@
                         AcceptsReturn="True"
                         AutoWordSelection="True"
                         Width="650"
-                        HorizontalContentAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
                         Margin="0,0,5,0"
                         TextChanged="convertPath_TextChanged"/>
             <ui:Button x:Name="viewPath"
@@ -44,7 +44,7 @@
                         TabStripPlacement="Right"
                         Margin="0, 0, 0, 10"
                         Grid.Column="0"
-                        Height="200">
+                        Height="200" SelectedIndex="2">
                 <TabItem>
                     <TabItem.Header>
                         <TextBlock Text="{x:Static loc:i18n.C_Tab_TextureRemap}"
@@ -140,12 +140,10 @@
         </Label>
         <ui:DynamicScrollViewer IsScrollingVertically="True"
                                 IsScrollingHorizontally="True"
-                                Height="235"
-                                Width="869.33">
+                                Height="300" Margin="5,0,5,0">
             <TextBox x:Name="console"
                      IsReadOnly="True"
                      TextWrapping="Wrap"
-                     Width="869.33"
                      VerticalScrollBarVisibility="Auto"
                      AcceptsReturn="True"
                      MinHeight="235"/>
