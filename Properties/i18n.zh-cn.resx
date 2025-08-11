@@ -178,7 +178,7 @@
     <value>v1.9    by Federation Studio 2025</value>
   </data>
   <data name="U_ClearAllCache" xml:space="preserve">
-    <value>清除所有着色器缓存</value>
+    <value>清除所有着色器缓存和记录</value>
   </data>
   <data name="U_Restore" xml:space="preserve">
     <value>恢复默认着色器文件（仅用于文件替换模式）</value>
@@ -281,5 +281,8 @@
   </data>
   <data name="U_OpenCacheFolder" xml:space="preserve">
     <value>打开着色器缓存文件夹</value>
+  </data>
+  <data name="M_CollectCache" xml:space="preserve">
+    <value>收集着色器缓存并存储到Mod</value>
   </data>
 </root>

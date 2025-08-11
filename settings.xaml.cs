@@ -38,6 +38,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             restore.IsChecked = main.universalVars.NeedRestore;
             gameExit.IsChecked = main.universalVars.NeedRedisplay;
             compileWarning.IsChecked= main.universalVars.NeedCompileWarning;
+            autoLoadCache.IsChecked = main.universalVars.NeedAutoLoad;
         }
 
         private void gamePath_LostFocus(object sender, RoutedEventArgs e)
@@ -75,7 +76,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void autoLoadCache_Click(object sender, RoutedEventArgs e)
         {
-
+            main.universalVars.NeedAutoLoad = autoLoadCache.IsChecked.Value;
         }
 
         private void refreshCacheWhenModified_Click(object sender, RoutedEventArgs e)

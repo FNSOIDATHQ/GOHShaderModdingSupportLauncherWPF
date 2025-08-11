@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,19 +22,49 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private bool HasGetGameRoot, HasGetProfileLoc;
 
+        public class Mod
+        {
+            public string name { get; set; }
+            public string type { get; set; }
+            public bool hasShader { get; set; }
+            public string path;
+            public string folderName;
+            public bool hasLoad;
+
+            public Mod(string n, string t, string p, string fn, bool hS)
+            {
+                name = n;
+                type = t;
+                path = p;
+                folderName = fn;
+                hasShader = hS;
+                hasLoad = false;
+            }
+        };
+
         //universal vars
         public class UniversalVars
         {
             public DirectoryInfo? gameDir, resourceDir;
             public string profileLoc, cacheLoc, optionLoc;
             public string configLoc;
-            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning, AlwaysConfirm;
+            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning,NeedAutoLoad, AlwaysConfirm;
+
+            public DirectoryInfo? workshopDir, localDir;
+            //option.set name -> mod
+            public Dictionary<string, Mod> modDic;
+            public List<Mod> modLoaded;
+            public bool hasMod;
+            public string lastCacheHash;
             public UniversalVars()
             {
                 profileLoc = "";
                 cacheLoc = "";
                 optionLoc = "";
                 configLoc = "";
+                modLoaded = new List<Mod>();
+                modDic = new Dictionary<string, Mod>();
+                lastCacheHash = "";
             }
         }
         public UniversalVars universalVars;
@@ -66,7 +98,7 @@ namespace GOHShaderModdingSupportLauncherWPF
         //mod manager vars
         public class ModManagerVars
         {
-            public DirectoryInfo? workshopDir,localDir;
+            public bool hasMod;
         }
         public ModManagerVars modManagerVars;
 
@@ -81,15 +113,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             mv.Loaded += navToDefaultPage;
 
             InitBasicData();
-            TransferData();
         }
-        ///*
         
-        private void TransferData()
-        {
-            //init launcher vars
-            
-        }
         private void InitBasicData()
         {
 
@@ -117,6 +142,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 GetGameRoot();
             }
+
+            RefreshMods();
 
             SaveSettings();
         }
@@ -155,6 +182,12 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 universalVars.AlwaysConfirm = bool.Parse(line);
                                 break;
                             case 7:
+                                universalVars.NeedAutoLoad = bool.Parse(line);
+                                break;
+                            case 8:
+                                universalVars.lastCacheHash = line;
+                                break;
+                            case 9:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -165,16 +198,16 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                                     DirectoryInfo root = universalVars.gameDir.Parent.Parent;
                                     universalVars.resourceDir = root.GetDirectories("resource")[0];
-                                    modManagerVars.localDir= root.GetDirectories("mods")[0];
-                                    modManagerVars.workshopDir = root.GetDirectories("..\\..\\workshop\\content\\400750")[0];
+                                    universalVars.localDir= root.GetDirectories("mods")[0];
+                                    universalVars.workshopDir = root.GetDirectories("..\\..\\workshop\\content\\400750")[0];
 #if DEBUG
-                                    Trace.WriteLine("workshop dir= "+modManagerVars.workshopDir.FullName);
+                                    Trace.WriteLine("workshop dir= "+ universalVars.workshopDir.FullName);
 #endif
 
                                     HasGetGameRoot = true;
                                 }
                                 break;
-                            case 8:
+                            case 10:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -206,8 +239,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
 
                 //the config file is not complete or break,fall back to default value
-                //no cache is not important
-                if (index != 7 && index != 9)
+                //no cache for path is not important
+                if (index != 9 && index != 11)
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
@@ -215,7 +248,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                     universalVars.NeedClearCache = false;
                     universalVars.NeedRedisplay = true;
                     universalVars.NeedCompileWarning = true;
+                    universalVars.NeedAutoLoad = true;
                     universalVars.AlwaysConfirm = false;
+                    universalVars.lastCacheHash = "-1";
                     HasGetGameRoot = false;
                     HasGetProfileLoc = false;
                 }
@@ -228,7 +263,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                 universalVars.NeedClearCache = false;
                 universalVars.NeedRedisplay = true;
                 universalVars.NeedCompileWarning = true;
+                universalVars.NeedAutoLoad = true;
                 universalVars.AlwaysConfirm = false;
+                universalVars.lastCacheHash = "-1";
                 HasGetProfileLoc = false;
             }
         }
@@ -267,10 +304,13 @@ namespace GOHShaderModdingSupportLauncherWPF
                         string gameLoc = gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\binaries\x64";
                         if (Directory.Exists(gameLoc) == true)
                         {
+#if DEBUG
+                            Trace.WriteLine("find game location= " + gameLib);
+#endif
                             universalVars.gameDir = new DirectoryInfo(gameLoc);
-                            universalVars.resourceDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\resource");
-                            modManagerVars.localDir = new DirectoryInfo(gameLib += @"\steamapps\common\Call to Arms - Gates of Hell\mods");
-                            modManagerVars.workshopDir = new DirectoryInfo(gameLib += @"\steamapps\workshop\content\400750");
+                            universalVars.resourceDir = new DirectoryInfo(gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\resource");
+                            universalVars.localDir = new DirectoryInfo(gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\mods");
+                            universalVars.workshopDir = new DirectoryInfo(gameLib + @"\steamapps\workshop\content\400750");
 
                             HasGetGameRoot = true;
                             break;
@@ -289,10 +329,14 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 index += 9;
                 string gameLoc = appLoc.Substring(0, index);
+#if DEBUG
+                Trace.WriteLine("find game location= "+gameLoc);
+#endif
+
                 universalVars.gameDir = new DirectoryInfo(gameLoc);
                 universalVars.resourceDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/resource")[0];
-                modManagerVars.localDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/mods")[0];
-                modManagerVars.workshopDir = universalVars.gameDir.GetDirectories(@"workshop\content\400750")[0];
+                universalVars.localDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/mods")[0];
+                universalVars.workshopDir = universalVars.gameDir.GetDirectories(@"workshop\content\400750")[0];
                 universalVars.gameDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/binaries/x64")[0];
 
                 HasGetGameRoot = true;
@@ -392,6 +436,187 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        public void RefreshMods()
+        {
+            universalVars.modDic.Clear();
+            universalVars.modLoaded.Clear();
+
+            ReadModsFromWorkshop();
+            ReadModsFromLocal();
+
+            ReadLoadedMods();
+        }
+
+        private string getModShowName(FileInfo[] modInfo)
+        {
+            string name;
+            using (StreamReader info = modInfo[0].OpenText())
+            {
+                string nameLine;
+                //push to name line
+                while ((nameLine = info.ReadLine()).Contains("{name") == false) ;
+
+                int commentIndex = nameLine.IndexOf(";");
+                nameLine = nameLine.Substring(0, commentIndex == -1 ? nameLine.Length : commentIndex);
+
+                int nameS = nameLine.IndexOf('"') + 1;
+                name = nameLine.Substring(nameS, nameLine.LastIndexOf('"') - nameS);
+#if DEBUG
+                Trace.WriteLine("mod show name= " + name);
+#endif
+
+                info.Close();
+            }
+            return name;
+        }
+
+        private bool checkShader(DirectoryInfo root)
+        {
+            DirectoryInfo[] searchResult = root.GetDirectories("resource", SearchOption.TopDirectoryOnly);
+            if (searchResult.Length != 0)
+            {
+                DirectoryInfo resouce = searchResult[0];
+
+                //check if shader is in paks
+                foreach (var obj in resouce.GetFiles("*.pak", SearchOption.TopDirectoryOnly))
+                {
+#if DEBUG
+                    Trace.WriteLine("get a pak= " + obj.Name);
+#endif
+                    ZipArchive curPak = ZipFile.Open(obj.FullName, ZipArchiveMode.Read);
+
+                    foreach (var file in curPak.Entries)
+                    {
+                        if (file.FullName.Contains("shader/") == true)
+                        {
+                            if (file.Length > 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+
+                }
+
+                string shaderFolder = resouce.FullName + "/shader";
+                //check if shader is in dir
+                if (Directory.Exists(shaderFolder) == true)
+                {
+                    DirectoryInfo shader = new DirectoryInfo(shaderFolder);
+                    foreach (FileInfo file in shader.GetFiles("*", SearchOption.AllDirectories))
+                    {
+#if DEBUG
+                        Trace.WriteLine("get a shader file= " + file.Name);
+#endif
+                        if (file.Length > 0)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private void ReadModsFromWorkshop()
+        {
+            foreach (var dir in universalVars.workshopDir.GetDirectories())
+            {
+                FileInfo[] modInfo = dir.GetFiles("mod.info", SearchOption.TopDirectoryOnly);
+                string folderName = "mod_" + dir.Name;
+
+                if (modInfo.Length == 0)
+                {
+                    //not a mod
+                    continue;
+                }
+                else if (folderName.Contains(' ') == true)
+                {
+                    //is a mod, but not valid
+                    continue;
+                }
+                string name = getModShowName(modInfo);
+
+                bool hasShader = checkShader(dir);
+
+
+                MainWindow.Mod single = new MainWindow.Mod(name, "Workshop", dir.FullName, folderName, hasShader);
+
+                universalVars.modDic.Add(folderName, single);
+            }
+        }
+
+        private void ReadModsFromLocal()
+        {
+            foreach (var dir in universalVars.localDir.GetDirectories())
+            {
+                FileInfo[] modInfo = dir.GetFiles("mod.info", SearchOption.TopDirectoryOnly);
+                string folderName = dir.Name.ToLower();
+
+                if (modInfo.Length == 0)
+                {
+                    //not a mod
+                    continue;
+                }
+                else if (folderName.Contains(' ') == true)
+                {
+                    //is a mod, but not valid
+                    continue;
+                }
+                string name = getModShowName(modInfo);
+
+                bool hasShader = checkShader(dir);
+
+
+
+                MainWindow.Mod single = new MainWindow.Mod(name, "Local", dir.FullName, folderName, hasShader);
+
+                universalVars.modDic.Add(folderName, single);
+            }
+        }
+
+        public void ReadLoadedMods()
+        {
+            using (StreamReader opt = File.OpenText(universalVars.optionLoc))
+            {
+                //push to mod list start point
+                while (opt.ReadLine().Contains("{mods") == false)
+                {
+                    if (opt.EndOfStream == true)
+                    {
+                        //no mod loaded
+                        return;
+                    }
+                }
+
+                while ((opt.ReadLine() is var line) && line.Contains("}") == false)
+                {
+#if DEBUG
+                    Trace.WriteLine(line);
+#endif
+                    int nameS = line.IndexOf("\"") + 1;
+                    int nameE = line.IndexOf(":");
+                    if (nameS == -1 || nameE == -1)
+                    {
+                        //not valid
+                        continue;
+                    }
+
+                    string modName = line.Substring(nameS, nameE - nameS);
+#if DEBUG
+                    Trace.WriteLine(modName);
+#endif
+
+                    universalVars.modDic[modName].hasLoad = true;
+                    universalVars.modLoaded.Add(universalVars.modDic[modName]);
+
+                }
+
+                opt.Close();
+            }
+        }
+
         //reference https://juejin.cn/post/6989143365862293534
         public static void ExtractFile(String resource, String path, int batch)
         {
@@ -464,6 +689,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                 sw.WriteLine(universalVars.NeedRedisplay);
                 sw.WriteLine(universalVars.NeedCompileWarning);
                 sw.WriteLine(universalVars.AlwaysConfirm);
+                sw.WriteLine(universalVars.NeedAutoLoad);
+                sw.WriteLine(universalVars.lastCacheHash);
                 if (HasGetGameRoot == true)
                 {
                     sw.WriteLine(universalVars.gameDir.FullName);
@@ -472,7 +699,6 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             }
         }
-        //*/
 
         private void navToDefaultPage(object? sender, EventArgs e)
         {

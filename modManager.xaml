@@ -123,6 +123,12 @@
                 <TextBlock Text="{x:Static loc:i18n.M_LoadCache}"
                            FontSize="24"/>
             </Button>
+            <Button x:Name="collectShaderCache"
+                Click="collectShaderCache_Click"
+                    >
+                <TextBlock Text="{x:Static loc:i18n.M_CollectCache}"
+                    FontSize="24"/>
+            </Button>
         </StackPanel>
     </StackPanel>
 </Page>

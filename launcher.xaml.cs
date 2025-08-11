@@ -22,8 +22,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             InitializeComponent();
 
-            
-            
+
+
             launchMethod.SelectedIndex = (int)vars.lm;
 
             addModInfo.IsChecked = vars.showAddModInfo;
@@ -33,11 +33,11 @@ namespace GOHShaderModdingSupportLauncherWPF
         public static void ReplaceFile(DirectoryInfo resourceDir)
         {
             FileInfo targetPak = new FileInfo(resourceDir + @"\shader.pak");
-            if (targetPak.Length>7*1048576)
+            if (targetPak.Length > 7 * 1048576)
             {
-                    //extract pak from exe
-                    //file is 326kb, so we use 350kb as a batch to extract everything once
-                    MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", resourceDir + @"\shader.pak", 358400);
+                //extract pak from exe
+                //file is 326kb, so we use 350kb as a batch to extract everything once
+                MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.noCache.shader.pak", resourceDir + @"\shader.pak", 358400);
 
             }
             //if shader.pak <7mb, means the patch has been added
@@ -110,6 +110,82 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        private void AutoLoadCache()
+        {
+            if (main.universalVars.NeedAutoLoad == true)
+            {
+                int len = main.universalVars.modLoaded.Count;
+                if (len > 0)
+                {
+                    for (int i = len - 1; i >= 0; i--)
+                    {
+                        if (main.universalVars.modLoaded[i].hasShader == true)
+                        {
+                            string cachePath = main.universalVars.modLoaded[i].path + "/resource/shader/shader_cache/dx11.0";
+                            string hashFile = main.universalVars.modLoaded[i].path + "/resource/shader/shader_cache/dx11.0/hash";
+
+                            if (Directory.Exists(cachePath) == true)
+                            {
+                                if (File.Exists(hashFile) == true)
+                                {
+                                    string cacheHash = File.ReadAllText(hashFile);
+                                    if (cacheHash == main.universalVars.lastCacheHash)
+                                    {
+                                        //do nothing because cache has been loaded
+                                    }
+                                    else
+                                    {
+                                        main.universalVars.lastCacheHash = cacheHash;
+                                        main.ClearCacheWork();
+                                        Directory.CreateDirectory(main.universalVars.cacheLoc + "/dx11.0/");
+                                        foreach (var file in new DirectoryInfo(cachePath).GetFiles())
+                                        {
+                                            if (file.Name != "hash")
+                                            {
+                                                file.CopyTo(main.universalVars.cacheLoc + "/dx11.0/" + file.Name);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    main.universalVars.lastCacheHash = "-1";
+                                    main.ClearCacheWork();
+                                    Directory.CreateDirectory(main.universalVars.cacheLoc + "/dx11.0/");
+                                    foreach (var file in new DirectoryInfo(cachePath).GetFiles())
+                                    {
+                                        if (file.Name != "hash")
+                                        {
+                                            file.CopyTo(main.universalVars.cacheLoc + "/dx11.0/" + file.Name);
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //no cache
+                            }
+
+                            //only load cache of last shader mod
+                            break;
+                        }
+                        else
+                        {
+                            //not a shader mod
+                        }
+                    }
+                }
+                else
+                {
+                    //no mod loaded
+                }
+            }
+            else
+            {
+
+            }
+        }
+
         private void OnGameExit()
         {
             if (main.universalVars.NeedCompileWarning == true)
@@ -118,6 +194,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             if (main.universalVars.NeedRedisplay == true)
             {
+                main.RefreshMods();
                 main.Show();
             }
             else
@@ -129,6 +206,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void RunGame(string processName)
         {
+            AutoLoadCache();
+
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
             {
                 ReplaceFile(main.universalVars.resourceDir);

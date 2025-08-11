@@ -178,7 +178,7 @@
     <value>v1.9    by Federation Studio 2025</value>
   </data>
   <data name="U_ClearAllCache" xml:space="preserve">
-    <value>Clear All Shader Cache</value>
+    <value>Clear All Shader Cache and Records</value>
   </data>
   <data name="U_Restore" xml:space="preserve">
     <value>Restore Default Shader File (For File Replace Mode Only)</value>
@@ -281,5 +281,8 @@
   </data>
   <data name="U_OpenCacheFolder" xml:space="preserve">
     <value>Open Shader Cache Folder</value>
+  </data>
+  <data name="M_CollectCache" xml:space="preserve">
+    <value>Collect Shader Cache to Mod</value>
   </data>
 </root>

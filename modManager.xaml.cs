@@ -6,6 +6,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -23,43 +25,18 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private MainWindow.ModManagerVars vars;
 
-        private class Mod
-        {
-            public string name { get; set; }
-            public string type { get; set; }
-            public bool hasShader { get; set; }
-            public string path;
-            public string folderName;
-            public bool hasLoad;
-
-        public Mod(string n,string t,string p,string fn,bool hS)
-            {
-                name = n;
-                type = t;
-                path = p;
-                folderName = fn;
-                hasShader = hS;
-                hasLoad = false;
-            }
-        };
-
-        //option.set name -> mod
-        private Dictionary<string,Mod> modDic;
-        private List<Mod> modLoaded;
-
         //user can not select one row in two data grids
         private struct SelectedRow
         {
             public string dataGrid;
-            public List<Mod> mods;
+            public List<MainWindow.Mod> mods;
 
-            public SelectedRow(string dg, List<Mod> m){
+            public SelectedRow(string dg, List<MainWindow.Mod> m){
                 dataGrid = dg;
                 mods = m;
             }
         }
         private SelectedRow selectedRow;
-        private bool hasMod;
 
         public ModManager()
         {
@@ -69,199 +46,16 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             InitializeComponent();
 
-            modDic = new Dictionary<string, Mod>();
-            modLoaded = new List<Mod>();
-
-            RefreshWork();
-        }
-
-        private void RefreshWork()
-        {
-            modDic.Clear();
-            modLoaded.Clear();
-
-            ReadModsFromWorkshop();
-            ReadModsFromLocal();
-
-            ReadLoadedMods();
-
+            main.RefreshMods();
             UpdateUI();
         }
 
-        private string getModShowName(FileInfo[] modInfo)
-        {
-            string name;
-            using (StreamReader info = modInfo[0].OpenText())
-            {
-                string nameLine;
-                //push to name line
-                while ((nameLine = info.ReadLine()).Contains("{name") == false) ;
-
-                int commentIndex = nameLine.IndexOf(";");
-                nameLine = nameLine.Substring(0, commentIndex == -1 ? nameLine.Length : commentIndex);
-
-                int nameS = nameLine.IndexOf('"') + 1;
-                name = nameLine.Substring(nameS, nameLine.LastIndexOf('"') - nameS);
-#if DEBUG
-                Trace.WriteLine("mod show name= " + name);
-#endif
-
-                info.Close();
-            }
-            return name;
-        }
-
-        private bool checkShader(DirectoryInfo root)
-        {
-            DirectoryInfo[] searchResult = root.GetDirectories("resource", SearchOption.TopDirectoryOnly);
-            if (searchResult.Length != 0)
-            {
-                DirectoryInfo resouce = searchResult[0];
-
-                //check if shader is in paks
-                foreach(var obj in resouce.GetFiles("*.pak",SearchOption.TopDirectoryOnly))
-                {
-#if DEBUG
-                    Trace.WriteLine("get a pak= "+obj.Name);
-#endif
-                    ZipArchive curPak = ZipFile.Open(obj.FullName, ZipArchiveMode.Read);
-
-                    foreach(var file in curPak.Entries)
-                    {
-                        if (file.FullName.Contains("shader/") == true)
-                        {
-                            if (file.Length > 0)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-
-                }
-
-                string shaderFolder = resouce.FullName + "/shader";
-                //check if shader is in dir
-                if (Directory.Exists(shaderFolder)==true)
-                {
-                    DirectoryInfo shader = new DirectoryInfo(shaderFolder);
-                    foreach (FileInfo file in shader.GetFiles("*",SearchOption.AllDirectories))
-                    {
-#if DEBUG
-                        Trace.WriteLine("get a shader file= " + file.Name);
-#endif
-                        if (file.Length > 0)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private void ReadModsFromWorkshop()
-        {
-            foreach(var dir in vars.workshopDir.GetDirectories())
-            {
-                FileInfo[] modInfo = dir.GetFiles("mod.info",SearchOption.TopDirectoryOnly);
-                string folderName = "mod_" + dir.Name;
-
-                if (modInfo.Length==0)
-                {
-                    //not a mod
-                    continue;
-                }
-                else if (folderName.Contains(' ') == true)
-                {
-                    //is a mod, but not valid
-                    continue;
-                }
-                string name = getModShowName(modInfo);
-
-                bool hasShader = checkShader(dir);
-
-
-                Mod single = new Mod(name, "Workshop", dir.FullName, folderName, hasShader);
-
-                modDic.Add(folderName, single);
-            }
-        }
-
-        private void ReadModsFromLocal()
-        {
-            foreach (var dir in vars.localDir.GetDirectories())
-            {
-                FileInfo[] modInfo = dir.GetFiles("mod.info", SearchOption.TopDirectoryOnly);
-                string folderName = dir.Name.ToLower();
-
-                if (modInfo.Length == 0)
-                {
-                    //not a mod
-                    continue;
-                }
-                else if (folderName.Contains(' ')==true)
-                {
-                    //is a mod, but not valid
-                    continue;
-                }
-                string name = getModShowName(modInfo);
-
-                bool hasShader = checkShader(dir);
-
-                
-
-                Mod single = new Mod(name, "Local", dir.FullName, folderName, hasShader);
-
-                modDic.Add(folderName, single);
-            }
-        }
-
-        private void ReadLoadedMods()
-        {
-            using (StreamReader opt = File.OpenText(main.universalVars.optionLoc))
-            {
-                //push to mod list start point
-                while (opt.ReadLine().Contains("{mods") == false)
-                {
-                    if (opt.EndOfStream == true)
-                    {
-                        //no mod loaded
-                        return;
-                    }
-                }
-
-                while ((opt.ReadLine() is var line)&& line.Contains("}") == false)
-                {
-#if DEBUG
-                    Trace.WriteLine(line);
-#endif
-                    int nameS = line.IndexOf("\"")+1;
-                    int nameE = line.IndexOf(":");
-                    if (nameS == -1 || nameE == -1)
-                    {
-                        //not valid
-                        continue;
-                    }
-
-                    string modName = line.Substring(nameS, nameE - nameS);
-#if DEBUG
-                    Trace.WriteLine(modName);
-#endif
-                    modDic[modName].hasLoad = true;
-                    modLoaded.Add(modDic[modName]);
-
-                }
-
-                opt.Close();
-            }
-        }
         private void UpdateUI()
         {
-            hasMod = true;
+            vars.hasMod = true;
             loadedMods.Items.Clear();
             unloadedMods.Items.Clear();
-            foreach(var mod in modDic.Values)
+            foreach(var mod in main.universalVars.modDic.Values)
             {
                 if (mod.hasLoad == true)
                 {
@@ -273,7 +67,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 }
             }
 
-            foreach(var mod in modLoaded)
+            foreach(var mod in main.universalVars.modLoaded)
             {
                 loadedMods.Items.Add(mod);
             }
@@ -281,19 +75,19 @@ namespace GOHShaderModdingSupportLauncherWPF
             if (loadedMods.Items.Count != 0)
             {
                 loadedMods.SelectedIndex = 0;
-                selectedRow = new SelectedRow("loadedMods",loadedMods.SelectedItems.Cast<Mod>().ToList());
+                selectedRow = new SelectedRow("loadedMods",loadedMods.SelectedItems.Cast<MainWindow.Mod>().ToList());
 
             }
             else if (unloadedMods.Items.Count!=0)
             {
                 unloadedMods.SelectedIndex = 0;
-                selectedRow = new SelectedRow("unloadedMods", unloadedMods.SelectedItems.Cast<Mod>().ToList());
+                selectedRow = new SelectedRow("unloadedMods", unloadedMods.SelectedItems.Cast<MainWindow.Mod>().ToList());
             }
             else
             {
                 //no mod!
                 selectedRow = new SelectedRow();
-                hasMod = false;
+                vars.hasMod = false;
             }
             
         }
@@ -323,7 +117,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 opt.Close();
             }
 
-            foreach(Mod mod in loadedMods.Items)
+            foreach(MainWindow.Mod mod in loadedMods.Items)
             {
                 modified += "\t\t\""+mod.folderName+ ":0\"\r\n";
             }
@@ -333,7 +127,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             File.WriteAllText(main.universalVars.optionLoc, modified);
         }
 
-        private void DataGridAddRange(DataGrid dg,List<Mod> mods)
+        private void DataGridAddRange(DataGrid dg,List<MainWindow.Mod> mods)
         {
             foreach(var mod in mods)
             {
@@ -341,7 +135,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        private void DataGridRemoveRange(DataGrid dg, List<Mod> mods)
+        private void DataGridRemoveRange(DataGrid dg, List<MainWindow.Mod> mods)
         {
             foreach (var mod in mods)
             {
@@ -363,7 +157,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 foreach(var mod in selectedRow.mods)
                 {
                     mod.hasLoad = true;
-                    modLoaded.Add(mod);
+                    main.universalVars.modLoaded.Add(mod);
                 }
             }
 
@@ -380,7 +174,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 foreach (var mod in selectedRow.mods)
                 {
                     mod.hasLoad = false;
-                    modLoaded.Remove(mod);
+                    main.universalVars.modLoaded.Remove(mod);
                 }
             }
             else
@@ -392,7 +186,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void openModFolder_Click(object sender, RoutedEventArgs e)
         {
-            if (hasMod == true)
+            if (vars.hasMod == true)
             {
                 Process.Start("explorer.exe", selectedRow.mods[0].path);
             }
@@ -401,8 +195,112 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void loadShaderCache_Click(object sender, RoutedEventArgs e)
         {
-            main.ClearCacheWork();
 
+            string cachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
+            string hashFile = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0/hash";
+
+            if (Directory.Exists(cachePath) == true)
+            {
+                if (File.Exists(hashFile) == true)
+                {
+                    string cacheHash = File.ReadAllText(hashFile);
+                    if (cacheHash == main.universalVars.lastCacheHash)
+                    {
+                        //do nothing because cache has been loaded
+                        MessageBox.Show("Shader Cache from this mod has been loaded.\nIf you are sure it is not please manually clear all cache from Utilities page.", "Notice");
+                    }
+                    else
+                    {
+                        main.universalVars.lastCacheHash = cacheHash;
+                        main.ClearCacheWork();
+                        Directory.CreateDirectory(main.universalVars.cacheLoc + "/dx11.0/");
+                        foreach (var file in new DirectoryInfo(cachePath).GetFiles())
+                        {
+                            if (file.Name != "hash")
+                            {
+                                file.CopyTo(main.universalVars.cacheLoc + "/dx11.0/" + file.Name);
+                            }
+                            
+                        }
+                        MessageBox.Show("Successfully load all Shader Cache.", "Notice");
+                    }
+                }
+                else
+                {
+                    main.universalVars.lastCacheHash = "-1";
+                    main.ClearCacheWork();
+                    Directory.CreateDirectory(main.universalVars.cacheLoc + "/dx11.0/");
+                    foreach (var file in new DirectoryInfo(cachePath).GetFiles())
+                    {
+                        if (file.Name != "hash")
+                        {
+                            file.CopyTo(main.universalVars.cacheLoc + "/dx11.0/" + file.Name);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No Shader Cache found in selected mod.", "Notice");
+            }
+        }
+
+        private void collectShaderCache_Click(object sender, RoutedEventArgs e)
+        {
+            if (selectedRow.mods[0].type == "Local")
+            {
+                string modCachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
+                string gameCachePath = main.universalVars.cacheLoc + "/dx11.0";
+
+                HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes("ShaderCheck"));
+
+                
+                if (Directory.Exists(gameCachePath)==true)
+                {
+                    List<FileInfo> files = new DirectoryInfo(gameCachePath).GetFiles("*", SearchOption.TopDirectoryOnly).OrderBy(p => p.FullName).ToList();
+                    if (files.Count > 0)
+                    {
+                        if (Directory.Exists(modCachePath) == true)
+                        {
+                            Directory.Delete(modCachePath, true);
+                        }
+                        Directory.CreateDirectory(modCachePath);
+
+                        for (int i = 0; i < files.Count && (files[i] is var file); i++)
+                        {
+                            byte[] curF = File.ReadAllBytes(file.FullName);
+                            File.WriteAllBytes(modCachePath + "/" + file.Name, curF);
+                            if (i == files.Count - 1)
+                            {
+                                hmac.TransformFinalBlock(curF, 0, curF.Length);
+                            }
+                            else
+                            {
+                                hmac.TransformBlock(curF, 0, curF.Length, curF, 0);
+                            }
+                        }
+
+                        byte[] hash = hmac.Hash;
+                        File.WriteAllBytes(modCachePath + "/hash", hash);
+                        MessageBox.Show("Cache collecting complete!", "Notice");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No cache to collect.", "Notice");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("No cache to collect.", "Notice");
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Collecting caches to Workshop mods is not allowed!", "Warning");
+            }
+
+            
         }
 
         private bool isSyncingSelection = false;
@@ -413,7 +311,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             try
             {
                 isSyncingSelection = true;
-                selectedRow = new SelectedRow("unloadedMods", unloadedMods.SelectedItems.Cast<Mod>().ToList());
+                selectedRow = new SelectedRow("unloadedMods", unloadedMods.SelectedItems.Cast<MainWindow.Mod>().ToList());
                 loadedMods.SelectedIndex = -1;
             }
             finally
@@ -428,7 +326,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             try
             {
                 isSyncingSelection = true;
-                selectedRow = new SelectedRow("loadedMods", loadedMods.SelectedItems.Cast<Mod>().ToList());
+                selectedRow = new SelectedRow("loadedMods", loadedMods.SelectedItems.Cast<MainWindow.Mod>().ToList());
                 unloadedMods.SelectedIndex = -1;
             }
             finally
@@ -439,18 +337,19 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void refresh_Click(object sender, RoutedEventArgs e)
         {
-            RefreshWork();
+            main.RefreshMods();
+            UpdateUI();
         }
 
         private Point startPoint;
-        private Mod draggedItem;
+        private MainWindow.Mod draggedItem;
 
         //mouse down
         private void loadedMods_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             startPoint = e.GetPosition(null);
 
-            draggedItem = loadedMods.SelectedItem as Mod;
+            draggedItem = loadedMods.SelectedItem as MainWindow.Mod;
         }
 
         //start drag
@@ -493,7 +392,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             var target = GetDataGridRowItemAt(e.GetPosition(loadedMods));
             if (target == null || target == draggedItem) return;
 
-            int newIndex = loadedMods.Items.IndexOf((Mod)target);
+            int newIndex = loadedMods.Items.IndexOf((MainWindow.Mod)target);
 
             loadedMods.Items.Remove(draggedItem);
             loadedMods.Items.Insert(newIndex, draggedItem);

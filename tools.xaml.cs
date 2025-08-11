@@ -45,6 +45,7 @@ namespace GOHShaderModdingSupportLauncherWPF
         private void clearShaderCache_Click(object sender, RoutedEventArgs e)
         {
             main.ClearCacheWork();
+            main.universalVars.lastCacheHash = "-1";
             MessageBox.Show("Shader cache cleanup complete!", "Notice");
         }
 

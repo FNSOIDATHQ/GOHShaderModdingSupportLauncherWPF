@@ -232,6 +232,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Collect Shader Cache to Mod 的本地化字符串。
+        /// </summary>
+        public static string M_CollectCache {
+            get {
+                return ResourceManager.GetString("M_CollectCache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Name 的本地化字符串。
         /// </summary>
         public static string M_GridName {
@@ -511,7 +520,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Clear All Shader Cache 的本地化字符串。
+        ///   查找类似 Clear All Shader Cache and Records 的本地化字符串。
         /// </summary>
         public static string U_ClearAllCache {
             get {
