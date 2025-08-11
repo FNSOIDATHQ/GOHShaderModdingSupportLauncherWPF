@@ -13,7 +13,7 @@
                  WindowCornerPreference="Round"
                  WindowStartupLocation="CenterScreen"
                  Closed="OnClosed"
-                 Width="1600"
+                 Width="1700"
                  Height="800">
     <Grid x:Name="grid">
         <Image Grid.Column="1"
