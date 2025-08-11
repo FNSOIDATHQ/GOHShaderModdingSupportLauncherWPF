@@ -289,7 +289,12 @@ namespace GOHShaderModdingSupportLauncherWPF
                 else
                 {
                     //no mod loaded
-                    main.universalVars.lastShaderHash = "0";
+                    if (main.universalVars.lastShaderHash != "0")
+                    {
+                        main.ClearCacheWork();
+                        main.universalVars.lastShaderHash = "0";
+                    }
+                    
                     return false;
                 }
             }

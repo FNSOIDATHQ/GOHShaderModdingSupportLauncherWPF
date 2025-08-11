@@ -17,7 +17,7 @@
                  Height="800">
     <Grid x:Name="grid">
         <Image Grid.Column="1"
-               Source="/bg.jpg"
+               Source="bg.jpg"
                Stretch="UniformToFill"
                Opacity="0.4"/>
         <ui:TitleBar
@@ -27,7 +27,7 @@
             CloseWindowByDoubleClickOnIcon="True"
             FontSize="16">
             <ui:TitleBar.Icon>
-                <ui:ImageIcon  Source="/gemIconBg.ico"
+                <ui:ImageIcon  Source="gemIconBg.ico"
                                VerticalAlignment="Center"
                                Height="20"/>
             </ui:TitleBar.Icon>
