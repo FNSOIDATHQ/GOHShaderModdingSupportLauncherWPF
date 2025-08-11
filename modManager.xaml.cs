@@ -25,6 +25,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private MainWindow.ModManagerVars vars;
 
+        private bool hasInit=false;
+
         //user can not select one row in two data grids
         private struct SelectedRow
         {
@@ -48,6 +50,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             main.RefreshMods();
             UpdateUI();
+
+            hasInit = true;
         }
 
         private void UpdateUI()
@@ -151,14 +155,14 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             else
             {
-                DataGridAddRange(loadedMods,selectedRow.mods);
-                DataGridRemoveRange(unloadedMods, selectedRow.mods);
-
-                foreach(var mod in selectedRow.mods)
+                foreach (var mod in selectedRow.mods)
                 {
                     mod.hasLoad = true;
                     main.universalVars.modLoaded.Add(mod);
                 }
+
+                DataGridAddRange(loadedMods,selectedRow.mods);
+                DataGridRemoveRange(unloadedMods, selectedRow.mods);
             }
 
             UpdateOptionFIle();
@@ -168,14 +172,17 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             if (selectedRow.dataGrid == "loadedMods")
             {
-                DataGridAddRange(unloadedMods, selectedRow.mods);
-                DataGridRemoveRange(loadedMods, selectedRow.mods);
-
                 foreach (var mod in selectedRow.mods)
                 {
                     mod.hasLoad = false;
+#if DEBUG
+                    //Trace.WriteLine("modloaded[0]==selectedRow.mods[0] ? " + object.ReferenceEquals(mod, main.universalVars.modLoaded[0]));
+#endif
                     main.universalVars.modLoaded.Remove(mod);
                 }
+
+                DataGridAddRange(unloadedMods, selectedRow.mods);
+                DataGridRemoveRange(loadedMods, selectedRow.mods);
             }
             else
             {
@@ -402,6 +409,20 @@ namespace GOHShaderModdingSupportLauncherWPF
             UpdateOptionFIle();
 
             draggedItem = null;
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (hasInit == true)
+            {
+#if DEBUG
+                Trace.WriteLine("mod manager page loaded!");
+#endif
+
+                //this should work when game exit and mod data instances have been refreshed
+                UpdateUI();
+
+            }
         }
     }
 }

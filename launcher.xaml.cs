@@ -262,6 +262,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                     //default shader -> shader mod
                     if (main.universalVars.lastShaderHash == "0")
                     {
+#if DEBUG
+                        Trace.WriteLine("vanilla -> shader mod");
+#endif
                         main.ClearCacheWork();
                         main.universalVars.lastShaderHash = hashS;
                         return false;
@@ -289,8 +292,15 @@ namespace GOHShaderModdingSupportLauncherWPF
                 else
                 {
                     //no mod loaded
+#if DEBUG
+                    Trace.WriteLine("no mod loaded!");
+#endif
+                    //shader mod -> vanilla
                     if (main.universalVars.lastShaderHash != "0")
                     {
+#if DEBUG
+                        Trace.WriteLine("shader mod -> vanilla");
+#endif
                         main.ClearCacheWork();
                         main.universalVars.lastShaderHash = "0";
                     }

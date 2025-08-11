@@ -115,17 +115,18 @@ namespace GOHShaderModdingSupportLauncherWPF
             
             mv.Loaded += navToDefaultPage;
 
-            InitBasicData();
-        }
-        
-        private void InitBasicData()
-        {
-
             universalVars = new UniversalVars();
             launcherVars = new LauncherVars();
             settingsVars = new SettingsVars();
             toolsVars = new ToolsVars();
             modManagerVars = new ModManagerVars();
+
+            InitBasicData();
+        }
+        
+        private void InitBasicData()
+        {
+            
 
 
             universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
