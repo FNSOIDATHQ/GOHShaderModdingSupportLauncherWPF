@@ -211,7 +211,7 @@
     <value>Batch Convert Materials (mtl)</value>
   </data>
   <data name="C_EnableEnvMaps" xml:space="preserve">
-    <value>Enable environment map support for all non-PBR materials</value>
+    <value>Enable environment map support for all non-PBR materials (Experimental)</value>
   </data>
   <data name="A_BugReport" xml:space="preserve">
     <value>Find a bug or get some interesting ideas? Tell our team about them on Github or Steam Workshop!</value>
@@ -265,7 +265,7 @@
     <value>Before Game Launches</value>
   </data>
   <data name="S_AutoLoadCache" xml:space="preserve">
-    <value>Automatically load shader cache</value>
+    <value>Automatically load shader cache (experimental)</value>
   </data>
   <data name="S_RefreshCache" xml:space="preserve">
     <value>Refresh shader cache when shader files in loaded mods are modified</value>

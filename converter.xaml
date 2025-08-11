@@ -123,7 +123,7 @@
                 <ui:Button x:Name="enableEnvMaps"
                            Height="50"
                            Click="enableEnvMaps_Click"
-                           Margin="5,5,5,5" Visibility="Hidden">
+                           Margin="5,5,5,5">
                     <TextBlock Text="{x:Static loc:i18n.C_EnableEnvMaps}"
                                FontSize="18"/>
                 </ui:Button>

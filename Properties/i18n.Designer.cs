@@ -106,7 +106,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Enable environment map support for all non-PBR materials 的本地化字符串。
+        ///   查找类似 Enable environment map support for all non-PBR materials (Experimental) 的本地化字符串。
         /// </summary>
         public static string C_EnableEnvMaps {
             get {
@@ -331,7 +331,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Automatically load shader cache 的本地化字符串。
+        ///   查找类似 Automatically load shader cache (experimental) 的本地化字符串。
         /// </summary>
         public static string S_AutoLoadCache {
             get {

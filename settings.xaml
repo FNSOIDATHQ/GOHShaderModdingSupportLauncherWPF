@@ -78,7 +78,7 @@
                        FontSize="24"/>
         </Label>
         <CheckBox x:Name="autoLoadCache"
-                  IsChecked="True"
+                  IsChecked="False"
                   Foreground="#E4FFFFFF"
                   Click="autoLoadCache_Click">
             <TextBlock Text="{x:Static loc:i18n.S_AutoLoadCache}"

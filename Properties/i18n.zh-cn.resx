@@ -211,7 +211,7 @@
     <value>批量转换材质（mtl）</value>
   </data>
   <data name="C_EnableEnvMaps" xml:space="preserve">
-    <value>为所有非PBR材质启用环境贴图支持</value>
+    <value>为所有非PBR材质启用环境贴图支持（实验性）</value>
   </data>
   <data name="A_BugReport" xml:space="preserve">
     <value>发现了故障或者有趣的点子？在Github或者创意工坊联系我们！</value>
@@ -265,7 +265,7 @@
     <value>游戏启动前</value>
   </data>
   <data name="S_AutoLoadCache" xml:space="preserve">
-    <value>自动加载着色器缓存</value>
+    <value>自动加载着色器缓存（实验性）</value>
   </data>
   <data name="S_RefreshCache" xml:space="preserve">
     <value>已加载mod的着色器文件修改时刷新着色器缓存</value>

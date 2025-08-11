@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Printing;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -71,7 +76,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
 #if DEBUG
             Trace.WriteLine(presetEndLoc);
-            Trace.Write(opt);
+            //Trace.Write(opt);
 #endif
 
             using (StreamWriter sw = File.CreateText(optionLoc))
@@ -84,6 +89,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void RestoreFile(bool force = false)
         {
+
             if (main.universalVars.NeedRestore == true || force == true)
             {
                 //retore
@@ -186,6 +192,114 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        private bool CheckShaderModify()
+        {
+            if (main.universalVars.NeedCheckShaderModify == true)
+            {
+                int len = main.universalVars.modLoaded.Count;
+                if (len > 0)
+                {
+                    HMACSHA256 hmac = new HMACSHA256(Encoding.UTF8.GetBytes("SahderCheck"));
+                    for (int i = len - 1; i >= 0; i--)
+                    {
+                        if (main.universalVars.modLoaded[i].hasShader == true)
+                        {
+                            //no need to check because mod with shader must have resource folder
+                            DirectoryInfo resouce = new DirectoryInfo(main.universalVars.modLoaded[i].path + "/resource");
+                            
+
+                            //check if shader is in paks
+                            foreach (var obj in resouce.GetFiles("*.pak", SearchOption.TopDirectoryOnly))
+                            {
+                                ZipArchive curPak = ZipFile.Open(obj.FullName, ZipArchiveMode.Read);
+
+                                foreach (var file in curPak.Entries)
+                                {
+                                    if (file.FullName.Contains("shader/dx10/") == true)
+                                    {
+                                        byte[] fn = Encoding.UTF8.GetBytes(file.FullName.ToString());
+                                        byte[] fl = Encoding.UTF8.GetBytes(file.Length.ToString());
+                                        byte[] fw = Encoding.UTF8.GetBytes(file.LastWriteTime.ToString());
+                                        hmac.TransformBlock(fn, 0, fn.Length, null, 0);
+                                        hmac.TransformBlock(fl, 0, fl.Length, null, 0);
+                                        hmac.TransformBlock(fw, 0, fw.Length, null, 0);
+                                    }
+                                }
+
+                            }
+
+                            string shaderFolder = resouce.FullName + "/shader/dx10";
+                            //check if shader is in dir
+                            if (Directory.Exists(shaderFolder) == true)
+                            {
+                                DirectoryInfo shader = new DirectoryInfo(shaderFolder);
+                                foreach (FileInfo file in shader.GetFiles("*", SearchOption.AllDirectories))
+                                {
+
+                                    byte[] fn = Encoding.UTF8.GetBytes(file.FullName.ToString());
+                                    byte[] fl = Encoding.UTF8.GetBytes(file.Length.ToString());
+                                    byte[] fw = Encoding.UTF8.GetBytes(file.LastWriteTime.ToString());
+                                    hmac.TransformBlock(fn, 0, fn.Length, null, 0);
+                                    hmac.TransformBlock(fl, 0, fl.Length, null, 0);
+                                    hmac.TransformBlock(fw, 0, fw.Length, null, 0);
+                                }
+                            }
+
+                            
+
+
+                        }
+                        else
+                        {
+                            //not a shader mod
+                        }
+                    }
+
+                    //save hash
+                    hmac.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+                    byte[] hash = hmac.Hash;
+                    string hashS = Convert.ToBase64String(hash);
+                    //default shader -> shader mod
+                    if (main.universalVars.lastShaderHash == "0")
+                    {
+                        main.ClearCacheWork();
+                        main.universalVars.lastShaderHash = hashS;
+                        return false;
+                    }
+                    //shader mod -> shader mod
+                    else
+                    {
+                        //no changes
+                        if (hashS == main.universalVars.lastShaderHash)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+#if DEBUG
+                            Trace.WriteLine("shader modified!");
+#endif
+                            main.ClearCacheWork();
+                            main.universalVars.lastShaderHash = hashS;
+                            return true;
+                        }
+                    }
+
+                }
+                else
+                {
+                    //no mod loaded
+                    main.universalVars.lastShaderHash = "0";
+                    return false;
+                }
+            }
+            else
+            {
+                //do not check
+                return false;
+            }
+        }
+
         private void OnGameExit()
         {
             if (main.universalVars.NeedCompileWarning == true)
@@ -206,7 +320,12 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void RunGame(string processName)
         {
-            AutoLoadCache();
+            bool hasModified = CheckShaderModify();
+            if (hasModified == false)
+            {
+                AutoLoadCache();
+            }
+
 
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
             {

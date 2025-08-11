@@ -48,14 +48,16 @@ namespace GOHShaderModdingSupportLauncherWPF
             public DirectoryInfo? gameDir, resourceDir;
             public string profileLoc, cacheLoc, optionLoc;
             public string configLoc;
-            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning,NeedAutoLoad, AlwaysConfirm;
+            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning,NeedAutoLoad, NeedCheckShaderModify, AlwaysConfirm;
 
             public DirectoryInfo? workshopDir, localDir;
             //option.set name -> mod
             public Dictionary<string, Mod> modDic;
             public List<Mod> modLoaded;
             public bool hasMod;
-            public string lastCacheHash;
+            //default value of lastShaderHash is 0, means the game is using default shader
+            //in this case shader modify check should return true to auto load caches
+            public string lastCacheHash,lastShaderHash;
             public UniversalVars()
             {
                 profileLoc = "";
@@ -65,6 +67,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 modLoaded = new List<Mod>();
                 modDic = new Dictionary<string, Mod>();
                 lastCacheHash = "";
+                lastShaderHash = "";
             }
         }
         public UniversalVars universalVars;
@@ -185,9 +188,15 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 universalVars.NeedAutoLoad = bool.Parse(line);
                                 break;
                             case 8:
-                                universalVars.lastCacheHash = line;
+                                universalVars.NeedCheckShaderModify = bool.Parse(line);
                                 break;
                             case 9:
+                                universalVars.lastCacheHash = line;
+                                break;
+                            case 10:
+                                universalVars.lastShaderHash = line;
+                                break;
+                            case 11:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -207,7 +216,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                                     HasGetGameRoot = true;
                                 }
                                 break;
-                            case 10:
+                            case 12:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -240,7 +249,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 //the config file is not complete or break,fall back to default value
                 //no cache for path is not important
-                if (index != 9 && index != 11)
+                if (index != 11 && index != 13)
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
@@ -248,9 +257,11 @@ namespace GOHShaderModdingSupportLauncherWPF
                     universalVars.NeedClearCache = false;
                     universalVars.NeedRedisplay = true;
                     universalVars.NeedCompileWarning = true;
-                    universalVars.NeedAutoLoad = true;
+                    universalVars.NeedAutoLoad = false;
+                    universalVars.NeedCheckShaderModify = true;
                     universalVars.AlwaysConfirm = false;
                     universalVars.lastCacheHash = "-1";
+                    universalVars.lastShaderHash = "0";
                     HasGetGameRoot = false;
                     HasGetProfileLoc = false;
                 }
@@ -263,9 +274,11 @@ namespace GOHShaderModdingSupportLauncherWPF
                 universalVars.NeedClearCache = false;
                 universalVars.NeedRedisplay = true;
                 universalVars.NeedCompileWarning = true;
-                universalVars.NeedAutoLoad = true;
+                universalVars.NeedAutoLoad = false;
+                universalVars.NeedCheckShaderModify = true;
                 universalVars.AlwaysConfirm = false;
                 universalVars.lastCacheHash = "-1";
+                universalVars.lastShaderHash = "0";
                 HasGetProfileLoc = false;
             }
         }
@@ -487,10 +500,13 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                     foreach (var file in curPak.Entries)
                     {
-                        if (file.FullName.Contains("shader/") == true)
+                        if (file.FullName.Contains("shader/dx10/") == true)
                         {
                             if (file.Length > 0)
                             {
+#if DEBUG
+                                Trace.WriteLine("get a shader in pak= " + file.FullName);
+#endif
                                 return true;
                             }
                         }
@@ -498,7 +514,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 }
 
-                string shaderFolder = resouce.FullName + "/shader";
+                string shaderFolder = resouce.FullName + "/shader/dx10";
                 //check if shader is in dir
                 if (Directory.Exists(shaderFolder) == true)
                 {
@@ -690,7 +706,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                 sw.WriteLine(universalVars.NeedCompileWarning);
                 sw.WriteLine(universalVars.AlwaysConfirm);
                 sw.WriteLine(universalVars.NeedAutoLoad);
+                sw.WriteLine(universalVars.NeedCheckShaderModify);
                 sw.WriteLine(universalVars.lastCacheHash);
+                sw.WriteLine(universalVars.lastShaderHash);
                 if (HasGetGameRoot == true)
                 {
                     sw.WriteLine(universalVars.gameDir.FullName);

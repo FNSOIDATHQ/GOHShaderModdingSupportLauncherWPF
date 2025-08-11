@@ -252,7 +252,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 string modCachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
                 string gameCachePath = main.universalVars.cacheLoc + "/dx11.0";
 
-                HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes("ShaderCheck"));
+                HMACSHA512 hmac = new HMACSHA512(Encoding.UTF8.GetBytes("CacheCheck"));
 
                 
                 if (Directory.Exists(gameCachePath)==true)
@@ -279,9 +279,11 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 hmac.TransformBlock(curF, 0, curF.Length, curF, 0);
                             }
                         }
+                        
 
                         byte[] hash = hmac.Hash;
-                        File.WriteAllBytes(modCachePath + "/hash", hash);
+
+                        File.WriteAllText(modCachePath + "/hash", Convert.ToBase64String(hash));
                         MessageBox.Show("Cache collecting complete!", "Notice");
                     }
                     else
