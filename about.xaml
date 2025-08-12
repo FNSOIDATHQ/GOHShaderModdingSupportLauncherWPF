@@ -27,11 +27,11 @@
             <TextBlock Text="{x:Static loc:i18n.A_LinkWorkshop}"
                        FontSize="24"/>
         </ui:HyperlinkButton>
-        <TextBlock Text="{x:Static loc:i18n.A_Version}"
+        <TextBlock
                    Foreground="#9EFFFFFF"
                    FontSize="24"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"
-                   Margin="0,100,0,0"/>
+                   Margin="0,100,0,0"><Run Text="v1.9"/><Run Language="zh-cn" Text="1"/><Run Text="    by Federation Studio 2025"/></TextBlock>
     </StackPanel>
 </Page>
