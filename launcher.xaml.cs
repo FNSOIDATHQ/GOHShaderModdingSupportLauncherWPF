@@ -324,7 +324,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             if (main.universalVars.NeedRedisplay == true)
             {
                 main.RefreshMods();
-                main.Show();
+                main.WindowState = WindowState.Normal;
+                main.ShowInTaskbar = true;
             }
             else
             {
@@ -360,7 +361,9 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             Process game = Process.Start(main.universalVars.gameDir.GetFiles(processName)[0].ToString(), args);
 
-            main.Hide();
+            //main.Hide();
+            main.WindowState = WindowState.Minimized;
+            main.ShowInTaskbar = false;
             game.WaitForExit();
 
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
