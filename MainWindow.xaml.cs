@@ -463,24 +463,54 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private string getModShowName(FileInfo[] modInfo)
         {
-            string name;
-            using (StreamReader info = modInfo[0].OpenText())
+            string name="";
+            try
             {
-                string nameLine;
-                //push to name line
-                while ((nameLine = info.ReadLine()).Contains("{name") == false) ;
+                using (StreamReader info = modInfo[0].OpenText())
+                {
+                    string nameLine;
+                    //push to name line
+                    while (info.EndOfStream == false)
+                    {
+                        while (((nameLine = info.ReadLine()).Contains("name", StringComparison.OrdinalIgnoreCase) == false || nameLine.Contains("{", StringComparison.Ordinal) == false) && info.EndOfStream == false) ;
 
-                int commentIndex = nameLine.IndexOf(";");
-                nameLine = nameLine.Substring(0, commentIndex == -1 ? nameLine.Length : commentIndex);
-
-                int nameS = nameLine.IndexOf('"') + 1;
-                name = nameLine.Substring(nameS, nameLine.LastIndexOf('"') - nameS);
+                        int commentIndex = nameLine.IndexOf(";");
+                        nameLine = nameLine.Substring(0, commentIndex == -1 ? nameLine.Length : commentIndex);
 #if DEBUG
-                Trace.WriteLine("mod show name= " + name);
+                        Trace.WriteLine("get nameline= " + nameLine);
 #endif
+                        if (nameLine.Length > 0)
+                        {
+                            int nameS = nameLine.IndexOf('"') + 1;
+                            int nameL = nameLine.LastIndexOf('"') - nameS;
+                            if(nameS==-1|| nameL <= 0)
+                            {
+                                continue;
+                            }
+                            name = nameLine.Substring(nameS, nameL);
+#if DEBUG
+                            Trace.WriteLine("mod show name= " + name);
+#endif
+                            break;
+                        }
 
-                info.Close();
+                    }
+
+
+                    info.Close();
+                }
+
+                if (name == "")
+                {
+                    name = "[Failed to Get Name]";
+                }
             }
+            catch(Exception e)
+            {
+                MessageBox.Show("Get error when reading mod.info file! Error=\n"+e, "ERROR");
+                name = "[Failed to Get Name]";
+            }
+
             return name;
         }
 
@@ -553,6 +583,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                     //is a mod, but not valid
                     continue;
                 }
+#if DEBUG
+                Trace.WriteLine("mod dir name= " + dir.Name);
+#endif
                 string name = getModShowName(modInfo);
 
                 bool hasShader = checkShader(dir);

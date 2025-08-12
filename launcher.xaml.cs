@@ -326,8 +326,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                 main.RefreshMods();
                 main.WindowState = WindowState.Normal;
                 main.ShowInTaskbar = true;
-                main.Topmost = true;
-                main.Topmost = false;
+                //main.Topmost = true;
+                //main.Topmost = false;
             }
             else
             {
