@@ -7,6 +7,7 @@ using System.Printing;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -315,6 +316,13 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        public static bool waitForProcessClose(Process game)
+        {
+            game.WaitForExit();
+
+            return true;
+        }
+
         private void OnGameExit()
         {
             if (main.universalVars.NeedCompileWarning == true)
@@ -324,10 +332,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             if (main.universalVars.NeedRedisplay == true)
             {
                 main.RefreshMods();
-                main.WindowState = WindowState.Normal;
-                main.ShowInTaskbar = true;
-                //main.Topmost = true;
-                //main.Topmost = false;
+                main.Show();
+                main.Topmost = true;
+                main.Topmost = false;
             }
             else
             {
@@ -363,10 +370,14 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             Process game = Process.Start(main.universalVars.gameDir.GetFiles(processName)[0].ToString(), args);
 
-            //main.Hide();
-            main.WindowState = WindowState.Minimized;
-            main.ShowInTaskbar = false;
-            game.WaitForExit();
+            
+            Thread waitForGaming = new Thread(() => waitForProcessClose(game));
+            waitForGaming.Start();
+            main.Hide();
+            while (waitForGaming.IsAlive)
+            {
+                Thread.Sleep(500);
+            }
 
             if (vars.lm == MainWindow.LauncherVars.LaunchMethod.FileReplace)
             {
