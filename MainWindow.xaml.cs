@@ -657,9 +657,13 @@ namespace GOHShaderModdingSupportLauncherWPF
 #if DEBUG
                     Trace.WriteLine(modName);
 #endif
-
-                    universalVars.modDic[modName].hasLoad = true;
-                    universalVars.modLoaded.Add(universalVars.modDic[modName]);
+                    //mod in option.set can be invalid
+                    if (universalVars.modDic.ContainsKey(modName) == true)
+                    {
+                        universalVars.modDic[modName].hasLoad = true;
+                        universalVars.modLoaded.Add(universalVars.modDic[modName]);
+                    }
+                    
 
                 }
 
