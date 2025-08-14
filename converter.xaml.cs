@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Reflection;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
+using GOHShaderModdingSupportLauncherWPF.Properties;
+
 
 namespace GOHShaderModdingSupportLauncherWPF
 {

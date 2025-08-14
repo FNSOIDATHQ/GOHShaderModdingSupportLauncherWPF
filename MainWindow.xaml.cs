@@ -5,11 +5,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
-using static GOHShaderModdingSupportLauncherWPF.MainWindow;
+using GOHShaderModdingSupportLauncherWPF.Properties;
+
 
 
 namespace GOHShaderModdingSupportLauncherWPF
