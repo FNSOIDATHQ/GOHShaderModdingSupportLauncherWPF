@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
 
 
@@ -214,7 +215,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                     if (cacheHash == main.universalVars.lastCacheHash)
                     {
                         //do nothing because cache has been loaded
-                        MessageBox.Show("Shader Cache from this mod has been loaded.\nIf you are sure it is not please manually clear all cache from Utilities page.", "Notice");
+                        MessageBox.Show(i18n.M_CacheHasBeenLoaded, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
@@ -229,7 +230,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                             }
                             
                         }
-                        MessageBox.Show("Successfully load all Shader Cache.", "Notice");
+                        MessageBox.Show(i18n.M_LoadCacheSuccessful, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 else
@@ -248,7 +249,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             else
             {
-                MessageBox.Show("No Shader Cache found in selected mod.", "Notice");
+                MessageBox.Show(i18n.M_NoCacheToLoad, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -291,22 +292,22 @@ namespace GOHShaderModdingSupportLauncherWPF
                         byte[] hash = hmac.Hash;
 
                         File.WriteAllText(modCachePath + "/hash", Convert.ToBase64String(hash));
-                        MessageBox.Show("Cache collecting complete!", "Notice");
+                        MessageBox.Show(i18n.M_CollectCacheSuccessful, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("No cache to collect.", "Notice");
+                        MessageBox.Show(i18n.M_NoCacheToCollect, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("No cache to collect.", "Notice");
+                    MessageBox.Show(i18n.M_NoCacheToCollect, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
                 }
 
             }
             else
             {
-                MessageBox.Show("Collecting caches to Workshop mods is not allowed!", "Warning");
+                MessageBox.Show(i18n.M_TryCollectWorkshopMod, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             

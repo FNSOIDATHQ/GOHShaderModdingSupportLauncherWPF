@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 
 namespace GOHShaderModdingSupportLauncherWPF
 {
@@ -29,19 +31,19 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            ShowErrorReport("UI线程异常", e.Exception);
+            ShowErrorReport("", e.Exception);
             e.Handled = true;
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            ShowErrorReport("非UI线程异常", ex);
+            ShowErrorReport("", ex);
         }
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            ShowErrorReport("Task异常", e.Exception);
+            ShowErrorReport("", e.Exception);
             e.SetObserved();
         }
 
@@ -52,21 +54,22 @@ namespace GOHShaderModdingSupportLauncherWPF
             return ex;
         }
 
+        //strinig type will not be use for now
         private void ShowErrorReport(string type, Exception ex)
         {
             var root = GetRootException(ex);
 
             var sb = new StringBuilder();
-            sb.AppendLine($"错误类型：{type}");
-            sb.AppendLine($"时间：{DateTime.Now}");
-            sb.AppendLine($"捕获异常类型：{ex?.GetType().FullName}");
-            sb.AppendLine($"捕获异常消息：{ex?.Message}");
-            sb.AppendLine($"根异常类型：{root?.GetType().FullName}");
-            sb.AppendLine($"根异常消息：{root?.Message}");
-            sb.AppendLine($"堆栈：{root?.StackTrace}");
+            //sb.AppendLine($"{i18n.APP_Type}{type}");
+            sb.AppendLine($"{i18n.APP_Time}{DateTime.Now}");
+            sb.AppendLine($"{i18n.APP_ExceptionType}{ex?.GetType().FullName}");
+            sb.AppendLine($"{i18n.APP_ExceptionMessage}{ex?.Message}\n");
+            sb.AppendLine($"{i18n.APP_RootType}{root?.GetType().FullName}");
+            sb.AppendLine($"{i18n.APP_RootMessage}{root?.Message}");
+            sb.AppendLine($"{i18n.APP_Stack}\n{root?.StackTrace}");
 
             // 显示给用户
-            MessageBox.Show(sb.ToString(), "发生错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(sb.ToString(), i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Error);
 
             Current.Shutdown();
         }

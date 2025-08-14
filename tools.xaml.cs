@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
 using static GOHShaderModdingSupportLauncherWPF.MainWindow;
 
@@ -47,7 +48,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             main.ClearCacheWork();
             main.universalVars.lastCacheHash = "-1";
             main.universalVars.lastShaderHash = "0";
-            MessageBox.Show("Shader cache cleanup complete!", "Notice");
+            MessageBox.Show(i18n.U_ClearAllCacheSuccessful, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void restore_Click(object sender, RoutedEventArgs e)
@@ -56,6 +57,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             main.DecompressFileLZMA(main.universalVars.resourceDir + @"\shader.lzma", main.universalVars.resourceDir + @"\shader.pak");
             File.Delete(main.universalVars.resourceDir + @"\shader.lzma");
             //main.CompressFileLZMA(main.universalVars.resourceDir + @"\shader.pak", main.universalVars.resourceDir + @"\shader.lzma");
+            MessageBox.Show(i18n.U_RestoreSuccessful, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void openConfig_Click(object sender, RoutedEventArgs e)

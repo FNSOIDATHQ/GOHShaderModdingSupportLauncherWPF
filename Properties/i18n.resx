@@ -285,4 +285,123 @@
   <data name="M_CollectCache" xml:space="preserve">
     <value>Collect Shader Cache to Mod</value>
   </data>
+  <data name="APP_ExceptionType" xml:space="preserve">
+    <value>Captured exception type: </value>
+  </data>
+  <data name="APP_Time" xml:space="preserve">
+    <value>Time: </value>
+  </data>
+  <data name="APP_Type" xml:space="preserve">
+    <value>Error Type: </value>
+  </data>
+  <data name="APP_ExceptionMessage" xml:space="preserve">
+    <value>Captured exception message:  </value>
+  </data>
+  <data name="APP_RootType" xml:space="preserve">
+    <value>Root exception type: </value>
+  </data>
+  <data name="APP_RootMessage" xml:space="preserve">
+    <value>Root exception message: </value>
+  </data>
+  <data name="APP_Stack" xml:space="preserve">
+    <value>Stack trace: </value>
+  </data>
+  <data name="Universal_Error" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="Universal_Notice" xml:space="preserve">
+    <value>Notice</value>
+  </data>
+  <data name="Universal_Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="C_MtlComplete" xml:space="preserve">
+    <value>mtl convert complete!</value>
+  </data>
+  <data name="C_PathNotFound" xml:space="preserve">
+    <value>Path not found!</value>
+  </data>
+  <data name="C_NormalMtl" xml:space="preserve">
+    <value>A .mtl file with path</value>
+  </data>
+  <data name="C_MtlUpdated" xml:space="preserve">
+    <value>has been updated.</value>
+  </data>
+  <data name="C_PakMtl0" xml:space="preserve">
+    <value>A .mtl file in</value>
+  </data>
+  <data name="C_PakMtl1" xml:space="preserve">
+    <value>with path</value>
+  </data>
+  <data name="Main_ErrorReadConfig" xml:space="preserve">
+    <value>Get error when reading launcher config file! Will delete invalid config file.</value>
+  </data>
+  <data name="Main_NoSteam" xml:space="preserve">
+    <value>Can not find steamapps folder on your computer!</value>
+  </data>
+  <data name="Main_NoGame" xml:space="preserve">
+    <value>Can not find GOH game on your computer!</value>
+  </data>
+  <data name="Main_MaunalCheck" xml:space="preserve">
+    <value>Maunal Check</value>
+  </data>
+  <data name="Main_FoundGame0" xml:space="preserve">
+    <value>A GOH game has been found in</value>
+  </data>
+  <data name="Main_FoundGame1" xml:space="preserve">
+    <value>If this is NOT the correct location. Please click NO and report detailed information to developers.</value>
+  </data>
+  <data name="Main_NoProfile" xml:space="preserve">
+    <value>Can not find GOH user profile on your computer!</value>
+  </data>
+  <data name="Main_RunGameOnce" xml:space="preserve">
+    <value>Please run GOH game at least once before using this program!</value>
+  </data>
+  <data name="Main_ShaderCompileErrorTitle" xml:space="preserve">
+    <value>Shader Compile Error</value>
+  </data>
+  <data name="Main_ShaderCompileErrorMessage0" xml:space="preserve">
+    <value>Get at least one shader compile error in last gaming! 
+Try contact creator(s) of your shader mod to slove this problem.</value>
+  </data>
+  <data name="Main_ShaderCompileErrorMessage1" xml:space="preserve">
+    <value>First error message founded:</value>
+  </data>
+  <data name="Main_ErrorReadModInfo" xml:space="preserve">
+    <value>Get error when reading mod.info file! Error=</value>
+  </data>
+  <data name="Main_ModErrorName" xml:space="preserve">
+    <value>[Failed to Get Name]</value>
+  </data>
+  <data name="Main_ModWorkshop" xml:space="preserve">
+    <value>Workshop</value>
+  </data>
+  <data name="Main_ModLocal" xml:space="preserve">
+    <value>Local</value>
+  </data>
+  <data name="M_LoadCacheSuccessful" xml:space="preserve">
+    <value>Successfully load all Shader Cache.</value>
+  </data>
+  <data name="M_NoCacheToLoad" xml:space="preserve">
+    <value>No Shader Cache found in selected mod.</value>
+  </data>
+  <data name="M_CacheHasBeenLoaded" xml:space="preserve">
+    <value>Shader Cache from this mod has been loaded.
+If you are sure it is not please manually clear all cache from Utilities page.</value>
+  </data>
+  <data name="M_CollectCacheSuccessful" xml:space="preserve">
+    <value>Cache collecting complete!</value>
+  </data>
+  <data name="M_NoCacheToCollect" xml:space="preserve">
+    <value>No cache to collect.</value>
+  </data>
+  <data name="M_TryCollectWorkshopMod" xml:space="preserve">
+    <value>Collecting caches to Workshop mods is not allowed!</value>
+  </data>
+  <data name="U_ClearAllCacheSuccessful" xml:space="preserve">
+    <value>Shader cache cleanup complete!</value>
+  </data>
+  <data name="U_RestoreSuccessful" xml:space="preserve">
+    <value>Restore default shader file successful!</value>
+  </data>
 </root>

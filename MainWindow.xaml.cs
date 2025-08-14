@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
 using static GOHShaderModdingSupportLauncherWPF.MainWindow;
 
@@ -243,7 +244,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Get error when reading config file! Will delete config file", "ERROR");
+                    MessageBox.Show(i18n.Main_ErrorReadConfig, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Error);
                     File.Delete(universalVars.configLoc);
                 }
 
@@ -303,8 +304,8 @@ namespace GOHShaderModdingSupportLauncherWPF
                 }
                 else
                 {
-                    MessageBox.Show("Can not find steam app on your computer!", "WARNING");
-                    throw new InvalidOperationException("Can not find steam app on your computer!");
+                    MessageBox.Show(i18n.Main_NoSteam, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    throw new InvalidOperationException(i18n.Main_NoSteam);
                 }
 
                 //load libraryfolders.vdf to get all steam library location
@@ -335,8 +336,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 if (HasGetGameRoot == false)
                 {
-                    MessageBox.Show("Can not find GOH game on your computer!", "WARNING");
-                    throw new InvalidOperationException("Can not find GOH game on your computer!");
+                    MessageBox.Show(i18n.Main_NoGame, i18n.Universal_Warning);
+                    throw new InvalidOperationException(i18n.Main_NoGame);
                 }
             }
             else
@@ -361,10 +362,9 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             //manual check
             //reference https://www.c-sharpcorner.com/UploadFile/mahesh/understanding-message-box-in-windows-forms-using-C-Sharp/
-            string message = "A GOH game has been found in \n" + universalVars.gameDir + "\n\nIf this is NOT the correct location, Please click NO and report detailed information to developers.";
-            string title = "Manual Check";
-            MessageBoxButton buttons = MessageBoxButton.YesNo;
-            MessageBoxResult result = MessageBox.Show(message, title, buttons);
+            string message = $"{i18n.Main_FoundGame0} \n" + universalVars.gameDir + $"\n\n{i18n.Main_FoundGame1}";
+            string title = i18n.Main_MaunalCheck;
+            MessageBoxResult result = MessageBox.Show(message, title, MessageBoxButton.YesNo,MessageBoxImage.Information);
             if (result == MessageBoxResult.No)
             {
                 SaveSettings();
@@ -396,8 +396,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
             if (Directory.Exists(universalVars.profileLoc) == false)
             {
-                MessageBox.Show("Can not find goh user profile on your computer!", "WARNING");
-                throw new InvalidOperationException("Can not find goh user profile on your computer!");
+                MessageBox.Show(i18n.Main_NoProfile, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                throw new InvalidOperationException(i18n.Main_NoProfile);
             }
             else
             {
@@ -411,8 +411,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 if (File.Exists(universalVars.optionLoc) == false)
                 {
-                    MessageBox.Show("Run goh game at least once before using this program!", "WARNING");
-                    throw new InvalidOperationException("Run goh game at least once before using this program!");
+                    MessageBox.Show(i18n.Main_RunGameOnce, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    throw new InvalidOperationException(i18n.Main_RunGameOnce);
                 }
             }
         }
@@ -437,11 +437,11 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                     if (line.IndexOf("compile error:") != -1)
                     {
-                        string errorMessage = "Get at least one shader compile error in last gaming! \nTry contact creator(s) of your shader mod to slove this problem.\n\n";
-                        errorMessage += "First error message:\n\n";
+                        string errorMessage = $"{i18n.Main_ShaderCompileErrorMessage0}\n\n";
+                        errorMessage += $"{i18n.Main_ShaderCompileErrorMessage1}\n\n";
                         errorMessage += line + '\n';
                         errorMessage += log.ReadLine();
-                        MessageBox.Show(errorMessage, "Shader Compile Error");
+                        MessageBox.Show(errorMessage, i18n.Main_ShaderCompileErrorTitle,MessageBoxButton.OK,MessageBoxImage.Error);
                         break;
                     }
                 }
@@ -502,13 +502,13 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 if (name == "")
                 {
-                    name = "[Failed to Get Name]";
+                    name = i18n.Main_ModErrorName;
                 }
             }
             catch(Exception e)
             {
-                MessageBox.Show("Get error when reading mod.info file! Error=\n"+e, "ERROR");
-                name = "[Failed to Get Name]";
+                MessageBox.Show($"{i18n.Main_ErrorReadModInfo}\n"+e, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+                name = i18n.Main_ModErrorName;
             }
 
             return name;
@@ -591,7 +591,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 bool hasShader = checkShader(dir);
 
 
-                MainWindow.Mod single = new MainWindow.Mod(name, "Workshop", dir.FullName, folderName, hasShader);
+                MainWindow.Mod single = new MainWindow.Mod(name, i18n.Main_ModWorkshop, dir.FullName, folderName, hasShader);
 
                 universalVars.modDic.Add(folderName, single);
             }
@@ -620,7 +620,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
 
 
-                MainWindow.Mod single = new MainWindow.Mod(name, "Local", dir.FullName, folderName, hasShader);
+                MainWindow.Mod single = new MainWindow.Mod(name, i18n.Main_ModLocal, dir.FullName, folderName, hasShader);
 
                 universalVars.modDic.Add(folderName, single);
             }

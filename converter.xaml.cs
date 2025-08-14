@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 using Microsoft.Win32;
 
 namespace GOHShaderModdingSupportLauncherWPF
@@ -100,7 +101,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                                 if (needModify == true)
                                 {
-                                    console.AppendText("[" + DateTime.Now + "] A .mtl file in " + obj.Name + " with path " + file.FullName + " has been updated.\n");
+                                    console.AppendText("[" + DateTime.Now + $"] {i18n.C_PakMtl0} " + obj.Name + $" {i18n.C_PakMtl1} " + file.FullName + $" {i18n.C_MtlUpdated}\n");
                                     mtls.Add(file.FullName, mtl);
                                 }
                                 reader.Close();
@@ -133,20 +134,20 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                     if (needModify == true)
                     {
-                        console.AppendText("["+DateTime.Now+"] A .mtl file with path " + file.FullName + " has been updated.\n");
+                        console.AppendText("["+DateTime.Now+$"] {i18n.C_NormalMtl} " + file.FullName + $" {i18n.C_MtlUpdated}\n");
                         File.WriteAllText(file.FullName, mtl);
                     }
                     
                 }
 
 
-                MessageBox.Show("mtl convert complete!", "Notice");
+                MessageBox.Show(i18n.C_MtlComplete, i18n.Universal_Notice);
 
             }
             else
             {
                 //path not found
-                MessageBox.Show("Path not found!", "Warning");
+                MessageBox.Show(i18n.C_PathNotFound, i18n.Universal_Notice);
             }
         }
     }
