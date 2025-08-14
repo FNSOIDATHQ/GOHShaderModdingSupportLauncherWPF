@@ -88,7 +88,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 v1.92    by Federation Studio 2025 的本地化字符串。
+        ///   查找类似 v2.0Beta    by Federation Studio 2025 的本地化字符串。
         /// </summary>
         public static string A_Version {
             get {
