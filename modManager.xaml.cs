@@ -249,7 +249,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void collectShaderCache_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedRow.mods[0].type == "Local")
+            if (selectedRow.mods[0].type == i18n.Main_ModLocal)
             {
                 string modCachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
                 string gameCachePath = main.universalVars.cacheLoc + "/dx11.0";

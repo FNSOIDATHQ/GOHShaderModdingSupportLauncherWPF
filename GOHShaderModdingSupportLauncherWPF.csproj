@@ -32,7 +32,9 @@
 
 	  <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 
-	  <FileVersion>1.4</FileVersion>
+	  <FileVersion>2.1</FileVersion>
+
+	  <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

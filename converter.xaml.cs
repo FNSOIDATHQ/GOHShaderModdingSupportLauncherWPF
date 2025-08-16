@@ -31,14 +31,24 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void viewPath_Click(object sender, RoutedEventArgs e)
         {
+#if NET8_0_OR_GREATER
             OpenFolderDialog dialog = new OpenFolderDialog();
             bool? result=dialog.ShowDialog();
-
             if (result == true)
             {
                 targetPath = dialog.FolderName;
                 TB_ConvertPath.Text = targetPath;
             }
+#else
+            System.Windows.Forms.FolderBrowserDialog dialog=new System.Windows.Forms.FolderBrowserDialog();
+            if(dialog.ShowDialog()== System.Windows.Forms.DialogResult.OK)
+            {
+                targetPath = dialog.SelectedPath;
+                TB_ConvertPath.Text = targetPath;
+            }
+#endif
+
+
         }
 
         private bool EnableEnvInMTLFile(ref string mtl)
