@@ -126,5 +126,12 @@
             <TextBlock Text="{x:Static loc:i18n.S_CompileWarning}"
                        FontSize="24"/>
         </CheckBox>
+        <CheckBox x:Name="lockModList"
+            IsChecked="False"
+            Foreground="#E4FFFFFF"
+            Click="lockModList_Click">
+            <TextBlock Text="{x:Static loc:i18n.S_LockModList}"
+                FontSize="24"/>
+        </CheckBox>
     </StackPanel>
 </Page>

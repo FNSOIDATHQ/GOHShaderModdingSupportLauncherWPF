@@ -88,7 +88,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 v2.0Beta    by Federation Studio 2025 的本地化字符串。
+        ///   查找类似 v2.2Beta    by Federation Studio 2025 的本地化字符串。
         /// </summary>
         public static string A_Version {
             get {
@@ -725,6 +725,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string S_General {
             get {
                 return ResourceManager.GetString("S_General", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Lock activated mod list 的本地化字符串。
+        /// </summary>
+        public static string S_LockModList {
+            get {
+                return ResourceManager.GetString("S_LockModList", resourceCulture);
             }
         }
         

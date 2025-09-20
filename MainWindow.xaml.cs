@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Windows;
 using Microsoft.Win32;
 using GOHShaderModdingSupportLauncherWPF.Properties;
+using System.Linq;
 
 
 
@@ -47,7 +48,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             public DirectoryInfo? gameDir, resourceDir;
             public string profileLoc, cacheLoc, optionLoc;
             public string configLoc;
-            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning,NeedAutoLoad, NeedCheckShaderModify, AlwaysConfirm;
+            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning, NeedLockModList, NeedAutoLoad, NeedCheckShaderModify, AlwaysConfirm;
 
             public DirectoryInfo? workshopDir, localDir;
             //option.set name -> mod
@@ -182,21 +183,24 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 universalVars.NeedCompileWarning = bool.Parse(line);
                                 break;
                             case 6:
-                                universalVars.AlwaysConfirm = bool.Parse(line);
+                                universalVars.NeedLockModList = bool.Parse(line);
                                 break;
                             case 7:
-                                universalVars.NeedAutoLoad = bool.Parse(line);
+                                universalVars.AlwaysConfirm = bool.Parse(line);
                                 break;
                             case 8:
-                                universalVars.NeedCheckShaderModify = bool.Parse(line);
+                                universalVars.NeedAutoLoad = bool.Parse(line);
                                 break;
                             case 9:
-                                universalVars.lastCacheHash = line;
+                                universalVars.NeedCheckShaderModify = bool.Parse(line);
                                 break;
                             case 10:
-                                universalVars.lastShaderHash = line;
+                                universalVars.lastCacheHash = line;
                                 break;
                             case 11:
+                                universalVars.lastShaderHash = line;
+                                break;
+                            case 12:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -216,7 +220,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                                     HasGetGameRoot = true;
                                 }
                                 break;
-                            case 12:
+                            case 13:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -249,7 +253,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 //the config file is not complete or break,fall back to default value
                 //no cache for path is not important
-                if (index != 11 && index != 13)
+                if (index != 12 && index != 14)
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
@@ -257,6 +261,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                     universalVars.NeedClearCache = false;
                     universalVars.NeedRedisplay = true;
                     universalVars.NeedCompileWarning = true;
+                    universalVars.NeedLockModList = false;
                     universalVars.NeedAutoLoad = false;
                     universalVars.NeedCheckShaderModify = true;
                     universalVars.AlwaysConfirm = false;
@@ -274,6 +279,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 universalVars.NeedClearCache = false;
                 universalVars.NeedRedisplay = true;
                 universalVars.NeedCompileWarning = true;
+                universalVars.NeedLockModList = false;
                 universalVars.NeedAutoLoad = false;
                 universalVars.NeedCheckShaderModify = true;
                 universalVars.AlwaysConfirm = false;
@@ -451,12 +457,20 @@ namespace GOHShaderModdingSupportLauncherWPF
         public void RefreshMods()
         {
             universalVars.modDic.Clear();
-            universalVars.modLoaded.Clear();
+            
 
             ReadModsFromWorkshop();
             ReadModsFromLocal();
 
-            ReadLoadedMods();
+            if (universalVars.NeedLockModList == true)
+            {
+                verifyLoadedMods();
+            }
+            else
+            {
+                universalVars.modLoaded.Clear();
+                ReadLoadedMods();
+            }
         }
 
         private string getModShowName(FileInfo[] modInfo)
@@ -669,6 +683,53 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
+        public void verifyLoadedMods()
+        {
+            string modified = "";
+            using (StreamReader opt = File.OpenText(universalVars.optionLoc))
+            {
+                //push to mod list start point
+                while (opt.ReadLine() is var line)
+                {
+                    //no mod section
+                    if (opt.EndOfStream == true)
+                    {
+                        modified += "\t{mods\r\n";
+                        break;
+                    }
+                    modified += line + "\r\n";
+                    if (line.Contains("{mods") == true)
+                    {
+                        break;
+                    }
+
+                }
+
+                opt.Close();
+            }
+
+            List<Mod> purned = new List<Mod>();
+            List<Mod> newList = universalVars.modDic.Values.ToList();
+            foreach (Mod mod in universalVars.modLoaded)
+            {
+                int newIndex = newList.FindIndex(m => m.folderName == mod.folderName);
+                if (newIndex != -1)
+                {
+                    modified += "\t\t\"" + mod.folderName + ":0\"\r\n";
+                    purned.Add(newList[newIndex]);
+                }
+                else
+                {
+
+                }
+            }
+            universalVars.modLoaded = purned;
+
+            modified += "\t}\r\n}\r\n";
+
+            File.WriteAllText(universalVars.optionLoc, modified);
+        }
+
         //reference https://juejin.cn/post/6989143365862293534
         public static void ExtractFile(String resource, String path, int batch)
         {
@@ -740,6 +801,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 sw.WriteLine(universalVars.NeedClearCache);
                 sw.WriteLine(universalVars.NeedRedisplay);
                 sw.WriteLine(universalVars.NeedCompileWarning);
+                sw.WriteLine(universalVars.NeedLockModList);
                 sw.WriteLine(universalVars.AlwaysConfirm);
                 sw.WriteLine(universalVars.NeedAutoLoad);
                 sw.WriteLine(universalVars.NeedCheckShaderModify);

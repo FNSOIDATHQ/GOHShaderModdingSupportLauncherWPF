@@ -36,6 +36,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             restore.IsChecked = main.universalVars.NeedRestore;
             gameExit.IsChecked = main.universalVars.NeedRedisplay;
             compileWarning.IsChecked= main.universalVars.NeedCompileWarning;
+            lockModList.IsChecked = main.universalVars.NeedLockModList;
             autoLoadCache.IsChecked = main.universalVars.NeedAutoLoad;
             refreshCacheWhenModified.IsChecked = main.universalVars.NeedCheckShaderModify;
         }
@@ -107,6 +108,11 @@ namespace GOHShaderModdingSupportLauncherWPF
         private void compileWarning_Click(object sender, RoutedEventArgs e)
         {
             main.universalVars.NeedCompileWarning = compileWarning.IsChecked.Value;
+        }
+
+        private void lockModList_Click(object sender, RoutedEventArgs e)
+        {
+            main.universalVars.NeedLockModList = lockModList.IsChecked.Value;
         }
     }
 }

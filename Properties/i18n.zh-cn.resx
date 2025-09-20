@@ -175,7 +175,7 @@
     <value>显示额外mod信息</value>
   </data>
   <data name="A_Version" xml:space="preserve">
-    <value>v2.1Beta    by Federation Studio 2025</value>
+    <value>v2.2Beta    by Federation Studio 2025</value>
   </data>
   <data name="U_ClearAllCache" xml:space="preserve">
     <value>清除所有着色器缓存和记录</value>
@@ -403,5 +403,8 @@
   </data>
   <data name="U_RestoreSuccessful" xml:space="preserve">
     <value>成功恢复默认着色器文件！</value>
+  </data>
+  <data name="S_LockModList" xml:space="preserve">
+    <value>锁定已激活的Mod列表</value>
   </data>
 </root>

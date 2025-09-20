@@ -175,7 +175,7 @@
     <value>Show additional mod infomation</value>
   </data>
   <data name="A_Version" xml:space="preserve">
-    <value>v2.1Beta    by Federation Studio 2025</value>
+    <value>v2.2Beta    by Federation Studio 2025</value>
   </data>
   <data name="U_ClearAllCache" xml:space="preserve">
     <value>Clear All Shader Cache and Records</value>
@@ -403,5 +403,8 @@ If you are sure it is not please manually clear all cache from Utilities page.</
   </data>
   <data name="U_RestoreSuccessful" xml:space="preserve">
     <value>Restore default shader file successful!</value>
+  </data>
+  <data name="S_LockModList" xml:space="preserve">
+    <value>Lock activated mod list</value>
   </data>
 </root>
