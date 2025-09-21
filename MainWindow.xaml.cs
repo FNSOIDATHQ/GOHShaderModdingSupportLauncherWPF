@@ -454,7 +454,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        public void RefreshMods()
+        public void RefreshMods(bool afterGaming=false)
         {
             universalVars.modDic.Clear();
             
@@ -462,7 +462,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             ReadModsFromWorkshop();
             ReadModsFromLocal();
 
-            if (universalVars.NeedLockModList == true)
+            if (universalVars.NeedLockModList == true&& afterGaming==true)
             {
                 verifyLoadedMods();
             }
@@ -717,6 +717,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                 {
                     modified += "\t\t\"" + mod.folderName + ":0\"\r\n";
                     purned.Add(newList[newIndex]);
+                    universalVars.modDic[mod.folderName].hasLoad = true;
                 }
                 else
                 {

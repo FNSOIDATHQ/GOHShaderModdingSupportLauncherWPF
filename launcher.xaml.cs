@@ -328,7 +328,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             if (main.universalVars.NeedRedisplay == true)
             {
-                main.RefreshMods();
+                main.RefreshMods(true);
                 main.Show();
                 main.Topmost = true;
                 main.Topmost = false;

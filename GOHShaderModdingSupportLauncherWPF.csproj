@@ -32,7 +32,7 @@
 
 	  <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 
-	  <FileVersion>2.1</FileVersion>
+	  <FileVersion>2.21</FileVersion>
 
 	  <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
