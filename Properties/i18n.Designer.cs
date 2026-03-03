@@ -548,6 +548,24 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 Read a invalid mod= 的本地化字符串。
+        /// </summary>
+        public static string Main_ModLoadingErrorMessage0 {
+            get {
+                return ResourceManager.GetString("Main_ModLoadingErrorMessage0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 If you think this is a bug please try contact us to solve this problem. 的本地化字符串。
+        /// </summary>
+        public static string Main_ModLoadingErrorMessage1 {
+            get {
+                return ResourceManager.GetString("Main_ModLoadingErrorMessage1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Local 的本地化字符串。
         /// </summary>
         public static string Main_ModLocal {
@@ -603,7 +621,7 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         
         /// <summary>
         ///   查找类似 Get at least one shader compile error in last gaming! 
-        ///Try contact creator(s) of your shader mod to slove this problem. 的本地化字符串。
+        ///Try contact creator(s) of your shader mod to solve this problem. 的本地化字符串。
         /// </summary>
         public static string Main_ShaderCompileErrorMessage0 {
             get {

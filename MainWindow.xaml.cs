@@ -657,11 +657,16 @@ namespace GOHShaderModdingSupportLauncherWPF
 #if DEBUG
                     Trace.WriteLine(line);
 #endif
+
                     int nameS = line.IndexOf("\"") + 1;
                     int nameE = line.IndexOf(":");
-                    if (nameS == -1 || nameE == -1)
+                    if (nameS <= 0 || nameE == -1 || nameE - nameS<0)
                     {
                         //not valid
+                        string errorMessage = $"{i18n.Main_ModLoadingErrorMessage0}\n\n";
+                        errorMessage += line+"\n\n";
+                        errorMessage += $"{i18n.Main_ModLoadingErrorMessage1}";
+                        MessageBox.Show(errorMessage, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Error);
                         continue;
                     }
 

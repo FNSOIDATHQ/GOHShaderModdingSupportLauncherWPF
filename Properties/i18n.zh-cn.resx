@@ -407,4 +407,10 @@
   <data name="S_LockModList" xml:space="preserve">
     <value>锁定已激活的Mod列表</value>
   </data>
+  <data name="Main_ModLoadingErrorMessage0" xml:space="preserve">
+    <value>读取了一个不合法的mod=</value>
+  </data>
+  <data name="Main_ModLoadingErrorMessage1" xml:space="preserve">
+    <value>如果你认为这是bug请尝试联系我们以解决该问题</value>
+  </data>
 </root>
