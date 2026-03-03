@@ -54,7 +54,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             MainWindow.ExtractFile("GOHShaderModdingSupportLauncherWPF.pak.Ori.shader.lzma", main.universalVars.resourceDir + @"\shader.lzma", 358400);
             main.DecompressFileLZMA(main.universalVars.resourceDir + @"\shader.lzma", main.universalVars.resourceDir + @"\shader.pak");
             File.Delete(main.universalVars.resourceDir + @"\shader.lzma");
-            //main.CompressFileLZMA(main.universalVars.resourceDir + @"\shader.pak", main.universalVars.resourceDir + @"\shader.lzma");
+
+            // main.CompressFileLZMA(main.universalVars.resourceDir + @"\shader.pak", main.universalVars.resourceDir + @"\shader.lzma");
+            
             MessageBox.Show(i18n.U_RestoreSuccessful, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
