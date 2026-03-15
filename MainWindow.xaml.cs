@@ -659,7 +659,9 @@ namespace GOHShaderModdingSupportLauncherWPF
 #endif
 
                     int nameS = line.IndexOf("\"") + 1;
-                    int nameE = line.IndexOf(":");
+
+                    int colonPos= line.IndexOf(":");
+                    int nameE = Math.Min(colonPos==-1?int.MaxValue:colonPos, line.LastIndexOf("\""));
                     if (nameS <= 0 || nameE == -1 || nameE - nameS<0)
                     {
                         //not valid
