@@ -81,6 +81,9 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
             public LaunchMethod lm;
             public bool showAddModInfo;
+            public bool runAsAdmin;
+
+            public bool AdminUsed;
         }
         public LauncherVars launcherVars;
 
@@ -171,36 +174,47 @@ namespace GOHShaderModdingSupportLauncherWPF
                                 launcherVars.showAddModInfo = bool.Parse(line);
                                 break;
                             case 2:
-                                universalVars.NeedRestore = bool.Parse(line);
+                                launcherVars.runAsAdmin = bool.Parse(line);
+                                if(launcherVars.runAsAdmin == true)
+                                {
+                                    launcherVars.AdminUsed = true;
+                                }
+                                else
+                                {
+                                    launcherVars.AdminUsed = false;
+                                }
                                 break;
                             case 3:
-                                universalVars.NeedClearCache = bool.Parse(line);
+                                universalVars.NeedRestore = bool.Parse(line);
                                 break;
                             case 4:
-                                universalVars.NeedRedisplay = bool.Parse(line);
+                                universalVars.NeedClearCache = bool.Parse(line);
                                 break;
                             case 5:
-                                universalVars.NeedCompileWarning = bool.Parse(line);
+                                universalVars.NeedRedisplay = bool.Parse(line);
                                 break;
                             case 6:
-                                universalVars.NeedLockModList = bool.Parse(line);
+                                universalVars.NeedCompileWarning = bool.Parse(line);
                                 break;
                             case 7:
-                                universalVars.AlwaysConfirm = bool.Parse(line);
+                                universalVars.NeedLockModList = bool.Parse(line);
                                 break;
                             case 8:
-                                universalVars.NeedAutoLoad = bool.Parse(line);
+                                universalVars.AlwaysConfirm = bool.Parse(line);
                                 break;
                             case 9:
-                                universalVars.NeedCheckShaderModify = bool.Parse(line);
+                                universalVars.NeedAutoLoad = bool.Parse(line);
                                 break;
                             case 10:
-                                universalVars.lastCacheHash = line;
+                                universalVars.NeedCheckShaderModify = bool.Parse(line);
                                 break;
                             case 11:
-                                universalVars.lastShaderHash = line;
+                                universalVars.lastCacheHash = line;
                                 break;
                             case 12:
+                                universalVars.lastShaderHash = line;
+                                break;
+                            case 13:
                                 //get cached game location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -220,7 +234,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                                     HasGetGameRoot = true;
                                 }
                                 break;
-                            case 13:
+                            case 14:
                                 //get cached resource location
                                 //if AlwaysConfirm=true this cache won't be use in later functions
                                 if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
@@ -253,10 +267,12 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 //the config file is not complete or break,fall back to default value
                 //no cache for path is not important
-                if (index != 12 && index != 14)
+                if (index != 13 && index != 15)
                 {
                     launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                     launcherVars.showAddModInfo = true;
+                    launcherVars.runAsAdmin = true;
+                    launcherVars.AdminUsed = true;
                     universalVars.NeedRestore = false;
                     universalVars.NeedClearCache = false;
                     universalVars.NeedRedisplay = true;
@@ -275,6 +291,8 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
                 launcherVars.showAddModInfo = true;
+                launcherVars.runAsAdmin = true;
+                launcherVars.AdminUsed = true;
                 universalVars.NeedRestore = false;
                 universalVars.NeedClearCache = false;
                 universalVars.NeedRedisplay = true;
@@ -437,16 +455,34 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 while (log.EndOfStream != true)
                 {
-                    string line = log.ReadLine();
+                    string line;
+                    line = log.ReadLine();
 
                     if (line.IndexOf("compile error:") != -1)
                     {
-                        string errorMessage = $"{i18n.Main_ShaderCompileErrorMessage0}\n\n";
-                        errorMessage += $"{i18n.Main_ShaderCompileErrorMessage1}\n\n";
-                        errorMessage += line + '\n';
-                        errorMessage += log.ReadLine();
-                        MessageBox.Show(errorMessage, i18n.Main_ShaderCompileErrorTitle,MessageBoxButton.OK,MessageBoxImage.Error);
-                        break;
+                        string errorMsg = line + "\n\n";
+                        bool hasError = false;
+                        while (!string.IsNullOrEmpty(line = log.ReadLine()))
+                        {
+                            errorMsg += line + "\n\n";
+                            if (line.Contains("error") == false)
+                            {
+                                hasError = true;
+                            }
+                        }
+
+                        string errorMessage = $"{i18n.Main_ShaderCompileErrorMessage1}\n\n\n\n";
+                        errorMessage += errorMsg;
+
+                        if(hasError == true){
+                            MessageBox.Show($"{i18n.Main_ShaderCompileErrorMessage0}\n\n"+errorMessage, i18n.Main_ShaderCompileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show($"{i18n.Main_ShaderCompileErrorMessage2}\n\n" + errorMessage, i18n.Main_ShaderCompileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+
+                            break;
                     }
                 }
 
@@ -805,6 +841,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 sw.WriteLine(launcherVars.lm.ToString());
                 sw.WriteLine(launcherVars.showAddModInfo.ToString());
+                sw.WriteLine(launcherVars.runAsAdmin.ToString());
                 sw.WriteLine(universalVars.NeedRestore);
                 sw.WriteLine(universalVars.NeedClearCache);
                 sw.WriteLine(universalVars.NeedRedisplay);

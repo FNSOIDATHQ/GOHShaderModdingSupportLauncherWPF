@@ -14,7 +14,6 @@
     <StackPanel HorizontalAlignment="Center"
                 VerticalAlignment="Center">
         <StackPanel Orientation="Horizontal"
-                    Margin="0,0,0,30"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
             <ui:TextBlock TextWrapping="Wrap"
@@ -43,16 +42,21 @@
                               FontSize="20"
                               HorizontalAlignment="Left"/>
             </ComboBox>
-            <CheckBox x:Name="addModInfo"
-                      IsChecked="True"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Padding="0,0,0,0"
-                      Click="AddModInfo_Click">
-                <ui:TextBlock Text="{x:Static loc:i18n.L_ModInfo}"
-                              FontSize="22"/>
-            </CheckBox>
         </StackPanel>
+        <CheckBox x:Name="addModInfo"
+                IsChecked="True"
+                Padding="0,0,0,0"
+                Click="AddModInfo_Click">
+            <ui:TextBlock Text="{x:Static loc:i18n.L_ModInfo}"
+                    FontSize="22"/>
+        </CheckBox>
+        <CheckBox x:Name="runAsAdmin"
+                IsChecked="True"
+                Padding="0,0,0,0"
+                Click="RunAsAdmin_Click" Margin="0,0,0,30" Cursor="Hand">
+            <ui:TextBlock Text="{x:Static loc:i18n.L_RunAsAdmin}"
+                    FontSize="22"/>
+        </CheckBox>
         <Button x:Name="game"
                 Height="60"
                 Margin="0,0,0,10"

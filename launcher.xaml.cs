@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using GOHShaderModdingSupportLauncherWPF.Properties;
 
 
 namespace GOHShaderModdingSupportLauncherWPF
@@ -365,7 +366,23 @@ namespace GOHShaderModdingSupportLauncherWPF
                 args += " -showmodinfo";
             }
 
-            Process game = Process.Start(main.universalVars.gameDir.GetFiles(processName)[0].ToString(), args);
+            string verb = vars.runAsAdmin ? "runas" : "open";
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = main.universalVars.gameDir.GetFiles(processName)[0].ToString(),
+                UseShellExecute = true,
+                Verb = verb,
+                Arguments = args
+            };
+
+            if (vars.AdminUsed == true && vars.runAsAdmin == false)
+            {
+                MessageBox.Show(i18n.L_AdminDisabledNotice, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                vars.AdminUsed = false;
+            }
+
+            Process game = Process.Start(psi);
 
             
             Thread waitForGaming = new Thread(() => waitForProcessClose(game));
@@ -428,6 +445,11 @@ namespace GOHShaderModdingSupportLauncherWPF
         private void AddModInfo_Click(object sender, RoutedEventArgs e)
         {
             vars.showAddModInfo = addModInfo.IsChecked.Value;
+        }
+
+        private void RunAsAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            vars.runAsAdmin = runAsAdmin.IsChecked.Value;
         }
     }
 }
