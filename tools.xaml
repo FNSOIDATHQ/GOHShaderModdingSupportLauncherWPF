@@ -27,14 +27,6 @@
             <TextBlock Text="{x:Static loc:i18n.U_Restore}"
                        FontSize="24"/>
         </ui:Button>
-        <ui:Button x:Name="openConfig"
-                   Margin="0,0,0,20"
-                   Height="50"
-                   HorizontalAlignment="Left"
-                   Click="openConfig_Click">
-            <TextBlock Text="{x:Static loc:i18n.U_OpenLauncherConfig}"
-                       FontSize="24"/>
-        </ui:Button>
         <ui:Button x:Name="precompile"
                    Height="50"
                    HorizontalAlignment="Left"
@@ -43,10 +35,36 @@
             <TextBlock Text="{x:Static loc:i18n.U_Precompile}"
                        FontSize="24"/>
         </ui:Button>
+        <ui:Button x:Name="openConfig"
+                   Margin="0,0,0,20"
+                   Height="50"
+                   HorizontalAlignment="Left"
+                   Click="openConfig_Click">
+            <TextBlock Text="{x:Static loc:i18n.U_OpenLauncherConfig}"
+                       FontSize="24"/>
+        </ui:Button>
         <ui:Button x:Name="openCacheFolder"
             Height="50"
-            Click="openCacheFolder_Click">
+            Click="openCacheFolder_Click" Margin="0,0,0,20">
             <TextBlock Text="{x:Static loc:i18n.U_OpenCacheFolder}"
+                FontSize="24"/>
+        </ui:Button>
+        <ui:Button x:Name="openProfileFolder"
+            Height="50"
+            Click="openProfileFolder_Click" Margin="0,0,0,20">
+            <TextBlock Text="{x:Static loc:i18n.U_OpenProfileFolder}"
+                FontSize="24"/>
+        </ui:Button>
+        <ui:Button x:Name="openLogFolder"
+            Height="50"
+            Click="openLogFolder_Click" Margin="0,0,0,20">
+            <TextBlock Text="{x:Static loc:i18n.U_OpenLogFolder}"
+                FontSize="24"/>
+        </ui:Button>
+        <ui:Button x:Name="openWorkshopModFolder"
+            Height="50"
+            Click="openWorkshopModFolder_Click">
+            <TextBlock Text="{x:Static loc:i18n.U_OpenWorkshopModFolder}"
                 FontSize="24"/>
         </ui:Button>
     </StackPanel>

@@ -88,5 +88,27 @@ namespace GOHShaderModdingSupportLauncherWPF
         {
             Process.Start("explorer.exe", main.universalVars.cacheLoc);
         }
+
+        private void openLogFolder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", main.universalVars.profileLoc + "\\log");
+        }
+
+        private void openProfileFolder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", main.universalVars.profileLoc + "\\profiles");
+        }
+
+        private void openWorkshopModFolder_Click(object sender, RoutedEventArgs e)
+        {
+            if (main.universalVars.workshopDir!=null)
+            {
+                Process.Start("explorer.exe", main.universalVars.workshopDir.FullName);
+            }
+            else {
+                MessageBox.Show(i18n.U_WorkshopNotExist, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
+        }
     }
 }
