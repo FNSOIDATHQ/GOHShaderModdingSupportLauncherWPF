@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows7.0</TargetFramework>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
 	<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
@@ -32,7 +32,7 @@
 
 	  <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 
-	  <FileVersion>2.23</FileVersion>
+	  <FileVersion>2.3</FileVersion>
 
 	  <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>

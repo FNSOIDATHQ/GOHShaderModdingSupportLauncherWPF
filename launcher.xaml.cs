@@ -31,6 +31,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             launchMethod.SelectedIndex = (int)vars.lm;
 
             addModInfo.IsChecked = vars.showAddModInfo;
+            runAsAdmin.IsChecked = vars.runAsAdmin;
 
         }
 
