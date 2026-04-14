@@ -91,7 +91,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             
         }
 
-        private void UpdateOptionFIle()
+        private void UpdateOptionFile()
         {
             string modified = "";
             using (StreamReader opt = File.OpenText(main.universalVars.optionLoc))
@@ -144,6 +144,12 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void loadMod_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedRow.mods.Count == 0)
+            {
+                MessageBox.Show(i18n.M_NoModSelected, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (selectedRow.dataGrid == "loadedMods")
             {
                 //do nothing
@@ -160,11 +166,17 @@ namespace GOHShaderModdingSupportLauncherWPF
                 DataGridRemoveRange(unloadedMods, selectedRow.mods);
             }
 
-            UpdateOptionFIle();
+            UpdateOptionFile();
         }
 
         private void unloadMod_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedRow.mods.Count == 0)
+            {
+                MessageBox.Show(i18n.M_NoModSelected, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (selectedRow.dataGrid == "loadedMods")
             {
                 foreach (var mod in selectedRow.mods)
@@ -183,11 +195,17 @@ namespace GOHShaderModdingSupportLauncherWPF
             {
                 //do nothing
             }
-            UpdateOptionFIle();
+            UpdateOptionFile();
         }
 
         private void openModFolder_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedRow.mods.Count == 0)
+            {
+                MessageBox.Show(i18n.M_NoModSelected, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (vars.hasMod == true)
             {
                 Process.Start("explorer.exe", selectedRow.mods[0].path);
@@ -197,6 +215,11 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void loadShaderCache_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedRow.mods.Count==0)
+            {
+                MessageBox.Show(i18n.M_NoModSelected, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
 
             string cachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
             string hashFile = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0/hash";
@@ -249,6 +272,12 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void collectShaderCache_Click(object sender, RoutedEventArgs e)
         {
+            if (selectedRow.mods.Count == 0)
+            {
+                MessageBox.Show(i18n.M_NoModSelected, i18n.Universal_Notice, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
             if (selectedRow.mods[0].type == i18n.Main_ModLocal)
             {
                 string modCachePath = selectedRow.mods[0].path + "/resource/shader/shader_cache/dx11.0";
@@ -401,7 +430,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             loadedMods.Items.Remove(draggedItem);
             loadedMods.Items.Insert(newIndex, draggedItem);
 
-            UpdateOptionFIle();
+            UpdateOptionFile();
 
             draggedItem = null;
         }
