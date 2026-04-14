@@ -88,7 +88,16 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 v2.21Beta    by Federation Studio 2025 的本地化字符串。
+        ///   查找类似 Tip: Try opening launcher with administrator privilage to resolve some potential issues. 的本地化字符串。
+        /// </summary>
+        public static string A_Tip {
+            get {
+                return ResourceManager.GetString("A_Tip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 v2.23Beta    by Federation Studio 2025 的本地化字符串。
         /// </summary>
         public static string A_Version {
             get {
@@ -277,6 +286,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
+        ///   查找类似 We recommend running game with administrator privilage to prevent launch failures caused by related issues. 的本地化字符串。
+        /// </summary>
+        public static string L_AdminDisabledNotice {
+            get {
+                return ResourceManager.GetString("L_AdminDisabledNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Auto Fix (File Only) 的本地化字符串。
         /// </summary>
         public static string L_AutoFix {
@@ -336,6 +354,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string L_ModInfo {
             get {
                 return ResourceManager.GetString("L_ModInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Run as administrator 的本地化字符串。
+        /// </summary>
+        public static string L_RunAsAdmin {
+            get {
+                return ResourceManager.GetString("L_RunAsAdmin", resourceCulture);
             }
         }
         
@@ -445,6 +472,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string M_NoCacheToLoad {
             get {
                 return ResourceManager.GetString("M_NoCacheToLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 No mods were selected. 的本地化字符串。
+        /// </summary>
+        public static string M_NoModSelected {
+            get {
+                return ResourceManager.GetString("M_NoModSelected", resourceCulture);
             }
         }
         
@@ -621,7 +657,9 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         
         /// <summary>
         ///   查找类似 Get at least one shader compile error in last gaming! 
-        ///Try contact creator(s) of your shader mod to solve this problem. 的本地化字符串。
+        ///Try contact creator(s) of your shader mod to solve this problem.
+        ///
+        ///If you haven&apos;t enabled any shader mods, then this is a shader issue within GoH itself. 的本地化字符串。
         /// </summary>
         public static string Main_ShaderCompileErrorMessage0 {
             get {
@@ -639,7 +677,18 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Shader Compile Error 的本地化字符串。
+        ///   查找类似 At least one shader compilation warning was found in the last game session.
+        ///
+        ///If you are not a developer, no need to worry about this warning. 的本地化字符串。
+        /// </summary>
+        public static string Main_ShaderCompileErrorMessage2 {
+            get {
+                return ResourceManager.GetString("Main_ShaderCompileErrorMessage2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Shader Compile Error (Detected from SMSLauncher) 的本地化字符串。
         /// </summary>
         public static string Main_ShaderCompileErrorTitle {
             get {
@@ -882,11 +931,38 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Open Configuration File of Launcher 的本地化字符串。
+        ///   查找类似 Open Launcher Configuration File 的本地化字符串。
         /// </summary>
         public static string U_OpenLauncherConfig {
             get {
                 return ResourceManager.GetString("U_OpenLauncherConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Game Log Folder 的本地化字符串。
+        /// </summary>
+        public static string U_OpenLogFolder {
+            get {
+                return ResourceManager.GetString("U_OpenLogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Game Profile Folder 的本地化字符串。
+        /// </summary>
+        public static string U_OpenProfileFolder {
+            get {
+                return ResourceManager.GetString("U_OpenProfileFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Open Workshop Mod Folder 的本地化字符串。
+        /// </summary>
+        public static string U_OpenWorkshopModFolder {
+            get {
+                return ResourceManager.GetString("U_OpenWorkshopModFolder", resourceCulture);
             }
         }
         
@@ -914,6 +990,15 @@ namespace GOHShaderModdingSupportLauncherWPF.Properties {
         public static string U_RestoreSuccessful {
             get {
                 return ResourceManager.GetString("U_RestoreSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Workshop mod folder does not exist! 的本地化字符串。
+        /// </summary>
+        public static string U_WorkshopNotExist {
+            get {
+                return ResourceManager.GetString("U_WorkshopNotExist", resourceCulture);
             }
         }
         

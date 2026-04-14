@@ -184,7 +184,7 @@
     <value>Restore Default Shader File (For File Replace Mode Only)</value>
   </data>
   <data name="U_OpenLauncherConfig" xml:space="preserve">
-    <value>Open Configuration File of Launcher</value>
+    <value>Open Launcher Configuration File</value>
   </data>
   <data name="U_Precompile" xml:space="preserve">
     <value>Precompile All Shader to Cache (DX 11 Only)</value>
@@ -358,11 +358,13 @@
     <value>Please run GOH game at least once before using this program!</value>
   </data>
   <data name="Main_ShaderCompileErrorTitle" xml:space="preserve">
-    <value>Shader Compile Error</value>
+    <value>Shader Compile Error (Detected from SMSLauncher)</value>
   </data>
   <data name="Main_ShaderCompileErrorMessage0" xml:space="preserve">
     <value>Get at least one shader compile error in last gaming! 
-Try contact creator(s) of your shader mod to solve this problem.</value>
+Try contact creator(s) of your shader mod to solve this problem.
+
+If you haven't enabled any shader mods, then this is a shader issue within GoH itself.</value>
   </data>
   <data name="Main_ShaderCompileErrorMessage1" xml:space="preserve">
     <value>First error message founded:</value>
@@ -412,5 +414,34 @@ If you are sure it is not please manually clear all cache from Utilities page.</
   </data>
   <data name="Main_ModLoadingErrorMessage1" xml:space="preserve">
     <value>If you think this is a bug please try contact us to solve this problem.</value>
+  </data>
+  <data name="M_NoModSelected" xml:space="preserve">
+    <value>No mods were selected.</value>
+  </data>
+  <data name="L_RunAsAdmin" xml:space="preserve">
+    <value>Run as administrator</value>
+  </data>
+  <data name="U_OpenLogFolder" xml:space="preserve">
+    <value>Open Game Log Folder</value>
+  </data>
+  <data name="U_OpenProfileFolder" xml:space="preserve">
+    <value>Open Game Profile Folder</value>
+  </data>
+  <data name="U_OpenWorkshopModFolder" xml:space="preserve">
+    <value>Open Workshop Mod Folder</value>
+  </data>
+  <data name="U_WorkshopNotExist" xml:space="preserve">
+    <value>Workshop mod folder does not exist!</value>
+  </data>
+  <data name="A_Tip" xml:space="preserve">
+    <value>Tip: Try opening launcher with administrator privilage to resolve some potential issues.</value>
+  </data>
+  <data name="L_AdminDisabledNotice" xml:space="preserve">
+    <value>We recommend running game with administrator privilage to prevent launch failures caused by related issues.</value>
+  </data>
+  <data name="Main_ShaderCompileErrorMessage2" xml:space="preserve">
+    <value>At least one shader compilation warning was found in the last game session.
+
+If you are not a developer, no need to worry about this warning.</value>
   </data>
 </root>

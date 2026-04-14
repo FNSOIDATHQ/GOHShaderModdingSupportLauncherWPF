@@ -358,11 +358,13 @@
     <value>请在使用本程序前至少启动一次地狱之门游戏！</value>
   </data>
   <data name="Main_ShaderCompileErrorTitle" xml:space="preserve">
-    <value>着色器编译错误</value>
+    <value>着色器编译错误 （由启动器检测）</value>
   </data>
   <data name="Main_ShaderCompileErrorMessage0" xml:space="preserve">
     <value>在上一次游戏中找到至少一个着色器编译错误！
-尝试联系你所使用的着色器mod的创建者以解决该问题。</value>
+尝试联系你所使用的着色器mod的创建者以解决该问题。
+
+如果你没有启动任何着色器mod，那么这是一个GoH自己的着色器故障。</value>
   </data>
   <data name="Main_ShaderCompileErrorMessage1" xml:space="preserve">
     <value>找到的第一条错误信息：</value>
@@ -412,5 +414,34 @@
   </data>
   <data name="Main_ModLoadingErrorMessage1" xml:space="preserve">
     <value>如果你认为这是bug请尝试联系我们以解决该问题</value>
+  </data>
+  <data name="M_NoModSelected" xml:space="preserve">
+    <value>没有选择任何mod。</value>
+  </data>
+  <data name="L_RunAsAdmin" xml:space="preserve">
+    <value>使用管理员权限运行</value>
+  </data>
+  <data name="U_OpenLogFolder" xml:space="preserve">
+    <value>打开游戏日志文件夹</value>
+  </data>
+  <data name="U_OpenProfileFolder" xml:space="preserve">
+    <value>打开游戏配置文件夹</value>
+  </data>
+  <data name="U_OpenWorkshopModFolder" xml:space="preserve">
+    <value>打开创意工坊Mod文件夹</value>
+  </data>
+  <data name="U_WorkshopNotExist" xml:space="preserve">
+    <value>创意工坊Mod文件夹不存在！</value>
+  </data>
+  <data name="A_Tip" xml:space="preserve">
+    <value>提示：尝试用管理员权限打开启动器以解决一些潜在问题</value>
+  </data>
+  <data name="L_AdminDisabledNotice" xml:space="preserve">
+    <value>建议使用管理员权限运行以避免因为相关问题导致的游戏启动失败。</value>
+  </data>
+  <data name="Main_ShaderCompileErrorMessage2" xml:space="preserve">
+    <value>在上一次游戏中找到至少一个着色器编译警告。
+
+如果你不是开发者则无需关注该警告。</value>
   </data>
 </root>
