@@ -1,15 +1,18 @@
-# Gate of Hell Shader Modding Support Launcher
+# Gates of Hell Shader Modding Support Launcher
 
 Language：English [中文](./READMEcn.md) 
 
 ## Catalog
-* [User Guide](#user-guide)
-* [Runtime Details](#runtime-details)
-* * [Preprocess](#preprocess)
-* * [Postprocess](#postprocess)
-* [Development Guide](#development-guide)
-* [Credits](#credits)
-* [Support my Work](#support-my-work)
+- [Gates of Hell Shader Modding Support Launcher](#gates-of-hell-shader-modding-support-launcher)
+  - [Catalog](#catalog)
+  - [User Guide](#user-guide)
+  - [Runtime Details](#runtime-details)
+    - [Preprocess](#preprocess)
+    - [Postprocess](#postprocess)
+    - [Notice](#notice)
+  - [Development Guide](#development-guide)
+  - [Credits](#credits)
+  - [Support my Work](#support-my-work)
 ---
 
 ## User Guide
