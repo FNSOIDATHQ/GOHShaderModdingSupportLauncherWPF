@@ -48,7 +48,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             public DirectoryInfo? gameDir, resourceDir;
             public string profileLoc, cacheLoc, optionLoc;
             public string configLoc;
-            public bool NeedRestore,NeedClearCache, NeedRedisplay, NeedCompileWarning, NeedLockModList, NeedAutoLoad, NeedCheckShaderModify, AlwaysConfirm;
+            public bool NeedRestore, NeedClearCache, NeedRedisplay, NeedCompileWarning, NeedLockModList, NeedAutoLoad, NeedCheckShaderModify, AlwaysConfirm;
 
             public DirectoryInfo? workshopDir, localDir;
             //option.set name -> mod
@@ -57,7 +57,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             public bool hasMod;
             //default value of lastShaderHash is 0, means the game is using default shader
             //in this case shader modify check should return true to auto load caches
-            public string lastCacheHash,lastShaderHash;
+            public string lastCacheHash, lastShaderHash;
             public UniversalVars()
             {
                 profileLoc = "";
@@ -110,12 +110,13 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         public MainWindow()
         {
+            AppDiagnostics.Log("Loading main window XAML.");
             InitializeComponent();
             //Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark);
 
-            mv=this.FindName("mainView") as Wpf.Ui.Controls.NavigationView;
+            mv = this.FindName("mainView") as Wpf.Ui.Controls.NavigationView;
 
-            
+
             mv.Loaded += navToDefaultPage;
 
             universalVars = new UniversalVars();
@@ -125,318 +126,254 @@ namespace GOHShaderModdingSupportLauncherWPF
             modManagerVars = new ModManagerVars();
 
             InitBasicData();
+            ContentRendered += (_, _) => AppDiagnostics.Log("Main window rendered.");
         }
-        
+
         private void InitBasicData()
         {
-            
-
-
             universalVars.gameDir = new DirectoryInfo(Directory.GetCurrentDirectory());
             universalVars.resourceDir = new DirectoryInfo(Directory.GetCurrentDirectory());
 
             HasGetGameRoot = false;
             HasGetProfileLoc = false;
 
+            AppDiagnostics.Log("Loading settings.");
             LoadConfigFromFile();
 
             if (HasGetProfileLoc == false)
             {
+                AppDiagnostics.Log("Finding game profile.");
                 GetProfileLoc();
             }
 
             if (HasGetGameRoot == false)
             {
+                AppDiagnostics.Log("Finding game installation.");
                 GetGameRoot();
             }
 
+            AppDiagnostics.Log("Scanning mods.");
             RefreshMods();
 
             SaveSettings();
+            AppDiagnostics.Log("Startup data initialized.");
         }
 
         private void LoadConfigFromFile()
         {
-            universalVars.configLoc = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + @"settings.conf";
-            if (File.Exists(universalVars.configLoc) == true)
+            SetDefaultSettings();
+            universalVars.configLoc = FileManager.SettingsPath;
+
+            //temp fallback
+            string legacyPath = Path.Combine(AppContext.BaseDirectory, "settings.conf");
+            string source = File.Exists(universalVars.configLoc) ? universalVars.configLoc : legacyPath;
+            if (!File.Exists(source)) return;
+
+            string[] lines;
+            try
             {
-                int index = 0;
-                try
-                {
-                    foreach (string line in File.ReadAllLines(universalVars.configLoc))
-                    {
-                        switch (index)
-                        {
-                            case 0:
-                                launcherVars.lm = (LauncherVars.LaunchMethod)Enum.Parse(typeof(LauncherVars.LaunchMethod), line);
-                                break;
-                            case 1:
-                                launcherVars.showAddModInfo = bool.Parse(line);
-                                break;
-                            case 2:
-                                launcherVars.runAsAdmin = bool.Parse(line);
-                                if(launcherVars.runAsAdmin == true)
-                                {
-                                    launcherVars.AdminUsed = true;
-                                }
-                                else
-                                {
-                                    launcherVars.AdminUsed = false;
-                                }
-                                break;
-                            case 3:
-                                universalVars.NeedRestore = bool.Parse(line);
-                                break;
-                            case 4:
-                                universalVars.NeedClearCache = bool.Parse(line);
-                                break;
-                            case 5:
-                                universalVars.NeedRedisplay = bool.Parse(line);
-                                break;
-                            case 6:
-                                universalVars.NeedCompileWarning = bool.Parse(line);
-                                break;
-                            case 7:
-                                universalVars.NeedLockModList = bool.Parse(line);
-                                break;
-                            case 8:
-                                universalVars.AlwaysConfirm = bool.Parse(line);
-                                break;
-                            case 9:
-                                universalVars.NeedAutoLoad = bool.Parse(line);
-                                break;
-                            case 10:
-                                universalVars.NeedCheckShaderModify = bool.Parse(line);
-                                break;
-                            case 11:
-                                universalVars.lastCacheHash = line;
-                                break;
-                            case 12:
-                                universalVars.lastShaderHash = line;
-                                break;
-                            case 13:
-                                //get cached game location
-                                //if AlwaysConfirm=true this cache won't be use in later functions
-                                if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
-                                {
-                                    universalVars.gameDir = new DirectoryInfo(line);
-                                    //avoid catch by steam
-                                    Environment.CurrentDirectory = universalVars.gameDir.FullName;
-
-                                    DirectoryInfo root = universalVars.gameDir.Parent.Parent;
-                                    universalVars.resourceDir = root.GetDirectories("resource")[0];
-                                    universalVars.localDir= root.GetDirectories("mods")[0];
-                                    universalVars.workshopDir = root.GetDirectories("..\\..\\workshop\\content\\400750")[0];
-#if DEBUG
-                                    Trace.WriteLine("workshop dir= "+ universalVars.workshopDir.FullName);
-#endif
-
-                                    HasGetGameRoot = true;
-                                }
-                                break;
-                            case 14:
-                                //get cached resource location
-                                //if AlwaysConfirm=true this cache won't be use in later functions
-                                if (Directory.Exists(line) == true && universalVars.AlwaysConfirm != true)
-                                {
-                                    universalVars.profileLoc = line;
-                                    universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
-                                    universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
-                                    universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
-
-                                    HasGetProfileLoc = true;
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                        index++;
-
-#if DEBUG
-                        Trace.WriteLine(line);
-                        Trace.WriteLine(index);
-#endif
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(i18n.Main_ErrorReadConfig, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                    File.Delete(universalVars.configLoc);
-                }
-
-
-                //the config file is not complete or break,fall back to default value
-                //no cache for path is not important
-                if (index != 13 && index != 15)
-                {
-                    launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
-                    launcherVars.showAddModInfo = true;
-                    launcherVars.runAsAdmin = true;
-                    launcherVars.AdminUsed = true;
-                    universalVars.NeedRestore = false;
-                    universalVars.NeedClearCache = false;
-                    universalVars.NeedRedisplay = true;
-                    universalVars.NeedCompileWarning = true;
-                    universalVars.NeedLockModList = false;
-                    universalVars.NeedAutoLoad = false;
-                    universalVars.NeedCheckShaderModify = true;
-                    universalVars.AlwaysConfirm = false;
-                    universalVars.lastCacheHash = "-1";
-                    universalVars.lastShaderHash = "0";
-                    HasGetGameRoot = false;
-                    HasGetProfileLoc = false;
-                }
+                lines = FileManager.ReadSettings(source);
             }
-            else
+            catch (Exception ex) when (FileManager.IsFileError(ex) || ex is FormatException)
             {
-                launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
-                launcherVars.showAddModInfo = true;
-                launcherVars.runAsAdmin = true;
-                launcherVars.AdminUsed = true;
-                universalVars.NeedRestore = false;
-                universalVars.NeedClearCache = false;
-                universalVars.NeedRedisplay = true;
-                universalVars.NeedCompileWarning = true;
-                universalVars.NeedLockModList = false;
-                universalVars.NeedAutoLoad = false;
-                universalVars.NeedCheckShaderModify = true;
-                universalVars.AlwaysConfirm = false;
-                universalVars.lastCacheHash = "-1";
-                universalVars.lastShaderHash = "0";
-                HasGetProfileLoc = false;
+                AppDiagnostics.Log($"Ignoring invalid/unreadable settings: {source}", ex);
+                MessageBox.Show(i18n.Main_ErrorReadConfig, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
             }
+
+            launcherVars.lm = Enum.Parse<LauncherVars.LaunchMethod>(lines[0]);
+            launcherVars.showAddModInfo = bool.Parse(lines[1]);
+            launcherVars.runAsAdmin = launcherVars.AdminUsed = bool.Parse(lines[2]);
+            universalVars.NeedRestore = bool.Parse(lines[3]);
+            universalVars.NeedClearCache = bool.Parse(lines[4]);
+            universalVars.NeedRedisplay = bool.Parse(lines[5]);
+            universalVars.NeedCompileWarning = bool.Parse(lines[6]);
+            universalVars.NeedLockModList = bool.Parse(lines[7]);
+            universalVars.AlwaysConfirm = bool.Parse(lines[8]);
+            universalVars.NeedAutoLoad = bool.Parse(lines[9]);
+            universalVars.NeedCheckShaderModify = bool.Parse(lines[10]);
+            universalVars.lastCacheHash = lines[11];
+            universalVars.lastShaderHash = lines[12];
+
+            if (lines.Length != 15 || universalVars.AlwaysConfirm) return;
+
+            try { HasGetGameRoot = TrySetGameDirectory(lines[13]); }
+            catch (Exception ex) when (FileManager.IsFileError(ex)) { AppDiagnostics.Log("Cached game path is unavailable.", ex); }
+
+            try { HasGetProfileLoc = TrySetProfileDirectory(lines[14]); }
+            catch (Exception ex) when (FileManager.IsFileError(ex)) { AppDiagnostics.Log("Cached profile path is unavailable.", ex); }
         }
 
-        //we assume the program is running in somewhere in SteamLibrary\steamapps
-        //if not we will get game from registry
-        private void GetGameRoot()
+        private void SetDefaultSettings()
         {
+            launcherVars.lm = LauncherVars.LaunchMethod.FileReplace;
+            launcherVars.showAddModInfo = true;
+            launcherVars.runAsAdmin = true;
+            launcherVars.AdminUsed = true;
+            universalVars.NeedRedisplay = true;
+            universalVars.NeedCompileWarning = true;
+            universalVars.NeedCheckShaderModify = true;
+            universalVars.lastCacheHash = "-1";
+            universalVars.lastShaderHash = "0";
+        }
 
-            string appLoc = Directory.GetCurrentDirectory();
-            int index = appLoc.IndexOf("steamapps");
+        private bool TrySetGameDirectory(string path)
+        {
+            if (FileManager.IsGameDirectory(path) == false) return false;
 
-            if (index == -1)
-            {
-                //try get game folder from reg
-                var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Valve\Steam");
-                string steamLoc;
-                if (reg != null)
-                {
-                    steamLoc = reg.GetValue(@"InstallPath").ToString() + @"\steamapps\libraryfolders.vdf";
-                }
-                else
-                {
-                    MessageBox.Show(i18n.Main_NoSteam, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    throw new InvalidOperationException(i18n.Main_NoSteam);
-                }
+            var game = new DirectoryInfo(path);
+            var root = game.Parent!.Parent!;
+            var local = new DirectoryInfo(Path.Combine(root.FullName, "mods"));
+            var workshop = new DirectoryInfo(
+                                    Path.GetFullPath(
+                                                Path.Combine(root.FullName, "..", "..", "workshop", "content", "400750")
+                                                )
+                                            );
 
-                //load libraryfolders.vdf to get all steam library location
-                //I am to lazy to further search games from .acf files, so just try get every game in common folder
-                foreach (string line in File.ReadAllLines(steamLoc))
-                {
-                    //search folder when get path
-                    if (line.Contains("path") == true)
-                    {
-                        string gameLib = line.Split('"')[3];
-                        string gameLoc = gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\binaries\x64";
-                        if (Directory.Exists(gameLoc) == true)
-                        {
-#if DEBUG
-                            Trace.WriteLine("find game location= " + gameLib);
-#endif
-                            universalVars.gameDir = new DirectoryInfo(gameLoc);
-                            universalVars.resourceDir = new DirectoryInfo(gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\resource");
-                            universalVars.localDir = new DirectoryInfo(gameLib + @"\steamapps\common\Call to Arms - Gates of Hell\mods");
-                            universalVars.workshopDir = new DirectoryInfo(gameLib + @"\steamapps\workshop\content\400750");
+            Environment.CurrentDirectory = game.FullName;
+            universalVars.gameDir = game;
+            universalVars.resourceDir = new DirectoryInfo(Path.Combine(root.FullName, "resource"));
+            universalVars.localDir = local;
+            universalVars.workshopDir = workshop;
 
-                            HasGetGameRoot = true;
-                            break;
-                        }
+            return true;
+        }
 
-                    }
-                }
+        private bool TrySetProfileDirectory(string path)
+        {
+            string? options = FileManager.FindOptionsFile(path);
+            if (options == null) return false;
 
-                if (HasGetGameRoot == false)
-                {
-                    MessageBox.Show(i18n.Main_NoGame, i18n.Universal_Warning);
-                    throw new InvalidOperationException(i18n.Main_NoGame);
-                }
-            }
-            else
-            {
-                index += 9;
-                string gameLoc = appLoc.Substring(0, index);
-#if DEBUG
-                Trace.WriteLine("find game location= "+gameLoc);
-#endif
+            universalVars.profileLoc = path;
+            universalVars.cacheLoc = Path.Combine(path, "shader_cache");
+            universalVars.optionLoc = options;
 
-                universalVars.gameDir = new DirectoryInfo(gameLoc);
-                universalVars.resourceDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/resource")[0];
-                universalVars.localDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/mods")[0];
-                universalVars.workshopDir = universalVars.gameDir.GetDirectories(@"workshop\content\400750")[0];
-                universalVars.gameDir = universalVars.gameDir.GetDirectories("common/Call to Arms - Gates of Hell/binaries/x64")[0];
-
-                HasGetGameRoot = true;
-            }
-
-            //avoid catch by steam
-            Environment.CurrentDirectory = universalVars.gameDir.FullName;
-
-            //manual check
-            //reference https://www.c-sharpcorner.com/UploadFile/mahesh/understanding-message-box-in-windows-forms-using-C-Sharp/
-            string message = $"{i18n.Main_FoundGame0} \n" + universalVars.gameDir + $"\n\n{i18n.Main_FoundGame1}";
-            string title = i18n.Main_MaunalCheck;
-            MessageBoxResult result = MessageBox.Show(message, title, MessageBoxButton.YesNo,MessageBoxImage.Information);
-            if (result == MessageBoxResult.No)
-            {
-                SaveSettings();
-                Environment.Exit(0);
-            }
-            else
-            {
-                // preprocess
-                //GetGameRoot() always happen when first find goh game, we clear cache to delete any shader that compile from different files
-                ClearCacheWork();
-            }
-
-#if DEBUG
-            Trace.WriteLine(universalVars.gameDir);
-            //MessageBox.Show(gameDir.FullName);
-#endif
+            return true;
         }
 
         private void GetProfileLoc()
         {
-            universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\digitalmindsoft\\gates of hell";
-            //fall back to backup path
-            if (Directory.Exists(universalVars.profileLoc) == false)
+            var candidates = new[]
             {
-                universalVars.profileLoc = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\my games\\gates of hell";
-            }
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "digitalmindsoft", "gates of hell"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "my games", "gates of hell")
+            };
 
-
-
-            if (Directory.Exists(universalVars.profileLoc) == false)
+            foreach (string candidate in candidates)
             {
-                MessageBox.Show(i18n.Main_NoProfile, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
-                throw new InvalidOperationException(i18n.Main_NoProfile);
-            }
-            else
-            {
-                universalVars.cacheLoc = universalVars.profileLoc + "\\shader_cache";
-                universalVars.optionLoc = universalVars.profileLoc + "\\profiles";
-                universalVars.optionLoc = Directory.GetDirectories(universalVars.optionLoc)[0] + @"\options.set";
-
-#if DEBUG
-                Trace.WriteLine(universalVars.optionLoc);
-#endif
-
-                if (File.Exists(universalVars.optionLoc) == false)
+                try
                 {
-                    MessageBox.Show(i18n.Main_RunGameOnce, i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    throw new InvalidOperationException(i18n.Main_RunGameOnce);
+                    if (TrySetProfileDirectory(candidate))
+                    {
+                        HasGetProfileLoc = true;
+                        return;
+                    }
+                }
+                catch (Exception ex) when (FileManager.IsFileError(ex))
+                {
+                    AppDiagnostics.Log($"Unable to inspect profile: {candidate}", ex);
                 }
             }
+            throw new InvalidOperationException($"{i18n.Main_NoProfile}\n{i18n.Main_RunGameOnce}\n\n{string.Join("\n", candidates)}");
+        }
+
+        private void GetGameRoot()
+        {
+            var libraries = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // Shortcuts can start in an unrelated working directory
+            foreach (var start in new[] {
+                AppContext.BaseDirectory
+                , Directory.GetCurrentDirectory()
+                })
+            {
+                for (DirectoryInfo? dir = new DirectoryInfo(start); dir != null; dir = dir.Parent)
+                {
+                    if (dir.Name.Equals("steamapps", StringComparison.OrdinalIgnoreCase))
+                    {
+                        libraries.Add(dir.FullName);
+                    }
+                }
+            }
+
+            var steamPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var hive in new[] {
+                RegistryHive.CurrentUser
+                , RegistryHive.LocalMachine
+            })
+            {
+                foreach (var view in new[] {
+                    RegistryView.Registry64
+                    , RegistryView.Registry32
+                })
+                {
+                    try
+                    {
+                        using var registry = RegistryKey.OpenBaseKey(hive, view);
+                        using var steam = registry.OpenSubKey(@"SOFTWARE\Valve\Steam");
+                        var location = steam?.GetValue(hive == RegistryHive.CurrentUser ? "SteamPath" : "InstallPath") as string;
+
+                        if (string.IsNullOrWhiteSpace(location) == false) steamPaths.Add(location);
+                    }
+                    catch (Exception ex) when (FileManager.IsFileError(ex))
+                    {
+                        AppDiagnostics.Log("Unable to read a Steam registry location.", ex);
+                    }
+                }
+            }
+
+            foreach (string steamPath in steamPaths)
+            {
+                string steamApps = Path.Combine(steamPath, "steamapps");
+                libraries.Add(steamApps);
+                try
+                {
+                    string vdf = Path.Combine(steamApps, "libraryfolders.vdf");
+                    if (File.Exists(vdf))
+                    {
+                        foreach (string library in FileManager.ReadLibraryPaths(vdf))
+                        {
+                            libraries.Add(Path.Combine(library, "steamapps"));
+                        }
+                    }
+                }
+                catch (Exception ex) when (FileManager.IsFileError(ex))
+                {
+                    AppDiagnostics.Log("Unable to read Steam libraries; trying the known locations.", ex);
+                }
+            }
+
+            foreach (string library in libraries)
+            {
+                try
+                {
+                    if (TrySetGameDirectory(Path.Combine(library, "common", "Call to Arms - Gates of Hell", "binaries", "x64")))
+                    {
+                        HasGetGameRoot = true;
+                        break;
+                    }
+                }
+                catch (Exception ex) when (FileManager.IsFileError(ex))
+                {
+                    AppDiagnostics.Log($"Unable to inspect Steam library: {library}", ex);
+                }
+            }
+
+            if (HasGetGameRoot == false)
+            {
+                throw new InvalidOperationException(libraries.Count == 0 ? i18n.Main_NoSteam : i18n.Main_NoGame);
+            }
+
+            string message = $"{i18n.Main_FoundGame0}\n{universalVars.gameDir}\n\n{i18n.Main_FoundGame1}";
+            if (MessageBox.Show(message, i18n.Main_MaunalCheck, MessageBoxButton.YesNo, MessageBoxImage.Information) == MessageBoxResult.No)
+            {
+                // Do not cache a path that the user rejected.
+                HasGetGameRoot = false;
+                SaveSettings();
+                AppDiagnostics.Log("User declined the detected game path.");
+                Environment.Exit(0);
+            }
+            
+            ClearCacheWork();
         }
 
         public void ClearCacheWork()
@@ -474,15 +411,16 @@ namespace GOHShaderModdingSupportLauncherWPF
                         string errorMessage = $"{i18n.Main_ShaderCompileErrorMessage1}\n\n\n\n";
                         errorMessage += errorMsg;
 
-                        if(hasError == true){
-                            MessageBox.Show($"{i18n.Main_ShaderCompileErrorMessage0}\n\n"+errorMessage, i18n.Main_ShaderCompileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
+                        if (hasError == true)
+                        {
+                            MessageBox.Show($"{i18n.Main_ShaderCompileErrorMessage0}\n\n" + errorMessage, i18n.Main_ShaderCompileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         else
                         {
                             MessageBox.Show($"{i18n.Main_ShaderCompileErrorMessage2}\n\n" + errorMessage, i18n.Main_ShaderCompileErrorTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
 
-                            break;
+                        break;
                     }
                 }
 
@@ -490,15 +428,15 @@ namespace GOHShaderModdingSupportLauncherWPF
             }
         }
 
-        public void RefreshMods(bool afterGaming=false)
+        public void RefreshMods(bool afterGaming = false)
         {
             universalVars.modDic.Clear();
-            
+
 
             ReadModsFromWorkshop();
             ReadModsFromLocal();
 
-            if (universalVars.NeedLockModList == true&& afterGaming==true)
+            if (universalVars.NeedLockModList == true && afterGaming == true)
             {
                 verifyLoadedMods();
             }
@@ -511,7 +449,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private string getModShowName(FileInfo[] modInfo)
         {
-            string name="";
+            string name = "";
             try
             {
                 using (StreamReader info = modInfo[0].OpenText())
@@ -531,7 +469,7 @@ namespace GOHShaderModdingSupportLauncherWPF
                         {
                             int nameS = nameLine.IndexOf('"') + 1;
                             int nameL = nameLine.LastIndexOf('"') - nameS;
-                            if(nameS==-1|| nameL <= 0)
+                            if (nameS == -1 || nameL <= 0)
                             {
                                 continue;
                             }
@@ -553,9 +491,9 @@ namespace GOHShaderModdingSupportLauncherWPF
                     name = i18n.Main_ModErrorName;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                MessageBox.Show($"{i18n.Main_ErrorReadModInfo}\n"+e, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show($"{i18n.Main_ErrorReadModInfo}\n" + e, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Warning);
                 name = i18n.Main_ModErrorName;
             }
 
@@ -575,7 +513,7 @@ namespace GOHShaderModdingSupportLauncherWPF
 #if DEBUG
                     Trace.WriteLine("get a pak= " + obj.Name);
 #endif
-                    ZipArchive curPak = ZipFile.Open(obj.FullName, ZipArchiveMode.Read);
+                    using ZipArchive curPak = ZipFile.Open(obj.FullName, ZipArchiveMode.Read);
 
                     foreach (var file in curPak.Entries)
                     {
@@ -616,6 +554,8 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         private void ReadModsFromWorkshop()
         {
+            if (universalVars.workshopDir?.Exists != true) return;
+
             foreach (var dir in universalVars.workshopDir.GetDirectories())
             {
                 FileInfo[] modInfo = dir.GetFiles("mod.info", SearchOption.TopDirectoryOnly);
@@ -641,16 +581,21 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 MainWindow.Mod single = new MainWindow.Mod(name, i18n.Main_ModWorkshop, dir.FullName, folderName, hasShader);
 
-                universalVars.modDic.Add(folderName, single);
+                if (universalVars.modDic.TryAdd(folderName, single) == false)
+                {
+                    AppDiagnostics.Log($"Duplicate mod identifier ignored: {folderName} ({dir.FullName})");
+                }
             }
         }
 
         private void ReadModsFromLocal()
         {
+            if (universalVars.localDir?.Exists != true) return;
+
             foreach (var dir in universalVars.localDir.GetDirectories())
             {
                 FileInfo[] modInfo = dir.GetFiles("mod.info", SearchOption.TopDirectoryOnly);
-                string folderName = dir.Name.ToLower();
+                string folderName = dir.Name.ToLowerInvariant();
 
                 if (modInfo.Length == 0)
                 {
@@ -670,59 +615,23 @@ namespace GOHShaderModdingSupportLauncherWPF
 
                 MainWindow.Mod single = new MainWindow.Mod(name, i18n.Main_ModLocal, dir.FullName, folderName, hasShader);
 
-                universalVars.modDic.Add(folderName, single);
+                if (universalVars.modDic.TryAdd(folderName, single) == false)
+                {
+                    AppDiagnostics.Log($"Duplicate mod identifier ignored: {folderName} ({dir.FullName})");
+                }
             }
         }
 
         public void ReadLoadedMods()
         {
-            using (StreamReader opt = File.OpenText(universalVars.optionLoc))
+            using var options = File.OpenText(universalVars.optionLoc);
+            foreach (string modName in FileManager.ReadLoadedModNames(options))
             {
-                //push to mod list start point
-                while (opt.ReadLine().Contains("{mods") == false)
+                if (universalVars.modDic.TryGetValue(modName, out var mod) && mod.hasLoad == false)
                 {
-                    if (opt.EndOfStream == true)
-                    {
-                        //no mod loaded
-                        return;
-                    }
+                    mod.hasLoad = true;
+                    universalVars.modLoaded.Add(mod);
                 }
-
-                while ((opt.ReadLine() is var line) && line.Contains("}") == false)
-                {
-#if DEBUG
-                    Trace.WriteLine(line);
-#endif
-
-                    int nameS = line.IndexOf("\"") + 1;
-
-                    int colonPos= line.IndexOf(":");
-                    int nameE = Math.Min(colonPos==-1?int.MaxValue:colonPos, line.LastIndexOf("\""));
-                    if (nameS <= 0 || nameE == -1 || nameE - nameS<0)
-                    {
-                        //not valid
-                        string errorMessage = $"{i18n.Main_ModLoadingErrorMessage0}\n\n";
-                        errorMessage += line+"\n\n";
-                        errorMessage += $"{i18n.Main_ModLoadingErrorMessage1}";
-                        MessageBox.Show(errorMessage, i18n.Universal_Error, MessageBoxButton.OK, MessageBoxImage.Error);
-                        continue;
-                    }
-
-                    string modName = line.Substring(nameS, nameE - nameS);
-#if DEBUG
-                    Trace.WriteLine(modName);
-#endif
-                    //mod in option.set can be invalid
-                    if (universalVars.modDic.ContainsKey(modName) == true)
-                    {
-                        universalVars.modDic[modName].hasLoad = true;
-                        universalVars.modLoaded.Add(universalVars.modDic[modName]);
-                    }
-                    
-
-                }
-
-                opt.Close();
             }
         }
 
@@ -810,7 +719,7 @@ namespace GOHShaderModdingSupportLauncherWPF
             output.Close();
             input.Close();
         }
-        
+
         public void DecompressFileLZMA(string inFile, string outFile)
         {
             SevenZip.Compression.LZMA.Decoder coder = new SevenZip.Compression.LZMA.Decoder();
@@ -835,29 +744,39 @@ namespace GOHShaderModdingSupportLauncherWPF
 
         public void SaveSettings()
         {
-            //Directory.CreateDirectory(Path.GetTempPath() + @"GOHSMSLauncher");
+            if (
+                AppDiagnostics.IsFatal
+                || string.IsNullOrWhiteSpace(universalVars.configLoc)
+                ) return;
 
-            using (StreamWriter sw = File.CreateText(universalVars.configLoc))
+            try
             {
-                sw.WriteLine(launcherVars.lm.ToString());
-                sw.WriteLine(launcherVars.showAddModInfo.ToString());
-                sw.WriteLine(launcherVars.runAsAdmin.ToString());
-                sw.WriteLine(universalVars.NeedRestore);
-                sw.WriteLine(universalVars.NeedClearCache);
-                sw.WriteLine(universalVars.NeedRedisplay);
-                sw.WriteLine(universalVars.NeedCompileWarning);
-                sw.WriteLine(universalVars.NeedLockModList);
-                sw.WriteLine(universalVars.AlwaysConfirm);
-                sw.WriteLine(universalVars.NeedAutoLoad);
-                sw.WriteLine(universalVars.NeedCheckShaderModify);
-                sw.WriteLine(universalVars.lastCacheHash);
-                sw.WriteLine(universalVars.lastShaderHash);
-                if (HasGetGameRoot == true)
+                var lines = new List<string>{
+                    launcherVars.lm.ToString()
+                    , launcherVars.showAddModInfo.ToString()
+                    , launcherVars.runAsAdmin.ToString()
+                    , universalVars.NeedRestore.ToString()
+                    , universalVars.NeedClearCache.ToString()
+                    , universalVars.NeedRedisplay.ToString()
+                    , universalVars.NeedCompileWarning.ToString()
+                    , universalVars.NeedLockModList.ToString()
+                    , universalVars.AlwaysConfirm.ToString()
+                    , universalVars.NeedAutoLoad.ToString()
+                    , universalVars.NeedCheckShaderModify.ToString()
+                    , FileManager.NormalizeCacheHash(universalVars.lastCacheHash)
+                    , FileManager.NormalizeShaderHash(universalVars.lastShaderHash)
+                };
+                if (HasGetGameRoot && HasGetProfileLoc)
                 {
-                    sw.WriteLine(universalVars.gameDir.FullName);
-                    sw.WriteLine(universalVars.profileLoc);
+                    lines.Add(universalVars.gameDir!.FullName);
+                    lines.Add(universalVars.profileLoc);
                 }
-
+                FileManager.WriteSettings(universalVars.configLoc, lines);
+            }
+            catch (Exception ex) when (FileManager.IsFileError(ex))
+            {
+                AppDiagnostics.Log("Unable to save launcher settings.", ex);
+                MessageBox.Show($"{universalVars.configLoc}\n\n{ex.Message}", i18n.Universal_Warning, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

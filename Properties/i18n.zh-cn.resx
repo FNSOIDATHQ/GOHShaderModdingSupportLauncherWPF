@@ -334,7 +334,7 @@
     <value>，路径为</value>
   </data>
   <data name="Main_ErrorReadConfig" xml:space="preserve">
-    <value>读取启动器配置文件时出现错误！将删除非法配置文件。</value>
+    <value>无法读取启动器配置，将使用默认设置。详细信息已记录到启动日志。</value>
   </data>
   <data name="Main_NoSteam" xml:space="preserve">
     <value>无法在你的电脑上找到steamapps文件夹！</value>

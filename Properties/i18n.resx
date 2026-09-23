@@ -334,7 +334,7 @@
     <value>with path</value>
   </data>
   <data name="Main_ErrorReadConfig" xml:space="preserve">
-    <value>Get error when reading launcher config file! Will delete invalid config file.</value>
+    <value>Unable to read launcher settings. Default settings will be used. Details have been recorded in the startup log.</value>
   </data>
   <data name="Main_NoSteam" xml:space="preserve">
     <value>Can not find steamapps folder on your computer!</value>
