@@ -2,35 +2,24 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
+	  <LangVersion>latest</LangVersion>
 	<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	  <PublishSingleFile>true</PublishSingleFile>
 	  <SelfContained>false</SelfContained>
-	  <_SuppressWpfTrimError>true</_SuppressWpfTrimError>
-	  <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-	  <IncludeNativeLibrariesForSelfExtract>false</IncludeNativeLibrariesForSelfExtract>
-	  <IncludeAllContentForSelfExtract>false</IncludeAllContentForSelfExtract>
-	  <PlatformTarget>AnyCPU</PlatformTarget>
-
-
 	  <PublishTrimmed>false</PublishTrimmed>
-	  <TrimMode>partial</TrimMode>
-	  <DebuggerSupport>false</DebuggerSupport>
-	  <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-	  <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-	  <EventSourceSupport>false</EventSourceSupport>
-	  <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-	  <UseSystemResourceKeys>true</UseSystemResourceKeys>
-	  <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+	  <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	  <StartupObject>GOHShaderModdingSupportLauncherWPF.Program</StartupObject>
+	  <PlatformTarget>AnyCPU</PlatformTarget>
 	  <ApplicationIcon>gemIconBg.ico</ApplicationIcon>
 
 	  <AnalysisLevel>preview</AnalysisLevel>
 
 	  <Platforms>AnyCPU;x64</Platforms>
 
-	  <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
 
 	  <FileVersion>2.3</FileVersion>
 
@@ -47,13 +36,16 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <IsPublishable>True</IsPublishable>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IsPublishable>True</IsPublishable>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tests\**\*.cs" />
     <None Remove="bg.jpg" />
     <None Remove="bg.png" />
     <None Remove="BK2.webp" />
@@ -73,7 +65,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WPF-UI" Version="4.0.3" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
