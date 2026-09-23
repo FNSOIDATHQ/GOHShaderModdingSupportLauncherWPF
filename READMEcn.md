@@ -18,7 +18,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3410344592
 
 ## 运行细节
 
-* 启动时，程序将从 C:\Users\你的用户名\AppData\Local\Temp\GOHSMSLauncher\settings.conf 加载缓存。
+* 启动时，程序将从 %LOCALAPPDATA%\GOHSMSLauncher\settings.conf 加载缓存。
 * 无论选择何种启动选项，程序都将遵循以下流程：
 0. 将 Environment.CurrentDirectory 移至游戏目录
 1. 预处理
@@ -49,16 +49,17 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3410344592
 ### 注意事项
 * 强制改变凹凸贴图质量是一项特殊措施，用于支持我的着色器mod
 * 将 Environment.CurrentDirectory 移至游戏目录总是必要的，这样steam就不会截断我们的启动指令
-* 在 Temp 文件夹中保存设置是为了避免配置文件存储在不会自动删除的位置。我不喜欢程序到处放置配置文件
+* 设置保存在用户 LocalAppData 目录，首次使用会兼容读取 EXE 旁的旧 settings.conf。
 * 启动游戏时总是附带-showmodinfo参数，这是我发现的增强指令，可以显示详细的mod信息
 
 ## 开发指南
 
-我使用 Visual Studio 2022 构建这个程序，环境配置如下:
-* .Net 9 SDK
+我使用 Visual Studio 2026 构建这个程序，环境配置如下:
+* .NET 10 SDK（Visual Studio 2026）
 * Windows Presentation Foundation(WPF)
-* Microsoft.NET.ILLink.Tasks 9.0.1
-* WPF-UI 3.0.5 通过 MIT 协议获取 https://github.com/lepoco/wpfui 
+* WPF-UI 4.3.0，通过 MIT 协议获取 https://github.com/lepoco/wpfui
+* 执行 `dotnet publish -c Release -p:PublishProfile=FolderProfile` 后，分发 `bin/net10-single-file/` 中的 EXE。
+* 用户电脑需要安装 .NET 10 Windows Desktop Runtime（x64）；EXE 不包含运行时。
 
 ## 致谢
 特别感谢

@@ -19,7 +19,7 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3410344592
 
 ## Runtime Details
 
-* When startup, program will load cache from C:\Users\YOURUSERNAME\AppData\Local\Temp\GOHSMSLauncher\settings.conf
+* At startup, the launcher loads settings from %LOCALAPPDATA%\GOHSMSLauncher\settings.conf。
 * No matter what launch option is selected, program will follow the process below:
 0. Move Environment.CurrentDirectory to game directory
 1. Preprocess
@@ -50,16 +50,17 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3410344592
 ### Notice
 * Force change bump quality is a special measure used to support my shader mods
 * Move Environment.CurrentDirectory to game directory is always necessary to let steam not truncate our launch commands
-* Save settings in Temp folder is to avoid conf files being stored in locations that won't delete automatically. I do not like it when programs place config files everywhere
+* Settings are saved under LocalAppData, with compatibility for existing settings.conf beside the EXE.
 * Game Launch process always comes with the -showmodinfo parameter, which is an enhancement I found that let game shows detailed mod information
 
 ## Development Guide
 
-I'm building this program using Visual Studio 2022, with environment below:
-* .Net 9 SDK
+I'm building this program using Visual Studio 2026, with environment below:
+* .NET 10 SDK (Visual Studio 2026)
 * Windows Presentation Foundation(WPF)
-* Microsoft.NET.ILLink.Tasks 9.0.1
-* WPF-UI 3.0.5 through MIT Lience https://github.com/lepoco/wpfui 
+* WPF-UI 4.3.0 through the MIT license https://github.com/lepoco/wpfui
+* Publish with `dotnet publish -c Release -p:PublishProfile=FolderProfile`. Distribute the sole EXE from `bin/net10-single-file/`.
+* The target PC must have the .NET 10 Windows Desktop Runtime (x64) installed. The EXE does not include the runtime.
 
 ## Credits
 Special Thanks to  
